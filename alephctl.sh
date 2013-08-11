@@ -2,11 +2,10 @@
 
 source aleph.conf
 
-def="\e[0;30m"
 red="\e[0;31m"
 green="\e[0;32m"
-ok="$green[ok]$def"
-fail="$red[fail]$def"
+ok="$green[ok]\e[m"
+fail="$red[fail]\e[m"
 
 usage() {
 	echo "$0 {start|stop|status}"
@@ -79,6 +78,8 @@ esac
 [ -d $internal_ready_dir ] || mkdir -p "$internal_ready_dir"
 [ -d $internal_store_dir ] || mkdir -p "$internal_store_dir"
 [ -d $internal_preparing_dir ] || mkdir -p "$internal_preparing_dir" 
+[ -d $internal_reports_dir ] || mkdir -p "$internal_reports_dir" 
+[ -d $internal_incoming_dir ] || mkdir -p "$internal_incoming_dir" 
 
 for i in ss grep pescan jshon mail rar unrar zip unzip tar gunzip bunzip2; do
 	which "$i" >/dev/null || exit
