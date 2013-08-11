@@ -23,7 +23,7 @@ sysctl -p /etc/sysctl.d/hardening.conf
 ask 'Install packages using the internet'
 # basic packages
 apt-get update && apt-get upgrade -y
-apt-get install vsftpd ssh apache2 libapache2-mod-php5 git file zip unzip rar \
+apt-get install -y vsftpd ssh apache2 libapache2-mod-php5 git file zip unzip rar \
 unrar bzip2 gzip curl exim4 ntpdate gcc make rcconf vim libjansson-dev \
 libssl-dev libpcre3-dev
 
@@ -34,7 +34,7 @@ ntpdate ntp.cais.rnp.br
 
 ask 'Download and build libpe'
 wget https://github.com/merces/libpe/archive/master.zip -O libpe.zip
-unzip libpe.zip 
+unzip -qo libpe.zip 
 cd libpe-master
 make
 make install
@@ -42,12 +42,13 @@ cd ..
 
 ask 'Download and build pev'
 wget https://github.com/merces/pev/archive/master.zip -O pev.zip
-unzip pev.zip 
+unzip -qo pev.zip 
 cd pev-master
-mv ../libpe-master/* lib/libpe/
+cp ../libpe-master/* lib/libpe/
 make && make install
+cd ..
 
-ask 'Download and install json'
+ask 'Download and build json'
 wget http://kmkeen.com/jshon/jshon.tar.gz
 tar xf jshon.tar.gz
 cd jshon*
@@ -55,6 +56,7 @@ make
 gzip -c -9 jshon.1 > jshon.1.gz
 install jshon /usr/local/bin/jshon
 install jshon.1.gz /usr/share/man/man1/jshon.1.gz
+cd ..
 
 ask 'Configure vim'
 echo -e "syntax on\nset nu\nset tabstop=3" > /home/aleph/.vimrc
@@ -68,12 +70,12 @@ echo -e "\nDenyGroups aleph-users" >> /etc/ssh/sshd_config
 service ssh reload
 
 ask 'Configure Apache httpd'
-a2dismodule autoindex
+a2dismod autoindex
 a2dissite default default-ssl
 a2enmod ssl
 cp aleph-ssl /etc/apache2/sites-available
 a2ensite aleph-ssl
-sed -i 's/^NameVirtualHost \*:80/#NameVirtualHost \*:80/' apache2.conf
+sed -i 's/^NameVirtualHost \*:80/#NameVirtualHost \*:80/' /etc/apache2/ports.conf
 sed -i 's/^Listen 80/#Listen 80/' /etc/apache2/ports.conf
 service apache2 restart
 
@@ -83,12 +85,14 @@ sed -i 's/^#local_enable=YES/local_enable=YES/' /etc/vsftpd.conf
 sed -i 's/^#write_enable=YES/write_enable=YES/' /etc/vsftpd.conf
 service vsftpd restart
 
-
-# aleph-master
-mkdir /home/incoming
-wget https://github.com/merces/aleph/archive/master.zip
-unzip master.zip
-mv aleph-master/* /home/aleph/
+ask 'Download and install aleph'
+mkdir -p /home/incoming
+wget https://github.com/merces/aleph/archive/master.zip -O aleph.zip
+unzip -qo aleph.zip
+cp -r aleph-master/* /home/aleph/
 chown -R aleph: /home/aleph
 # ftp readme.txt
 cp ftp-readme.txt /home/incoming
+
+cd /home/aleph
+./alephctl start
