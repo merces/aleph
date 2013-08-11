@@ -95,4 +95,4 @@ chown -R aleph: /home/aleph
 cp ftp-readme.txt /home/incoming
 
 cd /home/aleph
-./alephctl start
+./alephctl.sh start
