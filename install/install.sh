@@ -3,9 +3,6 @@
 # Installation in Debian 7 i386 (english)
 # - timezone set UTC-3
 
-#root/J@ckDani3ls------
-#aleph/Al3ph...
-
 # passwd aleph
 # addgroup aleph sudo
 
@@ -46,6 +43,7 @@ chown aleph: /home/aleph/.vimrc
 
 # ssh
 addgroup aleph-users
+sed -i 's/^PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
 echo -e "\nDenyGroups aleph-users" >> /etc/ssh/sshd_config
 service ssh reload
 
