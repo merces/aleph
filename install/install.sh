@@ -6,9 +6,17 @@
 # passwd aleph
 # addgroup aleph sudo
 
+# some security
+bash firewall.sh
+# hardening + ipv6 disabling
+cp hardening.conf /etc/sysctl.d
+sysctl -p /etc/sysctl.d/hardening.conf
+
+
 # basic packages
 apt-get update && apt-get upgrade -y
-apt-get install vsftpd ssh apache2 libapache2-mod-php5 git file zip unzip rar unrar bzip2 gzip curl exim4 ntpdate gcc make rcconf
+apt-get install vsftpd ssh apache2 libapache2-mod-php5 git file zip unzip rar \
+unrar bzip2 gzip curl exim4 ntpdate gcc make rcconf vim
 
 # setting time
 #dpkg-reconfigure tzdata
@@ -36,7 +44,6 @@ install jshon /usr/local/bin/jshon
 install jshon.1.gz /usr/share/man/man1/jshon.1.gz
 
 # vim
-apt-get install vim
 echo -e "syntax on\nset nu\nset tabstop=3" > /home/aleph/.vimrc
 cp /home/aleph/.vimrc /root
 chown aleph: /home/aleph/.vimrc
@@ -46,9 +53,6 @@ addgroup aleph-users
 sed -i 's/^PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
 echo -e "\nDenyGroups aleph-users" >> /etc/ssh/sshd_config
 service ssh reload
-
-# hardening + ipv6 disabling
-cp hardening.conf /etc/sysctl.d
 
 # apache httpd
 a2dismodule autoindex
@@ -72,6 +76,7 @@ mkdir /home/incoming
 wget https://github.com/merces/aleph/archive/master.zip
 unzip master.zip
 mv aleph-master/* /home/aleph/
+chown -R aleph: /home/aleph
 # ftp readme.txt
 cp ftp-readme.txt /home/incoming
 

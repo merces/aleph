@@ -6,9 +6,9 @@ malwares in the wild.
 
 aleph is distributed as an .OVA for easy setup. The main capabilites includes:
 
-- Sample submission through (S)FTP and HTTP(S).
+- Sample submission through FTP and HTTP.
 - PE static analysis with pev.
 - VirusTotal integration.
 - Cuckoo integration (planned).
 - Web UI for search and reports.
-- Sample forwarding through HTTP POST.
+- Sample forwarding through HTTP.
