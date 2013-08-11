@@ -3,6 +3,7 @@
 source aleph.conf
 
 adduser --home "$ftp_incoming_dir"/$1 $1
+rm -f "$ftp_incoming_dir"/$1/.bash* "$ftp_incoming_dir"/$1/.profile
 addgroup $1 $ftp_group
 ln "$ftp_incoming_dir"/ftp-readme.txt "$ftp_incoming_dir"/$1/readme.txt
 mkdir "$ftp_incoming_dir"/$1/incoming
