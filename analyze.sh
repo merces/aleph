@@ -47,7 +47,7 @@ mimetype: "$mime"
 
 	if (echo "$type" | grep -qE 'PE32|MS\-DOS'); then
 		(echo -e "\npepack\n---"
-		pepack -d /home/rtl/userdb.txt "$i"
+		pepack -d /usr/share/pev/userdb.txt "$i"
 
 		echo -e "\n\npesec\n---"
 		pesec "$i"
