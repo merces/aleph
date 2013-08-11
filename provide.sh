@@ -22,7 +22,7 @@ fi
 
 mv "$internal_processing_dir/$file" "$internal_ready_dir/"
 
-msg=" +++ The Lula Project +++
+msg=" +++ aleph +++
 
 We have received new samples. Here is the list:
 
