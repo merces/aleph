@@ -1,0 +1,23 @@
+* {
+	color: brown;
+	font-family: Courier, "Courier New", monospace;
+}
+
+a {
+	color: #fd4902;
+	text-decoration: none
+}
+
+.latest {
+	float: left;
+	margin-left: 5em;
+}
+ .stats {
+	float: left;
+	margin-left: 5em;
+}
+
+.topext {
+	float: left;
+	margin-left: 5em;
+}
