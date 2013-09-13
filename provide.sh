@@ -10,13 +10,15 @@ body=$(mktemp)
 
 [ -f "$internal_processing_dir/$file" ] || exit
 
+[ "$external_port" -eq 443 -o -z "$external_port" ] && external_port= || external_port=":$external_port"
+
 subject='New samples submitted'
 
 if $submit_webservice; then
-	response=$(curl -o $body -sw '%{http_code}' --form \
+	response_code=$(curl -o $body -sw '%{http_code}' --form \
 	"$webservice_file_field=@$internal_processing_dir/$file" "$webservice_url")
 
-	sn=$(grep -oE '2[0-9]+' $body)
+	[ -n "$webservice_response_regex" ] && response=$(grep -oE "$webservice_response_regex" $body)
 	rm -f $body
 fi
 
@@ -28,15 +30,16 @@ We have received new samples. Here is the list:
 
 $(cat "$temporary_database_file")
 
-Webservice submission response: $response
-Submission ID: $sn
+$(if $submit_webservice; then echo -e \
+"Webservice response code: $response_code\n\
+Webservice result: $response"; fi)
 
-Go to http://$external_fqdn:$external_port and provide the sha1 to see the report for a specific file.
+Go to https://$external_fqdn$external_port and provide the sha1 to see the report for a specific file.
 
 Have a nice day!"
 
 if $notify; then
-	echo "$msg" | mail -s "$subject" $(echo ${notify_addresses[*]} | tr ' ' ,)
+	echo "$msg" | mail -s "$notify_mail_subject" $(echo ${notify_mail_addresses[*]} | tr ' ' ,)
 else
 	echo "$msg"
 fi

@@ -15,8 +15,8 @@ wget -q --post-data="whoami=$user&resource=$sha1&apikey=$apikey" $file_retr_url 
 for i in $(jshon -e scans < $tmpfile | grep '{$' | tr -d ' ":{' | sort); do
 	echo -n "$i: "
 	r=$(jshon -e scans < $tmpfile | jshon -e "$i" | jshon -e result)
-	[ "$r" = 'null' ] && r='undetected'
+	[ "$r" = 'null' ] && r='-'
 	echo "$r" | tr -d \"
 done
 
-rm "$tmpfile"
+rm -f "$tmpfile"

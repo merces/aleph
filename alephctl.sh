@@ -3,12 +3,14 @@
 source aleph.conf
 
 red="\e[0;31m"
-green="\e[0;32m"
-ok="$green[ok]\e[m"
+gre="\e[0;32m"
+yel="\e[0;33m"
+ok="$gre[ok]\e[m"
 fail="$red[fail]\e[m"
+warn="$yel[warning]\e[m"
 
 usage() {
-	echo "$0 {start|stop|status}"
+	echo "$0 {start|restart|stop|status}"
 	exit 1
 }
 
@@ -34,6 +36,7 @@ l_start() {
 l_stop() {
 	if kill -0 $pid 2> /dev/null; then
 		if kill -TERM $pid 2> /dev/null; then
+			rm -f "$pid_file"
 			echo -e "$ok aleph stopped"
 		else
 			echo -e "$fail cannot stop aleph"
@@ -53,22 +56,17 @@ l_status() {
 
 case $1 in
 	"start")
-		l_start
-	;;
-
+		l_start ;;
+	"restart")
+		l_stop ;;
 	"stop")
 		l_stop
-		exit
-	;;
-
+		exit ;;
 	"status")
 		l_status
-	exit
-	;;
-
+		exit ;;
 	*)
-	usage
-	;;
+		usage ;;
 esac
 
 [ -d $base_dir ] || mkdir -p "$base_dir"
@@ -81,18 +79,18 @@ esac
 [ -d $internal_reports_dir ] || mkdir -p "$internal_reports_dir" 
 [ -d $internal_incoming_dir ] || mkdir -p "$internal_incoming_dir" 
 
-for i in ss grep pescan jshon mail rar unrar zip unzip tar gunzip bunzip2; do
-	which "$i" >/dev/null || exit
+for i in ss grep pescan jshon mail rar unrar zip unzip tar gunzip bunzip2 pgrep; do
+	which $i >/dev/null || { echo -e $fail where is $i?; exit 1; }
 done
 
 if $external_download; then
-	/sbin/ss -an | grep -qF "$external_port" || exit
+	ss -an | grep -qF "$external_port" || { echo -e $warn webserver is down; }
 fi
 
 echo starting daemon...
 ./alephd.sh &
 sleep 1
 pgrep -f 'bash.*alephd.sh' > "$pid_file"
-sleep 2
+sleep 1
 update_pid
 l_status

@@ -83,6 +83,7 @@ ask 'Configure vsftpd'
 sed -i 's/^anonymous_enable=YES/anonymous_enable=NO/' /etc/vsftpd.conf
 sed -i 's/^#local_enable=YES/local_enable=YES/' /etc/vsftpd.conf
 sed -i 's/^#write_enable=YES/write_enable=YES/' /etc/vsftpd.conf
+sed -i 's/^#local_umask=022/local_umask=022/' /etc/vsftpd.conf
 service vsftpd restart
 
 ask 'Download and install aleph'
@@ -93,6 +94,7 @@ cp -r aleph-master/* /home/aleph/
 chown -R aleph: /home/aleph
 # ftp readme.txt
 cp ftp-readme.txt /home/incoming
+echo 'aleph   ALL = NOPASSWD: /bin/mv' > /etc/sudoers.d/aleph
 
 cd /home/aleph
 ./alephctl.sh start

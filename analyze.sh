@@ -57,16 +57,16 @@ mimetype: "$mime"
 		) >> "$report"
 	fi
 
-		(echo -e "\n\nfile related strings\n---"
+		(echo -e "\n\npossible file related strings\n---"
 		strings "$i" | grep -Ei '\.[a-z]{3}$' | sort -u
 
-		echo -e "\n\nnetworking related strings\n---"
+		echo -e "\n\npossible networking related strings\n---"
 		strings "$i" | grep -Ei '([0-9]{1,3}\.){3}[0-9]{1,3}|tp://' | sort -u
 		) >> "$report"
 
 	if $virustotal_query; then
 		echo -e "\n\nvirustotal\n---" >> "$report"
-		vt_res=$(./vt-query.sh $sha | column -t)
+		vt_res=$(./vt-query.sh $sha)
 		([ -n "$vt_res" ] && echo "$vt_res" || echo 'not found') >> "$report"
 	fi
 
