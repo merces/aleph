@@ -21,7 +21,7 @@ for ($i=0; $i<$tam; $i++) {
 		invalid();
 }
 
-$dir="/home/aleph/reports";
+$dir="/opt/aleph/reports";
 $file="$dir/$sha.txt";
 
 echo '<pre>';

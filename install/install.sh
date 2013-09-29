@@ -16,8 +16,10 @@ echo -e '\naleph installation script\n'
 ask 'Set up hardening'
 bash firewall.sh
 mkdir -p /etc/iptables
-iptables-save > /etc/iptables/rules
-echo -e 'iptables-restore < /etc/iptables/rules\nexit 0' > /etc/rc.local
+cp firewall.sh /etc/iptables/
+chmod +x /etc/iptables/firewall.sh
+echo -e '/etc/iptables/firewall.sh\nexit 0' > /etc/rc.local
+
 # hardening + ipv6 disabling
 cp hardening.conf /etc/sysctl.d
 sysctl -p /etc/sysctl.d/hardening.conf
@@ -32,8 +34,27 @@ libssl-dev libpcre3-dev
 
 ask 'Set timezone and current time'
 # setting time
-#dpkg-reconfigure tzdata
+dpkg-reconfigure tzdata
 ntpdate ntp.cais.rnp.br
+echo -e '\nexport LC_ALL=en_US.UTF-8' >> /etc/profile
+
+#ask 'Configure exim4'
+#echo \
+#"dc_eximconfig_configtype='internet'
+#dc_other_hostnames='aleph'
+#dc_local_interfaces='127.0.0.1'
+#dc_readhost='aleph'
+#dc_relay_domains=''
+#dc_minimaldns='false'
+#dc_relay_nets=''
+#dc_smarthost='aleph'
+#CFILEMODE='644'
+#dc_use_split_config='false'
+#dc_hide_mailname='true'
+#dc_mailname_in_oh='true'
+#dc_localdelivery='mail_spool'" > /etc/exim4/update-exim4.conf.conf
+
+service exim4 restart
 
 ask 'Download and build libpe'
 wget https://github.com/merces/libpe/archive/master.zip -O libpe.zip
