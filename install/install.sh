@@ -15,6 +15,9 @@ ask() {
 echo -e '\naleph installation script\n'
 ask 'Set up hardening'
 bash firewall.sh
+mkdir -p /etc/iptables
+iptables-save > /etc/iptables/rules
+echo -e 'iptables-restore < /etc/iptables/rules\nexit 0' > /etc/rc.local
 # hardening + ipv6 disabling
 cp hardening.conf /etc/sysctl.d
 sysctl -p /etc/sysctl.d/hardening.conf

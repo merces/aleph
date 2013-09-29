@@ -1,13 +1,13 @@
 #!/bin/bash
 
-source aleph.conf
-
 red="\e[0;31m"
 gre="\e[0;32m"
 yel="\e[0;33m"
 ok="$gre[ok]\e[m"
 fail="$red[fail]\e[m"
 warn="$yel[warning]\e[m"
+
+source aleph.conf 2>&- || { echo -e "$fail configuration file missing"; exit 1; }
 
 usage() {
 	echo "$0 {start|restart|stop|status}"
