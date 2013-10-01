@@ -2,7 +2,7 @@ alias ls='ls -A'
 export GLOBIGNORE='.'
 
 pid_file=/tmp/aleph.pid
-aleph_dir=/home/aleph
+aleph_dir=/opt/aleph
 ftp_incoming_dir=/home/incoming
 internal_processing_dir=$aleph_dir/processing
 internal_temporary_dir=$aleph_dir/temp
