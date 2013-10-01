@@ -36,9 +36,10 @@ ask 'Set timezone and current time'
 # setting time
 dpkg-reconfigure tzdata
 ntpdate ntp.cais.rnp.br
-echo -e '\nexport LC_ALL=en_US.UTF-8' >> /etc/profile
+echo -e '\nexport LC_ALL=en_US.UTF-8' >> /etc/profile.d/aleph.sh
 
-#ask 'Configure exim4'
+ask 'Configure exim4'
+dpkg-reconfigure exim4-config
 #echo \
 #"dc_eximconfig_configtype='internet'
 #dc_other_hostnames='aleph'
@@ -53,7 +54,6 @@ echo -e '\nexport LC_ALL=en_US.UTF-8' >> /etc/profile
 #dc_hide_mailname='true'
 #dc_mailname_in_oh='true'
 #dc_localdelivery='mail_spool'" > /etc/exim4/update-exim4.conf.conf
-
 service exim4 restart
 
 ask 'Download and build libpe'
@@ -108,17 +108,13 @@ sed -i 's/^anonymous_enable=YES/anonymous_enable=NO/' /etc/vsftpd.conf
 sed -i 's/^#local_enable=YES/local_enable=YES/' /etc/vsftpd.conf
 sed -i 's/^#write_enable=YES/write_enable=YES/' /etc/vsftpd.conf
 sed -i 's/^#local_umask=022/local_umask=022/' /etc/vsftpd.conf
+sed -i 's/^#chroot_local_user=YES/chroot_local_user=YES/' /etc/vsftpd.conf
+
 service vsftpd restart
 
-ask 'Download and install aleph'
+ask 'Configure aleph'
 mkdir -p /home/incoming
-wget https://github.com/merces/aleph/archive/master.zip -O aleph.zip
-unzip -qo aleph.zip
-cp -r aleph-master/* /home/aleph/
 chown -R aleph: /home/aleph
 # ftp readme.txt
 cp ftp-readme.txt /home/incoming
 echo 'aleph   ALL = NOPASSWD: /bin/mv' > /etc/sudoers.d/aleph
-
-cd /home/aleph
-./alephctl.sh start
