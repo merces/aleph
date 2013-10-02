@@ -12,6 +12,13 @@ find . -type d ! -name '.' -exec rm -rf {} +; 2>&-
 cd ..
 
 for i in $internal_preparing_dir/*; do
+   tam=$(wc -c "$i" | cut -d' ' -f1)
+
+   if ! [ $tam -ge $min_sample_size -a $tam -le $max_sample_size ]; then
+		mv "$i" "$internal_unprocessed_dir/"
+		continue
+	fi
+
 	sha=$(sha1sum "$i" | cut -d' ' -f1)
 
 	if grep -qF "$sha" "$database_file"; then
