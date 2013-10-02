@@ -15,6 +15,8 @@ function unzip_f {
 	local i
 	for i in *.zip; do
 		unzip -oP virus "$i";
+		rm "$i"
+		move_f
 	done
 }
 
@@ -22,6 +24,8 @@ function unrar_f {
 	local i
 	for i in *.rar; do
 		rar x -o+ "$i"
+		rm -f "$i"
+		move_f
 	done
 }
 
@@ -29,6 +33,8 @@ function ungzip_f {
 	local i
 	for i in *.gz; do
 		gunzip "$i"
+		rm -f "$i"
+		move_f
 	done
 }
 
@@ -36,6 +42,8 @@ function untargz_f {
 	local i
 	for i in *.tgz; do
 		tar xzf "$i"
+		rm -f "$i"
+		move_f
 	done
 }
 
@@ -43,14 +51,17 @@ function untar_f {
 	local i
 	for i in *.tar; do 
 		tar xf "$i"
+		rm -f "$i"
+		move_f
 	done
 }
 
 function move_f {
 	local i
+	local pref
 
 	for i in $(find . -mindepth 2 -type f); do
-		local pref=
+		pref=
 		while [ -f "$pref"$(basename "$i") ]; do
 			pref="$pref""_"
 		done
@@ -61,7 +72,7 @@ function move_f {
 
 cd "$internal_preparing_dir"
 
-echo '[+] uncompressing files...'
+echo -e "\n[+] uncompressing files..."
 for (( i=0; i < $uncompress_depth; i++ )); do
 	$normalize_file_extensions && normalize_f &>/dev/null
 	unzip_f &>/dev/null
@@ -69,7 +80,6 @@ for (( i=0; i < $uncompress_depth; i++ )); do
 	untargz_f &>/dev/null
 	ungzip_f &>/dev/null
 	untar_f &>/dev/null
-	move_f &>/dev/null
 done
 
 cd ..
