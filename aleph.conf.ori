@@ -12,14 +12,17 @@ internal_analyzed_dir=$aleph_dir/analyzed
 internal_preparing_dir=$aleph_dir/preparing
 internal_incoming_dir=$aleph_dir/incoming
 internal_reports_dir=$aleph_dir/reports
+internal_unprocessed_dir=$aleph_dir/unprocessed
 
 external_download=true
 external_fqdn=localhost
 external_port=443
 
-min_sample_size=1024 #bytes
-max_sample_size=$((1024*1024*30))
-monitor_time=$((5*60)) #minutes
+min_sample_size=1024 # 1 KB
+max_sample_size=$((1024*1024*30)) # 30 MB
+min_package_size=$min_sample_size
+max_package_size=$((1024*1024*100)) # 100 MB
+monitor_time=$((5*60)) # 5 minutes
 
 normalize_file_extensions=true
 uncompress_depth=10

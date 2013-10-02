@@ -78,6 +78,7 @@ esac
 [ -d $internal_preparing_dir ] || mkdir -p "$internal_preparing_dir" 
 [ -d $internal_reports_dir ] || mkdir -p "$internal_reports_dir" 
 [ -d $internal_incoming_dir ] || mkdir -p "$internal_incoming_dir" 
+[ -d $internal_unprocessed_dir ] || mkdir -p "$internal_unprocessed_dir" 
 
 for i in ss grep pescan jshon mail rar unrar zip unzip tar gunzip bunzip2 pgrep; do
 	which $i >/dev/null || { echo -e $fail where is $i?; exit 1; }

@@ -17,12 +17,12 @@ while :; do
 			[ "$sha1" = "$sha2" ] && break
 		done
 
-		if [ $tam -ge $min_sample_size -a $tam -le $max_sample_size ]; then
+		if [ $tam -ge $min_package_size -a $tam -le $max_package_size ]; then
 			cp -pu "$i" "$internal_store_dir"
 			sudo mv "$i" "$internal_incoming_dir"
 			new_sample=true
 		else
-			rm "$i"
+			mv "$i" "$internal_unprocessed_dir"
 		fi
 	done
 
