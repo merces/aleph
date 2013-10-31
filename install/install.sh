@@ -13,6 +13,7 @@ ask() {
 } 
 
 echo -e '\naleph installation script\n'
+
 ask 'Set up hardening'
 bash firewall.sh
 mkdir -p /etc/iptables
@@ -24,19 +25,25 @@ echo -e '/etc/iptables/firewall.sh\nexit 0' > /etc/rc.local
 cp hardening.conf /etc/sysctl.d
 sysctl -p /etc/sysctl.d/hardening.conf
 
-
 ask 'Install packages using the internet'
+# repo
+cp sources.list /etc/apt/
+
 # basic packages
 apt-get update && apt-get upgrade -y
 apt-get install -y vsftpd ssh apache2 libapache2-mod-php5 git file zip unzip rar \
 unrar bzip2 gzip curl exim4 ntpdate gcc make rcconf vim libjansson-dev \
-libssl-dev libpcre3-dev
+libssl-dev libpcre3-dev sudo
+
+ask 'Create aleph user'
+adduser aleph
+addgroup aleph sudo
 
 ask 'Set timezone and current time'
 # setting time
 dpkg-reconfigure tzdata
 ntpdate ntp.cais.rnp.br
-echo -e '\nexport LC_ALL=en_US.UTF-8' >> /etc/profile.d/aleph.sh
+echo -e '\nexport LC_ALL=en_US.UTF-8' > /etc/profile.d/aleph.sh
 
 ask 'Configure exim4'
 dpkg-reconfigure exim4-config
