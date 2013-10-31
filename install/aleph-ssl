@@ -2,12 +2,12 @@
 <VirtualHost _default_:443>
 	ServerAdmin aleph-admin@aleph
 
-	DocumentRoot /home/aleph/webui
+	DocumentRoot /opt/aleph/webui
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
-	<Directory /home/aleph/webui/>
+	<Directory /opt/aleph/webui/>
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride None
 		Order allow,deny
