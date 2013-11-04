@@ -80,9 +80,11 @@ esac
 [ -d $internal_incoming_dir ] || mkdir -p "$internal_incoming_dir" 
 [ -d $internal_unprocessed_dir ] || mkdir -p "$internal_unprocessed_dir" 
 
-for i in ss grep pescan jshon mail rar unrar zip unzip tar gunzip bunzip2 pgrep; do
+for i in grep pescan jshon mail rar unrar zip unzip tar gunzip bunzip2 pgrep; do
 	which $i >/dev/null || { echo -e $fail where is $i?; exit 1; }
 done
+
+sudo ss &>/dev/null || { echo -e $fail where is ss?; exit 1; }
 
 if $external_download; then
 	ss -an | grep -qF "$external_port" || { echo -e $warn webserver is down; }
