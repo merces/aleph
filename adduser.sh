@@ -10,3 +10,4 @@ mkdir "$ftp_incoming_dir"/$1/incoming
 chown root: "$ftp_incoming_dir"/$1
 chown -R $1:$aleph_group "$ftp_incoming_dir"/$1/incoming
 chmod 0775 "$ftp_incoming_dir"/$1/incoming
+chmod 0775 "$ftp_incoming_dir"/$1
