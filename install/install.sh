@@ -37,6 +37,7 @@ libssl-dev libpcre3-dev sudo php-pear
 
 ask 'Install HTTP_Upload PEAR package'
 pear install HTTP_Upload
+patch -p1  /usr/share/php/HTTP/Upload.php Upload.php.patch
 
 ask 'Create aleph user'
 adduser aleph
