@@ -36,7 +36,9 @@ exec('grep \'^' . $out[0] . '\' ../db.csv | wc -l', $out);
 echo "$out[1] files analyzed today<br />";
 unset($out);
 exec('wc -l ../db.csv | cut -d\' \' -f1; du -h ../store | cut -f1', $out);
-echo "$out[0] total<br />$out[1] of data";
+
+if (isset($out[0]) && isset($out[1]))
+	echo "$out[0] total<br />$out[1] of data";
 ?>
 </div>
 
