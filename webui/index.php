@@ -4,12 +4,7 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<?php
-	if (!isset($_SESSION))
-		session_start();
-	if (isset($_SESSION['logged']))
-		echo "<div align=\"right\">" . $_SESSION['logged'] . '<br /><a href="logout.php">logut</a></div>';
-?>
+<?php include 'topbar.php'; ?>
 <center>
 <div>
 <font style="font-size: 60px; letter-spacing: 6px;">aleph</font><br />
