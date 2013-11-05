@@ -1,4 +1,5 @@
 <?php
+include 'die.php';
 
 function invalid() {
 	die('please, inform a valid SHA1 hash');
