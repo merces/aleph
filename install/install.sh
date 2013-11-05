@@ -32,7 +32,7 @@ cp sources.list /etc/apt/
 # basic packages
 apt-get update && apt-get upgrade -y
 apt-get install -y vsftpd ssh apache2 libapache2-mod-php5 git file zip unzip rar \
-unrar bzip2 gzip curl exim4 ntpdate gcc make rcconf vim libjansson-dev \
+unrar bzip2 gzip curl exim4 ntpdate gcc make rcconf vim libjansson-dev libexpect-php5 \
 libssl-dev libpcre3-dev sudo
 
 ask 'Create aleph user'
