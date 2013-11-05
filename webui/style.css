@@ -21,3 +21,10 @@ a {
 	float: left;
 	margin-left: 5em;
 }
+
+#msg {
+	color: red;
+	font-family: monospace;
+	font-size: 10px;
+	font-height: bold;
+}

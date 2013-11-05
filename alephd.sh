@@ -22,7 +22,7 @@ while :; do
 			sudo mv "$i" "$internal_incoming_dir"
 			new_sample=true
 		else
-			mv "$i" "$internal_unprocessed_dir"
+			sudo mv "$i" "$internal_unprocessed_dir"
 		fi
 	done
 

@@ -6,11 +6,16 @@ if (!isset($_SESSION))
 <form action="query.php" method="get">
 <input type="text" name="sha" size="40" autofocus required pattern="[a-fA-F0-9]{40}"
 value="enter valid sha1..." required>
-<br />
-<br />
 <input type="submit" value="Search">
-<input type="submit" disabled value="Upload">
 </form>
+
+<form id="upl" method="post" enctype="multipart/form-data"
+action="upload.php">
+<input type="file" name="f" />
+<input type="submit" value="Send" />
+</form>
+<div id="msg"></div>
+
 </center>
 
 <div class="latest">

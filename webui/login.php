@@ -4,6 +4,10 @@ function check_group($username) {
 	$output = array();
 
 	exec("groups $username", $output);
+
+	if (!isset($output[0]))
+		return false;
+
 	$v = explode(' ', $output[0]);
 
 	foreach ($v as $i)
@@ -76,7 +80,7 @@ function process_auth() {
 		header('Location: /index.php');
 	}
 	else {
-		echo '<html><head><meta http-equiv="refresh" content=2; url=/"></head><body>Access denied.</body></html>';
+		echo '<html><head><meta http-equiv="refresh" content="2; url=/"></head><body>Access denied.</body></html>';
 	}
 }
 

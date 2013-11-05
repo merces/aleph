@@ -33,7 +33,10 @@ cp sources.list /etc/apt/
 apt-get update && apt-get upgrade -y
 apt-get install -y vsftpd ssh apache2 libapache2-mod-php5 git file zip unzip rar \
 unrar bzip2 gzip curl exim4 ntpdate gcc make rcconf vim libjansson-dev libexpect-php5 \
-libssl-dev libpcre3-dev sudo
+libssl-dev libpcre3-dev sudo php-pear
+
+ask 'Install HTTP_Upload PEAR package'
+pear install HTTP_Upload
 
 ask 'Create aleph user'
 adduser aleph
