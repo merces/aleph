@@ -5,6 +5,7 @@ require_once "HTTP/Upload.php";
 
 $upload = new HTTP_Upload("en");
 $file = $upload->getFiles("f");
+mkdir('/home/incoming/' . $_SESSION['logged'] . '/incoming/', 0777);
 
 if ($file->isValid()) {
 	$moved = $file->moveTo('/home/incoming/' . $_SESSION['logged'] . '/incoming/');
