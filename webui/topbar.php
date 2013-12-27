@@ -7,7 +7,7 @@
 		echo "<div id=topbar>Welcome back, " . $_SESSION['logged'] .
 			'! [ <a class=topbar href="/">home</a> | '.
 			'<a class=topbar href="admin.php">admin</a> | '.
-			'<a class=topbar href="logout.php">logut</a>'.
+			'<a class=topbar href="logout.php">logout</a>'.
 			' ]</div>';
 	}
 ?>
