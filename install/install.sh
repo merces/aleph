@@ -32,7 +32,7 @@ cp sources.list /etc/apt/
 # basic packages
 apt-get update && apt-get upgrade -y
 apt-get install -y vsftpd ssh apache2 libapache2-mod-php5 git file zip ntpdate gcc make rcconf vim libjansson-dev libexpect-php5 \
-libssl-dev libpcre3-dev sudo php-pear unrar bzip2 gzip curl exim4  unzip rar 
+libssl-dev libpcre3-dev sudo php-pear unrar-free bzip2 gzip curl exim4  unzip
 
 
 ask 'Install HTTP_Upload PEAR package'
@@ -41,7 +41,8 @@ patch -p1  /usr/share/php/HTTP/Upload.php Upload.php.patch
 
 ask 'Create aleph user'
 adduser aleph
-addgroup aleph-users sudo
+addgroup aleph aleph-users
+addgroup aleph sudo
 
 ask 'Set timezone and current time'
 # setting time
