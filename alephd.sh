@@ -2,6 +2,8 @@
 
 source aleph.conf
 
+[ -d "$ftp_incoming_dir" ] || exit 1
+
 >>"$database_file"
 
 IFS=$'\n'
