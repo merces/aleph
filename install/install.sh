@@ -31,9 +31,9 @@ cp sources.list /etc/apt/
 
 # basic packages
 apt-get update && apt-get upgrade -y
-apt-get install -y vsftpd ssh apache2 libapache2-mod-php5 git file zip unzip rar \
-unrar bzip2 gzip curl exim4 ntpdate gcc make rcconf vim libjansson-dev libexpect-php5 \
-libssl-dev libpcre3-dev sudo php-pear
+apt-get install -y vsftpd ssh apache2 libapache2-mod-php5 git file zip ntpdate gcc make rcconf vim libjansson-dev libexpect-php5 \
+libssl-dev libpcre3-dev sudo php-pear unrar bzip2 gzip curl exim4  unzip rar 
+
 
 ask 'Install HTTP_Upload PEAR package'
 pear install HTTP_Upload
