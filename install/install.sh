@@ -41,8 +41,8 @@ patch -p1  /usr/share/php/HTTP/Upload.php Upload.php.patch
 
 ask 'Create aleph user'
 adduser aleph
-addgroup aleph aleph-users
 addgroup aleph sudo
+addgroup aleph aleph-users
 
 ask 'Set timezone and current time'
 # setting time
