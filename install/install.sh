@@ -31,9 +31,9 @@ cp sources.list /etc/apt/
 
 # basic packages
 apt-get update && apt-get upgrade -y
-apt-get install -y vsftpd ssh apache2 libapache2-mod-php5 git file zip unzip rar \
-unrar bzip2 gzip curl exim4 ntpdate gcc make rcconf vim libjansson-dev libexpect-php5 \
-libssl-dev libpcre3-dev sudo php-pear
+apt-get install -y vsftpd ssh apache2 libapache2-mod-php5 git file zip ntpdate gcc make rcconf vim libjansson-dev libexpect-php5 \
+libssl-dev libpcre3-dev sudo php-pear unrar-free bzip2 gzip curl exim4  unzip
+
 
 ask 'Install HTTP_Upload PEAR package'
 pear install HTTP_Upload
@@ -41,7 +41,9 @@ patch -p1  /usr/share/php/HTTP/Upload.php Upload.php.patch
 
 ask 'Create aleph user'
 adduser aleph
-addgroup aleph-users sudo
+addgroup aleph sudo
+groupadd aleph-users
+addgroup aleph aleph-users
 
 ask 'Set timezone and current time'
 # setting time
@@ -125,7 +127,21 @@ service vsftpd restart
 
 ask 'Configure aleph'
 mkdir -p /home/incoming
-chown -R aleph: /home/aleph
+mkdir /opt/aleph/temp
+mkdir /opt/aleph/ready
+mkdir /opt/aleph/store
+mkdir /opt/aleph/analyzed
+mkdir /opt/aleph/preparing
+mkdir /opt/aleph/incoming
+mkdir /opt/aleph/reports
+mkdir /opt/aleph/unprocessed
+mkdir /home/incoming/aleph
+mkdir /home/incoming/aleph/incoming
+chown -R aleph /opt/aleph
+chown -mkdir /opt/aleph/processing
+chown -R www-data /home/incoming/
+R aleph: /home/aleph
+
 # ftp readme.txt
 cp ftp-readme.txt /home/incoming
 echo 'aleph   ALL = NOPASSWD: /bin/mv' > /etc/sudoers.d/aleph
