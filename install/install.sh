@@ -127,20 +127,19 @@ service vsftpd restart
 
 ask 'Configure aleph'
 mkdir -p /home/incoming
-mkdir /opt/aleph/temp
-mkdir /opt/aleph/ready
-mkdir /opt/aleph/store
 mkdir /opt/aleph/analyzed
-mkdir /opt/aleph/preparing
 mkdir /opt/aleph/incoming
+mkdir /opt/aleph/preparing
+mkdir /opt/aleph/processing
+mkdir /opt/aleph/ready
 mkdir /opt/aleph/reports
+mkdir /opt/aleph/store
+mkdir /opt/aleph/temp
 mkdir /opt/aleph/unprocessed
 mkdir /home/incoming/aleph
 mkdir /home/incoming/aleph/incoming
 chown -R aleph /opt/aleph
-chown -mkdir /opt/aleph/processing
 chown -R www-data /home/incoming/
-R aleph: /home/aleph
 
 # ftp readme.txt
 cp ftp-readme.txt /home/incoming
