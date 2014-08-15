@@ -1,0 +1,2 @@
+pluginbase==0.3
+ython-magic==0.4.6
