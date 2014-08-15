@@ -1,0 +1,14 @@
+aleph
+=====
+
+aleph is a malware sourcing and analysis system for collect and categorize
+malwares in the wild.
+
+aleph is distributed as an .OVA for easy setup. The main capabilites includes:
+
+- Sample submission through FTP and HTTP.
+- PE static analysis with pev.
+- VirusTotal integration.
+- Cuckoo integration (planned).
+- Web UI for search and reports.
+- Sample forwarding through HTTP.

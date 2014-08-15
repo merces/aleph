@@ -1,0 +1,55 @@
+* {
+	color: brown;
+	font-family: Courier, "Courier New", monospace;
+}
+
+
+.latest {
+	float: left;
+	margin-left: 5em;
+}
+ .stats {
+	float: left;
+	margin-left: 5em;
+}
+
+.topext {
+	float: left;
+	margin-left: 5em;
+}
+
+#topbar {
+	background-color: brown;
+	margin: 0px 0px 0px 0px;	
+	width: 100%;
+	height: 20px;
+	color: white;
+	text-align: right;
+}
+
+a.topbar {
+	color: white;
+}
+
+a.topbar:hover {
+	font-weight: bold;
+}
+
+a {
+	color: #fd4902;
+	text-decoration: none
+}
+
+#msg {
+	color: red;
+	font-family: monospace;
+	font-size: 10px;
+	font-height: bold;
+}
+
+.adminbox {
+	text-align: left;
+	//border: 2px dotted red;
+	margin-left: 15%;
+	margin-right: 15%;
+}

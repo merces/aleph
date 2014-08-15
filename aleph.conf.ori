@@ -1,0 +1,47 @@
+alias ls='ls -A'
+export GLOBIGNORE='.'
+
+pid_file=/tmp/aleph.pid
+aleph_dir=/opt/aleph
+ftp_incoming_dir=/home/incoming
+internal_processing_dir=$aleph_dir/processing
+internal_temporary_dir=$aleph_dir/temp
+internal_ready_dir=$aleph_dir/aleph/ready
+internal_store_dir=$aleph_dir/store
+internal_analyzed_dir=$aleph_dir/analyzed
+internal_preparing_dir=$aleph_dir/preparing
+internal_incoming_dir=$aleph_dir/incoming
+internal_reports_dir=$aleph_dir/reports
+internal_unprocessed_dir=$aleph_dir/unprocessed
+
+external_download=true
+external_fqdn=localhost
+external_port=443
+
+min_sample_size=1024 # 1 KB
+max_sample_size=$((1024*1024*30)) # 30 MB
+min_package_size=$min_sample_size
+max_package_size=$((1024*1024*100)) # 100 MB
+monitor_time=$((5*60)) # 5 minutes
+
+normalize_file_extensions=true
+uncompress_depth=10
+
+database_file=$aleph_dir/db.csv
+temporary_database_file="$internal_temporary_dir/temp_db.csv"
+
+submit_webservice=false
+webservice_url=
+webservice_file_field=
+webservice_response_regex=
+
+notify=false
+notify_mail_addresses=( email@email.com.br email2@email2.com.br) # space separated
+notify_mail_subject='New files analyzed'
+
+virustotal_apikey=c421ee91fe65695998b543c4533dc1cd58745cd293e2208a23476e4639d843b9
+virustotal_user=
+virustotal_query=true # set apikey before enable it
+virustotal_send_file=false
+
+aleph_group=aleph-users
