@@ -1,5 +1,6 @@
 # Plugins must receive the sample UUID and return a JSON object with data acquired
 
+from multiprocessing import Process
 import uuid, magic, os, logging, binascii, hashlib
 from aleph.elasticsearch import es
 from aleph.settings import SAMPLE_TRIAGE_DIR, SAMPLE_STORAGE_DIR
@@ -154,7 +155,7 @@ class SampleBase(object):
 
         return str(self.toObject)
 
-class CollectorBase(object):
+class CollectorBase(Process):
 
     logger = None
 
@@ -164,10 +165,16 @@ class CollectorBase(object):
     default_options = {}
     required_options = []
 
+    sleep = 5.0
+
     def __init__(self, options, queue):
+
+        super(CollectorBase, self).__init__()
 
         self.queue = queue
         self.options = dict(self.default_options.items() + options.items())
+
+        if 'sleep' in self.options: self.sleep = float(self.options['sleep'])
 
         self.logger = logging.getLogger(self.__class__.__name__)
 
@@ -181,8 +188,23 @@ class CollectorBase(object):
         except Exception, e:
             self.logger.error('Error starting collector %s: %s' % (self.__class__.__name__, str(e)))
 
+    def run(self):
+        self.runnable = True
+        self.logger.info('%s collector started' % self.__class__.__name__)
+        while self.runnable:
+            try:
+                self.collect()
+                sleep(self.sleep)
+            except Exception, e:
+                raise
+
+    def stop(self):
+        self.runnable = False
+        self.terminate()
+
     def __del__(self):
         self.teardown()
+        self.stop()
 
     def check_required_options(self):
         for option in self.required_options:

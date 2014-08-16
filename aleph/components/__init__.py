@@ -1,60 +1,7 @@
 import logging, os
 from multiprocessing import Process
-from aleph.settings import SAMPLE_SOURCES, SAMPLE_STORAGE_DIR, SAMPLE_TRIAGE_DIR
-from aleph import collectors
+from aleph.settings import SAMPLE_STORAGE_DIR
 from aleph.base import SampleBase
-
-class SourceManager(Process):
-
-    logger = None
-
-    collectors = []
-    input_queue = None
-    runnable = False
-
-    def __init__(self, sample_input_queue):
-        super(SourceManager, self).__init__()
-        
-        self.logger = logging.getLogger(self.__class__.__name__)
-
-
-        self.input_queue = sample_input_queue
-
-        self.init_collectors()
-
-    def init_collectors(self):
-
-        self.logger.debug('Loading collectors from sources configuration')
-
-        triage_collector = ('local', { 'path': SAMPLE_TRIAGE_DIR })
-        SAMPLE_SOURCES.append(triage_collector)
-        for source in SAMPLE_SOURCES:
-            source_type = source[0]
-            source_params = source[1]
-
-            if source_type not in collectors.COLLECTOR_MAP:
-                raise NotImplementedError('%s collector is not implemented.' % source_type)
-            self.collectors.append(collectors.COLLECTOR_MAP[source_type](source_params, self.input_queue))
-            self.logger.debug('Collector "%s" loaded' % (source_type))
-
-    def gather_samples(self):
-        for collector in self.collectors:
-            collector.collect()
-
-    def run(self):
-        self.runnable = True
-        while self.runnable:
-            try:
-                self.gather_samples()
-            except Exception, e:
-                raise
-
-    def stop(self):
-        self.runnable = False
-        self.terminate()
-
-    def __del__(self):
-        self.stop()
 
 class SampleManager(Process):
 
@@ -71,19 +18,19 @@ class SampleManager(Process):
         self.input_queue = sample_input_queue
 
         self.plugins = plugins
-        self.logger.debug('SampleManager started')
+        self.logger.info('SampleManager started')
 
     def process_sample(self):
 
         try:
-            self.logger.debug('Waiting for sample')
+            self.logger.info('Waiting for sample')
             sample = self.input_queue.get()
             if sample.process:
-                self.logger.debug('Processing sample %s' % sample.uuid)
+                self.logger.info('Processing sample %s' % sample.uuid)
                 self.apply_plugins(sample)
                 sample.store_results()
             else:
-                self.logger.debug('Sample %s already processed. Updating source only.' % sample.uuid)
+                self.logger.info('Sample %s already processed. Updating source only.' % sample.uuid)
                 sample.update_source()
         except (KeyboardInterrupt, SystemExit):
             pass

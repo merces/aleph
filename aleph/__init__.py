@@ -3,9 +3,10 @@
 import os, sys, logging
 from pluginbase import PluginBase
 from multiprocessing import Process, Queue
+from copy import copy
 
 from aleph import utils, settings, collectors
-from aleph.components import SourceManager, SampleManager
+from aleph.components import SampleManager
 from aleph.elasticsearch import es
 
 class AlephServer(object):
@@ -16,11 +17,11 @@ class AlephServer(object):
     running = False
 
     director = None
-    source_manager = None
-    sample_manager = None
+    sample_managers = []
 
-    sample_in_queue = None
-    sample_out_queue = None
+    collectors = []
+
+    sample_queue = None
 
     plugin_base = None
     plugin_source = None
@@ -28,9 +29,10 @@ class AlephServer(object):
 
     def __init__(self):
         self.init_logger()
-        self.sample_in_queue = Queue()
-        self.sample_out_queue = Queue()
+        self.sample_queue = Queue()
         self.init_db()
+        self.init_sample_managers()
+        self.init_collectors()
 
     def __del__(self):
         self.stop_services()
@@ -64,34 +66,87 @@ class AlephServer(object):
         self.logger.debug('Logger module initialized')
 
     def stop_services(self):
-        if self.source_manager: self.source_manager.stop()
-        if self.sample_manager: self.sample_manager.stop()
+        for sample_manager in self.sample_managers:
+            sample_manager.stop()
+        for source, instance in self.collectors:
+            if instance is not None and instance.is_alive():
+                instance.stop()
         
-    def init_source_manager(self):
+    def start_services(self):
 
-        self.source_manager = SourceManager(self.sample_in_queue)
-        self.source_manager.start()
+        self.start_sample_managers()
+        self.start_collectors()
 
-    def init_sample_manager(self):
+    def init_sample_managers(self):
 
-        self.sample_manager = SampleManager(self.plugins, self.sample_in_queue)
-        self.sample_manager.start()
+        for i in range(settings.SAMPLE_MANAGERS):
+            self.sample_managers.append(self.sample_manager_instance())
+
+    def init_collectors(self):
+
+        self.logger.info('Loading collectors from sources configuration')
+
+        triage_collector = ('local', { 'path': settings.SAMPLE_TRIAGE_DIR })
+
+        self.collectors = []
+        self.sources = copy(settings.SAMPLE_SOURCES)
+        self.sources.append(triage_collector)
+
+        for source in self.sources:
+            instance = self.collector_instance(source)
+            self.collectors.append( ( source, instance ) )
+
+    def start_collectors(self):
+        for source, instance in self.collectors:
+            instance.start()
+
+    def start_sample_managers(self):
+        for manager in self.sample_managers:
+            manager.start()
+
+    def sample_manager_instance(self):
+        return SampleManager(self.plugins, self.sample_queue)
+
+    def collector_instance(self, source):
+        source_type = source[0]
+        source_params = source[1]
+
+        if source_type not in collectors.COLLECTOR_MAP:
+            raise NotImplementedError('%s collector is not implemented.' % source_type)
+
+        instance = collectors.COLLECTOR_MAP[source_type](source_params, self.sample_queue)
+        self.logger.info('Collector "%s" loaded' % (source[0]))
+        return instance
 
     def run(self):
         print 'Starting AlephServer'
         self.logger.info('Starting AlephServer')
         self.load_plugins()
+        self.start_services()
+        self.monitor()
+
+    def monitor(self):
 
         self.running = True
         try:
             while self.running:
-                if not self.source_manager: #  or not self.source_manager.is_alive():
-                    self.init_source_manager()
+                # SampleManager
+                for manager in self.sample_managers:
+                    if manager and manager.is_alive():
+                        manager.join(1.0)
+                    else:
+                        self.sample_managers.remove(manager)
+                        self.sample_managers.append(self.sample_manager_instance())
 
-                if not self.sample_manager: #  or not self.source_manager.is_alive():
-                    self.init_sample_manager()
+                # Collectors
+                for source, instance in self.collectors:
+                    if instance is not None and instance.is_alive():
+                        instance.join(1.0)
+                    else:
+                        instance = self.collector_instance(source)
 
         except (KeyboardInterrupt, SystemExit):
+            self.logger.info('CTRL+C received. Killing all workers')
             print "CTRL+C received. Killing all workers"
             self.running = False
             self.stop_services()
