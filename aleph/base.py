@@ -1,6 +1,7 @@
 # Plugins must receive the sample UUID and return a JSON object with data acquired
 
 import uuid, magic, os, logging, binascii, hashlib
+from aleph.elasticsearch import es
 from aleph.settings import SAMPLE_TRIAGE_DIR, SAMPLE_STORAGE_DIR
 from shutil import move
 
@@ -53,6 +54,8 @@ class SampleBase(object):
     path = None
     child_samples = []
     sources = []
+
+    process = True
     
     hashes = {}
 
@@ -60,11 +63,29 @@ class SampleBase(object):
     tags = []
 
     def __init__(self, path):
+
         self.path = path
         self.sources = []
-        #self.check_duplicate()
-        self.prepare_sample()
-        self.store_sample()
+        self.hashes = self.get_hashes()
+        if not self.check_exists():
+            self.store_sample()
+            self.prepare_sample()
+
+    def update_source(self):
+        source_set = list(set(tuple((src[0], src[1]) for src in self.sources)))
+        result = es.update(self.uuid, {'sources': source_set})
+
+    def check_exists(self):
+
+        result = es.search({"hashes.sha256": self.hashes['sha256']})
+        exists = (result['hits']['total'] != 0)
+        if exists:
+            data = result['hits']['hits'][0]['_source']
+            self.uuid = data['uuid']
+            self.sources = data['sources']
+            self.process = False
+
+        return exists
 
     def add_source(self, source_name, source_path):
         sources = self.sources
@@ -93,9 +114,11 @@ class SampleBase(object):
         self.mimetype = magic.from_file(self.path, mime=True)
         self.mimetype_str = magic.from_file(self.path)
 
-        self.hashes = self.get_hashes()
         # Give it a nice uuid
         self.uuid = str(uuid.uuid1())
+
+    def store_results(self):
+        es.save(self.toObject(), self.uuid)
 
     def get_hashes(self):
 

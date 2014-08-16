@@ -6,6 +6,7 @@ from multiprocessing import Process, Queue
 
 from aleph import utils, settings, collectors
 from aleph.components import SourceManager, SampleManager
+from aleph.elasticsearch import es
 
 class AlephServer(object):
 
@@ -29,9 +30,13 @@ class AlephServer(object):
         self.init_logger()
         self.sample_in_queue = Queue()
         self.sample_out_queue = Queue()
+        self.init_db()
 
     def __del__(self):
         self.stop_services()
+
+    def init_db(self):
+        es.setup()
 
     def load_plugins(self):
         self.logger.debug('Loading plugins from folder')

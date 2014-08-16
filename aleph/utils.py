@@ -1,4 +1,5 @@
 import os, sys, logging
+from copy import deepcopy
 from functools import partial
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))

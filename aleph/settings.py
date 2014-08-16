@@ -1,9 +1,11 @@
 DEBUG = True
 SAMPLE_SOURCES = [
     #('local', {'path': '/some/path'}),
-    #('mail', {'host': 'imap.gmail.com', 'username': 'aleph.samples@gmail.com', 'password': 'YOURPASSWORDHERE', 'root_folder': 'Inbox' })
+    #('mail', {'host': 'imap.exampl.com', 'username': 'youruser@example.com', 'password': 'yourpassword', 'root_folder': 'Inbox' })
 ]
-ELASTICSEARCH_URL = 'http://10.1.1.173:9200/'
+ELASTICSEARCH_URL = '10.1.1.173:9200'
+ELASTICSEARCH_INDEX = 'samples'
+ELASTICSEARCH_TRACE = False
 SAMPLE_TRIAGE_DIR = '/tmp/samples_triage'
 SAMPLE_TEMP_DIR = '/tmp/samples_temp'
 SAMPLE_ANALYSIS_DIR = '/tmp/samples_analysis'

@@ -1,7 +1,7 @@
 import logging, os
 from multiprocessing import Process
 from aleph.settings import SAMPLE_SOURCES, SAMPLE_STORAGE_DIR, SAMPLE_TRIAGE_DIR
-from aleph import collectors, elasticsearch
+from aleph import collectors
 from aleph.base import SampleBase
 
 class SourceManager(Process):
@@ -69,6 +69,7 @@ class SampleManager(Process):
         self.logger = logging.getLogger(self.__class__.__name__)
 
         self.input_queue = sample_input_queue
+
         self.plugins = plugins
         self.logger.debug('SampleManager started')
 
@@ -77,15 +78,15 @@ class SampleManager(Process):
         try:
             self.logger.debug('Waiting for sample')
             sample = self.input_queue.get()
-            self.logger.debug('Processing sample %s' % sample.uuid)
-            self.apply_plugins(sample)
-            self.store_results(sample)
+            if sample.process:
+                self.logger.debug('Processing sample %s' % sample.uuid)
+                self.apply_plugins(sample)
+                sample.store_results()
+            else:
+                self.logger.debug('Sample %s already processed. Updating source only.' % sample.uuid)
+                sample.update_source()
         except (KeyboardInterrupt, SystemExit):
             pass
-
-    def store_results(self, sample):
-        self.logger.debug('Storing sample data for %s on backend' % sample.uuid)
-        elasticsearch.merge_document('samples', 'sample', sample.toObject(), sample.uuid)
 
     def apply_plugins(self, sample):
         for plugin in self.plugins:
