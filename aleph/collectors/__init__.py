@@ -31,11 +31,12 @@ class MailCollector(CollectorBase):
     imap_session = None
 
     default_options = {
+        'root_folder': 'Inbox',
         'ssl': True,
         'port': 993,
     }
 
-    required_options = [ 'host','username','password','root_folder' ]
+    required_options = [ 'host', 'username', 'password' ]
 
     def imap_login(self):
         # Log into IMAP
