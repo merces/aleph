@@ -131,6 +131,7 @@ class CollectorBase(object):
     queue = None
     options = {}
     default_options = {}
+    required_options = []
 
     def __init__(self, options, queue):
 
@@ -139,14 +140,35 @@ class CollectorBase(object):
 
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        if not os.access(SAMPLE_TRIAGE_DIR, os.W_OK):
-            raise IOError('Cannot write to triage dir: %s' % SAMPLE_TRIAGE_DIR)
+        try:
+            if not os.access(SAMPLE_TRIAGE_DIR, os.W_OK):
+                raise IOError('Cannot write to triage dir: %s' % SAMPLE_TRIAGE_DIR)
 
-        self.validate_options()
+            self.validate_options()
+            self.setup()
+
+        except Exception, e:
+            self.logger.error('Error starting collector %s: %s' % (self.__class__.__name__, str(e)))
+
+    def __del__(self):
+        self.teardown()
+
+    def check_required_options(self):
+        for option in self.required_options:
+            if option not in self.options or self.options[option] is None:
+                raise KeyError('"%s" not defined for %s collector' % (option, self.__class__.__name__))
+
+    # @@ OVERRIDE ME
+    def teardown(self):
+        return True
+
+    # @@ OVERRIDE ME
+    def setup(self):
+        return True
 
     # @@ OVERRIDE ME
     def validate_options(self):
-        raise NotImplementedError('Collector option validation not implemented')
+        self.check_required_options()
 
     # @@ OVERRIDE ME
     def collect(self):
@@ -154,7 +176,7 @@ class CollectorBase(object):
 
     def create_sample(self, filepath, sourcepath):
 
-        self.logger.debug('Creating sample from path %s' % filepath)
+        self.logger.debug('Creating sample from path %s (source: %s)' % (filepath, sourcepath))
         sample = SampleBase(filepath)
         sample.add_source(self.__class__.__name__, sourcepath )
         self.queue.put(sample)
