@@ -61,6 +61,7 @@ class SampleBase(object):
 
     def __init__(self, path):
         self.path = path
+        self.sources = []
         #self.check_duplicate()
         self.prepare_sample()
         self.store_sample()
