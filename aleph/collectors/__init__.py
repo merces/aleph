@@ -30,11 +30,20 @@ class MailCollector(CollectorBase):
 
     imap_session = None
 
+    default_options = {
+        'ssl': True,
+        'port': 993,
+    }
+
     required_options = [ 'host','username','password','root_folder' ]
 
     def imap_login(self):
         # Log into IMAP
-        self.imap_session = imaplib.IMAP4_SSL(self.options['host'])
+        if self.options['ssl']:
+            self.imap_session = imaplib.IMAP4_SSL(self.options['host'], self.options['port'])
+        else:
+            self.imap_session = imaplib.IMAP4(self.options['host'], self.options['port'])
+
         rc, account = self.imap_session.login(self.options['username'], self.options['password'])
 
         if rc != 'OK':
@@ -94,8 +103,9 @@ class MailCollector(CollectorBase):
             return RuntimeError('Cannot connect to server: %s' % str(e))
 
     def teardown(self):
-        self.imap_session.close()
-        self.imap_session.logout()
+        if self.imap_session:
+            self.imap_session.close()
+            self.imap_session.logout()
 
 
 COLLECTOR_MAP = {
