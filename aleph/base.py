@@ -52,6 +52,7 @@ class SampleBase(object):
     mimetype = None
     path = None
     child_samples = []
+    sources = []
     
     hashes = {}
 
@@ -63,6 +64,11 @@ class SampleBase(object):
         #self.check_duplicate()
         self.prepare_sample()
         self.store_sample()
+
+    def add_source(self, source_name, source_path):
+        sources = self.sources
+        sources.append( (source_name, source_path) )
+        self.sources = sources
 
     def add_data(self, plugin_name, data):
         for key, value in data.iteritems():
@@ -114,6 +120,7 @@ class SampleBase(object):
             'mime': self.mimetype_str,
             'hashes': self.hashes,
             'data': self.data,
+            'sources': self.sources,
         })
 
 class CollectorBase(object):
@@ -145,8 +152,9 @@ class CollectorBase(object):
     def collect(self):
         raise NotImplementedError('Collector collection routine not implemented')
 
-    def create_sample(self, filepath):
+    def create_sample(self, filepath, sourcepath):
 
         self.logger.debug('Creating sample from path %s' % filepath)
         sample = SampleBase(filepath)
+        sample.add_source(self.__class__.__name__, sourcepath )
         self.queue.put(sample)

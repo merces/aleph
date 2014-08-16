@@ -19,7 +19,7 @@ class FileCollector(CollectorBase):
                 for filename in filenames:
                     filepath = os.path.join(dirname, filename)
                     self.logger.debug("Collecting file %s from %s" % (filepath, self.options['path']))
-                    self.create_sample(os.path.join(self.options['path'], filepath))
+                    self.create_sample(os.path.join(self.options['path'], filepath), filepath)
         except KeyboardInterrupt:
             pass
 
