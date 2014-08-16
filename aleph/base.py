@@ -71,6 +71,9 @@ class SampleBase(object):
             self.store_sample()
             self.prepare_sample()
 
+    def dispose(self):
+        os.unlink(self.path)
+
     def update_source(self):
         source_set = list(set(tuple((src[0], src[1]) for src in self.sources)))
         result = es.update(self.uuid, {'sources': source_set})
@@ -84,6 +87,7 @@ class SampleBase(object):
             self.uuid = data['uuid']
             self.sources = data['sources']
             self.process = False
+            self.dispose()
 
         return exists
 
