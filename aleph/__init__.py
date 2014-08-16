@@ -3,7 +3,7 @@
 import os, sys, logging
 from pluginbase import PluginBase
 from multiprocessing import Process, Queue
-from copy import copy
+from copy import copy 
 
 from aleph import utils, settings, collectors
 from aleph.components import SampleManager

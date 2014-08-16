@@ -30,7 +30,16 @@ class Elasticsearch(object):
 
     def search(self, query):
 
-        return self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', body={'query': { 'term': query }})
+        result = {}
+
+        try:
+            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', body={'query': { 'term': query }})
+        except NotFoundError:
+            pass
+        except Exception:
+            raise
+
+        return result
 
     def save(self, doc_data, doc_id):
         return self.merge_document('samples', 'sample', doc_data, doc_id)
@@ -50,7 +59,12 @@ class Elasticsearch(object):
 
         # Try to get current data if available
         try:
-            original_document = self.es.get(index=index, doc_type=doc_type, id=doc_id)['_source']
+            original_document = self.es.get(index=index, doc_type=doc_type, id=doc_id)
+            print original_document
+            if original_document['hits']['total'] != 0:
+                original_document = original_document['_source']
+            else:
+                original_document = {}
         except NotFoundError as e:
             pass # not found, proceed
         except Exception as e:

@@ -13,11 +13,12 @@ class StringsPlugin(PluginBase):
         regexp = '[%s]{%d,}' % (chars, shortest_run)
         pattern = re.compile(regexp)
 
+        strings = []
         with open(sample.path) as f:
 
-            return {'strings': [entry.strip() for entry in pattern.findall(f.read())]}
+            strings = [entry.strip() for entry in pattern.findall(f.read())]
 
-        return {'strings': []}
+        return {'strings': strings}
 
 def setup(app):
     plugin = StringsPlugin(app)

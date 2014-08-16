@@ -82,8 +82,9 @@ class SampleBase(object):
     def check_exists(self):
 
         result = es.search({"hashes.sha256": self.hashes['sha256']})
-        exists = (result['hits']['total'] != 0)
+        exists = ('hits' in result and result['hits']['total'] != 0)
         if exists:
+            print result['hits']
             data = result['hits']['hits'][0]['_source']
             self.uuid = data['uuid']
             self.sources = data['sources']
