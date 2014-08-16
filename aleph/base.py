@@ -94,7 +94,7 @@ class SampleBase(object):
 
         self.hashes = self.get_hashes()
         # Give it a nice uuid
-        self.uuid = uuid.uuid1()
+        self.uuid = str(uuid.uuid1())
 
     def get_hashes(self):
 
@@ -111,9 +111,8 @@ class SampleBase(object):
             }
         return hashes
 
-    def __str__(self):
-
-        return str({
+    def toObject(self):
+        return {
             'uuid': self.uuid,
             'path': self.path,
             'mimetype': self.mimetype,
@@ -121,7 +120,11 @@ class SampleBase(object):
             'hashes': self.hashes,
             'data': self.data,
             'sources': self.sources,
-        })
+        }
+
+    def __str__(self):
+
+        return str(self.toObject)
 
 class CollectorBase(object):
 

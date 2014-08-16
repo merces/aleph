@@ -1,7 +1,7 @@
 import logging, os
 from multiprocessing import Process
 from aleph.settings import SAMPLE_SOURCES, SAMPLE_STORAGE_DIR, SAMPLE_TRIAGE_DIR
-from aleph import collectors
+from aleph import collectors, elasticsearch
 from aleph.base import SampleBase
 
 class SourceManager(Process):
@@ -84,7 +84,8 @@ class SampleManager(Process):
             pass
 
     def store_results(self, sample):
-        print str(sample)
+        self.logger.debug('Storing sample data for %s on backend' % sample.uuid)
+        elasticsearch.merge_document('samples', 'sample', sample.toObject(), sample.uuid)
 
     def apply_plugins(self, sample):
         for plugin in self.plugins:
