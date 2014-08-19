@@ -22,11 +22,14 @@ class PluginBase(object):
 
     data = {}
     sample_id = None
+
+    queue = None
     
 
-    def __init__(self):
+    def __init__(self, queue):
         if not self.name: self.name = self.__class__.__name__
         self.logger = logging.getLogger('Plugin:%s' % self.name)
+        self.queue = queue
         self.setup()
 
     # @@ OVERRIDE ME
@@ -46,6 +49,13 @@ class PluginBase(object):
     def process(self, sample_uuid):
         raise NotImplementedError('Plugin process function not implemented')
 
+    def create_sample(self, filepath, sourcepath):
+
+        self.logger.debug('Creating sample from path %s (source: %s)' % (filepath, sourcepath))
+        sample = SampleBase(filepath)
+        sample.add_source(self.__class__.__name__, sourcepath )
+        self.queue.put(sample)
+
 ARCHIVE_MIMTYPES = [
     'application/x-rar-compressed',
     'application/zip',
@@ -58,7 +68,7 @@ class SampleBase(object):
     mimetype_str = None
     mimetype = None
     path = None
-    child_samples = []
+    children = []
     sources = []
 
     process = True
@@ -159,6 +169,7 @@ class SampleBase(object):
             'data': self.data,
             'sources': self.sources,
             'size': self.size,
+            'children': self.children,
         }
 
     def __str__(self):

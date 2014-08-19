@@ -7,6 +7,6 @@ class MockPlugin(PluginBase):
         self.logger.debug('Testing log from plugin')
         return {'mock': 'yay'}
 
-def setup():
-    plugin = MockPlugin()
+def setup(queue):
+    plugin = MockPlugin(queue)
     return plugin

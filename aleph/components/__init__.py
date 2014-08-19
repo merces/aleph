@@ -9,16 +9,16 @@ class SampleManager(Process):
 
     logger = None
 
-    input_queue = None
+    sample_queue = None
     plugins = []
     plugin_source = None
 
-    def __init__(self, sample_input_queue):
+    def __init__(self, sample_queue):
         super(SampleManager, self).__init__()
 
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        self.input_queue = sample_input_queue
+        self.sample_queue = sample_queue
 
         self.plugins = []
         self.plugin_source = None
@@ -35,7 +35,7 @@ class SampleManager(Process):
 
         for plugin_name in self.plugin_source.list_plugins():
             plugin = self.plugin_source.load_plugin(plugin_name)
-            self.plugins.append(plugin.setup())
+            self.plugins.append(plugin.setup(self.sample_queue))
             self.logger.debug('Plugin "%s" loaded' % plugin_name)
 
         runs = 0
@@ -75,7 +75,7 @@ class SampleManager(Process):
 
         try:
             self.logger.info('Waiting for sample')
-            sample = self.input_queue.get()
+            sample = self.sample_queue.get()
             if sample.process:
                 self.logger.info('Processing sample %s' % sample.uuid)
                 self.apply_plugins(sample)
@@ -88,9 +88,11 @@ class SampleManager(Process):
 
     def apply_plugins(self, sample):
         for plugin in self.plugins:
-            self.logger.debug('Applying plugin %s on sample %s' % (plugin.name, sample.uuid))
-            data = plugin.process(sample)
-            sample.add_data(plugin.name, data)
+            if plugin.can_run(sample):
+                self.logger.debug('Applying plugin %s on sample %s' % (plugin.name, sample.uuid))
+                data = plugin.process(sample)
+                if len(data) > 0:
+                    sample.add_data(plugin.name, data)
 
     def run(self):
         self.runnable = True

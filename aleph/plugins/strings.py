@@ -19,8 +19,6 @@ class StringsPlugin(PluginBase):
 
     def process(self, sample):
 
-        if not self.can_run(sample): return False
-
         with open(sample.path) as f:
 
             file_content = f.read().decode('latin1').encode('utf8')
@@ -40,6 +38,6 @@ class StringsPlugin(PluginBase):
             'file': file_strings,
             }
 
-def setup():
-    plugin = StringsPlugin()
+def setup(queue):
+    plugin = StringsPlugin(queue)
     return plugin
