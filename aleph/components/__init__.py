@@ -35,6 +35,39 @@ class SampleManager(Process):
             self.plugins.append(plugin.setup(self))
             self.logger.debug('Plugin "%s" loaded' % plugin_name)
 
+        runs = 0
+        max_runs = 30 # Max recursion runs before considering circular reference
+
+        while (runs <= max_runs):
+            rc = self.sort_plugins()
+            if rc == 0: break
+            runs += 1
+
+        if runs == max_runs: self.logger.error('Possible circular reference in plugin chain')
+
+    def get_plugin_index(self, name):
+        for plugin in self.plugins:
+            if plugin.name == name: return self.plugins.index(plugin)
+
+        raise KeyError('Plugin %s not found in plugin list' % name)
+
+    def sort_plugins(self):
+
+        changed = 0 
+        for plugin in self.plugins:
+            max_idx = 0 
+            if len(plugin.depends) != 0:
+                for dep in plugin.depends:
+                    idx = self.get_plugin_index(dep)
+                    if idx > max_idx: max_idx = idx 
+            if max_idx != 0 and max_idx+1 > self.plugins.index(plugin):
+                self.logger.debug( "Inserting plugin %s at position %d" % (plugin.name, max_idx+1))
+                self.plugins.remove(plugin)
+                self.plugins.insert(max_idx+1, plugin)
+                changed += 1
+
+        return changed
+        
     def process_sample(self):
 
         try:

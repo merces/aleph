@@ -1,5 +1,7 @@
 from aleph.base import PluginBase
 class MockPlugin(PluginBase):
+    
+    depends = ['strings']
 
     def process(self, sample):
         self.logger.debug('Testing log from plugin')

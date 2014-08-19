@@ -20,6 +20,8 @@ class PluginBase(object):
     name = None
     description = None
 
+    depends = []
+
     data = {}
     sample_id = None
     
