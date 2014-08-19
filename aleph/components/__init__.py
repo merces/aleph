@@ -41,10 +41,10 @@ class SampleManager(Process):
         runs = 0
         max_runs = 30 # Max recursion runs before considering circular reference
 
-        #while (runs <= max_runs):
-        #    rc = self.sort_plugins()
-        #    if rc == 0: break
-        #    runs += 1
+        while (runs <= max_runs):
+            rc = self.sort_plugins()
+            if rc == 0: break
+            runs += 1
 
         if runs == max_runs: self.logger.error('Possible circular reference in plugin chain')
 
