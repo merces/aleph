@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 import os, sys, logging
-from pluginbase import PluginBase
 from multiprocessing import Process, Queue
 from copy import copy 
 
-from aleph import utils, settings, collectors
+from aleph import settings, collectors
 from aleph.components import SampleManager
-from aleph.elasticsearch import es
+from aleph.datastore import es
 
 class AlephServer(object):
 
@@ -23,10 +22,6 @@ class AlephServer(object):
 
     sample_queue = None
 
-    plugin_base = None
-    plugin_source = None
-    plugins = []
-
     def __init__(self):
         self.init_logger()
         self.sample_queue = Queue()
@@ -39,18 +34,6 @@ class AlephServer(object):
 
     def init_db(self):
         es.setup()
-
-    def load_plugins(self):
-        self.logger.debug('Loading plugins from folder')
-
-        plugin_base = PluginBase(package='aleph.plugins', searchpath=[utils.get_path('./plugins')])
-        self.source = plugin_base.make_plugin_source(
-            searchpath=[utils.get_path('./plugins')])
-
-        for plugin_name in self.source.list_plugins():
-            plugin = self.source.load_plugin(plugin_name)
-            self.plugins.append(plugin.setup(self))
-            self.logger.debug('Plugin "%s" loaded' % plugin_name)
 
     def init_logger(self):
 
@@ -102,7 +85,7 @@ class AlephServer(object):
             manager.start()
 
     def sample_manager_instance(self):
-        return SampleManager(self.plugins, self.sample_queue)
+        return SampleManager(self.sample_queue)
 
     def collector_instance(self, source):
         source_type = source[0]
@@ -118,7 +101,6 @@ class AlephServer(object):
     def run(self):
         print 'Starting AlephServer'
         self.logger.info('Starting AlephServer')
-        self.load_plugins()
         self.start_services()
         self.monitor()
 

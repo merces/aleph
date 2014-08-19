@@ -2,7 +2,7 @@
 
 from multiprocessing import Process
 import uuid, magic, os, logging, binascii, hashlib
-from aleph.elasticsearch import es
+from aleph.datastore import es
 from aleph.settings import SAMPLE_TRIAGE_DIR, SAMPLE_STORAGE_DIR
 from shutil import move
 

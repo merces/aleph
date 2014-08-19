@@ -1,19 +1,18 @@
-from elasticsearch.exceptions import NotFoundError
-from elasticsearch import Elasticsearch as ES
+import elasticsearch as orig_es
 
 import logging
 
 from aleph.utils import dict_merge
 from aleph.settings import ELASTICSEARCH_URL, ELASTICSEARCH_INDEX, ELASTICSEARCH_TRACE, LOGGING
 
-class Elasticsearch(object):
+class DataStore(object):
 
     es = None
     tracer = None
 
     def __init__(self):
 
-        self.es = ES(ELASTICSEARCH_URL)
+        self.es = orig_es.Elasticsearch(ELASTICSEARCH_URL)
         self.tracer = logging.getLogger('elasticsearch.trace')
 
         if ELASTICSEARCH_TRACE:
@@ -34,7 +33,7 @@ class Elasticsearch(object):
 
         try:
             result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', body={'query': { 'term': query }})
-        except NotFoundError:
+        except elasticsearch.NotFoundError:
             pass
         except Exception:
             raise
@@ -65,7 +64,7 @@ class Elasticsearch(object):
                 original_document = original_document['_source']
             else:
                 original_document = {}
-        except NotFoundError as e:
+        except elasticsearch.NotFoundError as e:
             pass # not found, proceed
         except Exception as e:
             raise e 
@@ -78,4 +77,4 @@ class Elasticsearch(object):
 
         return self.es.index(index=index, doc_type=doc_type, body=merged_document, id=doc_id)
 
-es = Elasticsearch()
+es = DataStore()
