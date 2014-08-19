@@ -28,10 +28,13 @@ import email, imaplib, tempfile
 
 class MailCollector(CollectorBase):
 
+    sleep = 60 # 1 minute
+
     imap_session = None
 
     default_options = {
         'root_folder': 'Inbox',
+        'delete': True,
         'ssl': True,
         'port': 993,
     }
@@ -84,13 +87,15 @@ class MailCollector(CollectorBase):
                     raise RuntimeError('Error fetching message.')
 
                 self.process_message(message_parts)
-                rc, flags_msg = self.imap_session.store(message_id, '+FLAGS', r'\Deleted')
-                if rc != 'OK':
-                    raise RuntimeError('Error deleting message')
+                if self.options['delete']:
+                    rc, flags_msg = self.imap_session.store(message_id, '+FLAGS', r'\Deleted')
+                    if rc != 'OK':
+                        raise RuntimeError('Error deleting message')
 
-            rc, ids = self.imap_session.expunge()
-            if rc != 'OK':
-                raise RuntimeError('Error running expunge')
+            if self.options['delete']:
+                rc, ids = self.imap_session.expunge()
+                if rc != 'OK':
+                    raise RuntimeError('Error running expunge')
             
         except Exception, e:
             raise

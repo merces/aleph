@@ -61,7 +61,7 @@ class Elasticsearch(object):
         try:
             original_document = self.es.get(index=index, doc_type=doc_type, id=doc_id)
             print original_document
-            if original_document['hits']['total'] != 0:
+            if 'hits' in original_document and original_document['hits']['total'] != 0:
                 original_document = original_document['_source']
             else:
                 original_document = {}

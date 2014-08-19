@@ -86,11 +86,8 @@ class AlephServer(object):
 
         self.logger.info('Loading collectors from sources configuration')
 
-        triage_collector = ('local', { 'path': settings.SAMPLE_TRIAGE_DIR })
-
         self.collectors = []
         self.sources = copy(settings.SAMPLE_SOURCES)
-        self.sources.append(triage_collector)
 
         for source in self.sources:
             instance = self.collector_instance(source)

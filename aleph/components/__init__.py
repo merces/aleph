@@ -48,7 +48,7 @@ class SampleManager(Process):
 
     def stop(self):
         self.runnable = False
-        self.terminate()
+        if self.is_alive(): self.terminate()
 
     def __del__(self):
         self.stop()

@@ -27,6 +27,11 @@ class PluginBase(object):
         self.scope = scope
         if not self.name: self.name = self.__class__.__name__
         self.logger = logging.getLogger('Plugin:%s' % self.name)
+        self.setup()
+
+    # @@ OVERRIDE ME
+    def setup(self):
+        return True
 
     def can_run(self, sample):
         
@@ -60,6 +65,8 @@ class SampleBase(object):
     
     hashes = {}
 
+    size = 0
+
     data = {}
     tags = []
 
@@ -84,7 +91,6 @@ class SampleBase(object):
         result = es.search({"hashes.sha256": self.hashes['sha256']})
         exists = ('hits' in result and result['hits']['total'] != 0)
         if exists:
-            print result['hits']
             data = result['hits']['hits'][0]['_source']
             self.uuid = data['uuid']
             self.sources = data['sources']
@@ -99,9 +105,8 @@ class SampleBase(object):
         self.sources = sources
 
     def add_data(self, plugin_name, data):
-        for key, value in data.iteritems():
-            newkey = "%s.%s" % (plugin_name, key)
-            self.data[newkey] = value
+
+        self.data[plugin_name] = data
 
     def is_archive(self):
 
@@ -119,6 +124,9 @@ class SampleBase(object):
         # Get mimetype
         self.mimetype = magic.from_file(self.path, mime=True)
         self.mimetype_str = magic.from_file(self.path)
+        
+        # Get file size
+        self.size = os.stat(self.path).st_size
 
         # Give it a nice uuid
         self.uuid = str(uuid.uuid1())
@@ -150,6 +158,7 @@ class SampleBase(object):
             'hashes': self.hashes,
             'data': self.data,
             'sources': self.sources,
+            'size': self.size,
         }
 
     def __str__(self):
@@ -180,8 +189,8 @@ class CollectorBase(Process):
         self.logger = logging.getLogger(self.__class__.__name__)
 
         try:
-            if not os.access(SAMPLE_TRIAGE_DIR, os.W_OK):
-                raise IOError('Cannot write to triage dir: %s' % SAMPLE_TRIAGE_DIR)
+            if not os.access(SAMPLE_STORAGE_DIR, os.W_OK):
+                raise IOError('Cannot write to storage dir: %s' % SAMPLE_STORAGE_DIR)
 
             self.validate_options()
             self.setup()
