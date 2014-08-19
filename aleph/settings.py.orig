@@ -1,14 +1,13 @@
 DEBUG = True
 SAMPLE_SOURCES = [
-    #('local', {'path': '/some/path'}),
+    #('local', {'path': '/opt/aleph/unprocessed_samples'}),
     #('mail', {'host': 'imap.exampl.com', 'username': 'youruser@example.com', 'password': 'yourpassword', 'root_folder': 'Inbox' })
 ]
-ELASTICSEARCH_URL = '10.1.1.173:9200'
+ELASTICSEARCH_URI = '127.0.0.1:9200'
 ELASTICSEARCH_INDEX = 'samples'
 ELASTICSEARCH_TRACE = False
-SAMPLE_TEMP_DIR = '/tmp/samples_temp'
-SAMPLE_ANALYSIS_DIR = '/tmp/samples_analysis'
-SAMPLE_STORAGE_DIR = '/tmp/samples_storage'
+SAMPLE_TEMP_DIR = '/opt/aleph/temp'
+SAMPLE_STORAGE_DIR = '/opt/aleph/storage'
 SAMPLE_MANAGERS=2
 LOGGING  = {
     'filename': 'log/aleph.log',

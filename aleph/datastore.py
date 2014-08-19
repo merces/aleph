@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch, NotFoundError
 import logging
 
 from aleph.utils import dict_merge
-from aleph.settings import ELASTICSEARCH_URL, ELASTICSEARCH_INDEX, ELASTICSEARCH_TRACE, LOGGING
+from aleph.settings import ELASTICSEARCH_URI, ELASTICSEARCH_INDEX, ELASTICSEARCH_TRACE, LOGGING
 
 class DataStore(object):
 
@@ -12,7 +12,7 @@ class DataStore(object):
 
     def __init__(self):
 
-        self.es = Elasticsearch(ELASTICSEARCH_URL)
+        self.es = Elasticsearch(ELASTICSEARCH_URI)
         self.tracer = logging.getLogger('elasticsearch.trace')
 
         if ELASTICSEARCH_TRACE:
