@@ -1,9 +1,7 @@
-# Plugins must receive the sample UUID and return a JSON object with data acquired
-
 from multiprocessing import Process
 import uuid, magic, os, logging, binascii, hashlib
 from aleph.datastore import es
-from aleph.settings import SAMPLE_TRIAGE_DIR, SAMPLE_STORAGE_DIR
+from aleph.settings import SAMPLE_STORAGE_DIR
 from shutil import move
 
 from time import sleep
@@ -25,8 +23,8 @@ class PluginBase(object):
     data = {}
     sample_id = None
     
-    def __init__(self, scope):
-        self.scope = scope
+
+    def __init__(self):
         if not self.name: self.name = self.__class__.__name__
         self.logger = logging.getLogger('Plugin:%s' % self.name)
         self.setup()

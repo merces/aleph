@@ -1,4 +1,4 @@
-import elasticsearch as orig_es
+from elasticsearch import Elasticsearch, NotFoundError
 
 import logging
 
@@ -12,7 +12,7 @@ class DataStore(object):
 
     def __init__(self):
 
-        self.es = orig_es.Elasticsearch(ELASTICSEARCH_URL)
+        self.es = Elasticsearch(ELASTICSEARCH_URL)
         self.tracer = logging.getLogger('elasticsearch.trace')
 
         if ELASTICSEARCH_TRACE:
@@ -33,7 +33,7 @@ class DataStore(object):
 
         try:
             result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', body={'query': { 'term': query }})
-        except elasticsearch.NotFoundError:
+        except NotFoundError:
             pass
         except Exception:
             raise
@@ -64,7 +64,7 @@ class DataStore(object):
                 original_document = original_document['_source']
             else:
                 original_document = {}
-        except elasticsearch.NotFoundError as e:
+        except NotFoundError as e:
             pass # not found, proceed
         except Exception as e:
             raise e 

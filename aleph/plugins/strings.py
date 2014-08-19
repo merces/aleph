@@ -18,9 +18,9 @@ class StringsPlugin(PluginBase):
     pattern_emailaddr = re.compile(emailaddr_regex)
 
     def process(self, sample):
+
         if not self.can_run(sample): return False
 
-        strings = []
         with open(sample.path) as f:
 
             file_content = f.read().decode('latin1').encode('utf8')
@@ -40,6 +40,6 @@ class StringsPlugin(PluginBase):
             'file': file_strings,
             }
 
-def setup(app):
-    plugin = StringsPlugin(app)
+def setup():
+    plugin = StringsPlugin()
     return plugin

@@ -1,5 +1,5 @@
 import logging, os
-from pluginbase import PluginBase
+import pluginbase
 from multiprocessing import Process
 from aleph.settings import SAMPLE_STORAGE_DIR
 from aleph.base import SampleBase
@@ -11,6 +11,7 @@ class SampleManager(Process):
 
     input_queue = None
     plugins = []
+    plugin_source = None
 
     def __init__(self, sample_input_queue):
         super(SampleManager, self).__init__()
@@ -19,6 +20,8 @@ class SampleManager(Process):
 
         self.input_queue = sample_input_queue
 
+        self.plugins = []
+        self.plugin_source = None
         self.load_plugins()
 
         self.logger.info('SampleManager started')
@@ -26,22 +29,22 @@ class SampleManager(Process):
     def load_plugins(self):
         self.logger.debug('Loading plugins from folder')
 
-        plugin_base = PluginBase(package='aleph.plugins', searchpath=[get_path('plugins')])
-        source = plugin_base.make_plugin_source(
+        plugin_base = pluginbase.PluginBase(package='aleph.plugins', searchpath=[get_path('plugins')])
+        self.plugin_source = plugin_base.make_plugin_source(
             searchpath=[get_path('plugins')])
 
-        for plugin_name in source.list_plugins():
-            plugin = source.load_plugin(plugin_name)
-            self.plugins.append(plugin.setup(self))
+        for plugin_name in self.plugin_source.list_plugins():
+            plugin = self.plugin_source.load_plugin(plugin_name)
+            self.plugins.append(plugin.setup())
             self.logger.debug('Plugin "%s" loaded' % plugin_name)
 
         runs = 0
         max_runs = 30 # Max recursion runs before considering circular reference
 
-        while (runs <= max_runs):
-            rc = self.sort_plugins()
-            if rc == 0: break
-            runs += 1
+        #while (runs <= max_runs):
+        #    rc = self.sort_plugins()
+        #    if rc == 0: break
+        #    runs += 1
 
         if runs == max_runs: self.logger.error('Possible circular reference in plugin chain')
 
