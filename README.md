@@ -9,7 +9,7 @@ These JSON data can be further processed and queried in a objective manner inste
 The main Aleph daemon is a loose-coupled python application and library. These are composed by the Aleph Service that spawns:
 
 1. The Collectors. These are responsible for going to multiple sources (Filesystem folder, IMAP folder, FTP directory etc) and collect all the files there, store locally and add them to the processing queue. Each collector runs in its own process (fork).
-2. Multiple parallel SampleManager services [configurable] (that will pull samples from the work queue and process them) and run the plugins that receives the sample path and return the JSON object of found artifacts.
+2. Multiple (quantity is configurable) parallel SampleManager services (that will pull samples from the work queue and process them) and run the plugins that receives the sample path and return the JSON object of found artifacts.
 3. The sample object is converted to JSON along with its data and is stored into an Elasticsearch backend.
 
 ## Installing Aleph
