@@ -1,10 +1,12 @@
 argparse==1.2.1
 elasticsearch==1.2.0
 pluginbase==0.3
+pyelasticsearch==0.7.1
 python-magic==0.4.6
 requests==2.3.0
 simplejson==3.6.2
 six==1.7.3
 urllib3==1.9
 uuid==1.30
+virustotal==1.0.3
 wsgiref==0.1.2
