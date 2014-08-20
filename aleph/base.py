@@ -130,6 +130,11 @@ class SampleBase(object):
         sources.append( (source_name, source_path) )
         self.sources = sources
 
+    def add_tag(self, tag_name):
+        tags = self.tags
+        tags.append(tag_name)
+        self.tags = tags
+
     def add_data(self, plugin_name, data):
 
         self.data[plugin_name] = data
