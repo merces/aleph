@@ -3,6 +3,7 @@ SAMPLE_SOURCES = [
     #('local', {'path': '/opt/aleph/unprocessed_samples'}),
     #('mail', {'host': 'imap.exampl.com', 'username': 'youruser@example.com', 'password': 'yourpassword', 'root_folder': 'Inbox' })
 ]
+VIRUSTOTAL_KEY = ''
 ELASTICSEARCH_URI = '127.0.0.1:9200'
 ELASTICSEARCH_INDEX = 'samples'
 ELASTICSEARCH_TRACE = False
