@@ -19,7 +19,7 @@ class VirustotalPlugin(PluginBase):
 		'virustotal': report.id,
 		'positives': report.positives,
 		'total': report.total,
-		'antivirus': str(dict(report)),
+		'antivirus': str(list(report)),
 		}
     
 
