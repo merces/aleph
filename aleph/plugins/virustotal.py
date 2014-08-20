@@ -30,7 +30,7 @@ class VirusTotalPlugin(PluginBase):
                     detections.append({'av': av_str, 'name': malware})
 
             return {
-                'scam_id': report.id,
+                'scan_id': report.id,
                 'positives': report.positives,
                 'total': report.total,
                 'detections': detections,
