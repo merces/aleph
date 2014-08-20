@@ -27,8 +27,7 @@ class VirusTotalPlugin(PluginBase):
             detections = []
             for antivirus, malware in report:
                 if malware is not None:
-                    av_str = "%s %s (%s)" % antivirus
-                    detections.append({'av': av_str, 'name': malware})
+                    detections.append({'av': antivirus[0], 'version': antivirus[1], 'update': antivirus[2], 'result': malware})
 
             return {
                 'scan_id': report.id,
