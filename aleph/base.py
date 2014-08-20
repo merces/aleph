@@ -20,9 +20,6 @@ class PluginBase(object):
 
     depends = []
 
-    data = {}
-    sample_id = None
-
     queue = None
     
 
@@ -68,7 +65,6 @@ class SampleBase(object):
     mimetype_str = None
     mimetype = None
     path = None
-    children = []
     sources = []
 
     process = True
@@ -83,6 +79,7 @@ class SampleBase(object):
     def __init__(self, path):
 
         self.path = path
+        self.data = {}
         self.sources = []
         self.hashes = self.get_hashes()
         if not self.check_exists():
@@ -169,7 +166,6 @@ class SampleBase(object):
             'data': self.data,
             'sources': self.sources,
             'size': self.size,
-            'children': self.children,
         }
 
     def __str__(self):

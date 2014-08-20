@@ -72,3 +72,12 @@ And that's it. Check your logs under log/aleph.log to any troubleshooting.
 #### Reviewing collected data
 
 For now there's still no Web interface (but it will, I swear) so you must use other software to review and query data on elasticsearch. I strongly suggest this [Chrome REST client plugin](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en) or the great [Kibana](http://www.elasticsearch.org/guide/en/kibana/current/working-with-queries-and-filters.html)
+
+#### Currently implemented
+**Collectors**
+* FileCollector: grabs samples from a local directory
+* MailCollector: grabs samples from email attachments on a IMAP folder
+
+**Plugins**
+* ZipArchivePlugin: extracts zip files and puts their contents back into analysis queue
+* StringsPlugin: extracts strings from sample into three categories: All Strings, URI Strings and Filename Strings (not 100% but we do our best)
