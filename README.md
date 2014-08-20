@@ -35,7 +35,7 @@ There will be the environment name (venv) appended to your PS1 variable:
 
 All python modules required are listed on the _requirements.txt_ file on the root repository folder. You can install all of them at once using _pip_:
 
-    pip install < requirements.txt
+    pip install -r < requirements.txt
 
 Then clone the repository and copy the settings file:
 
@@ -58,6 +58,7 @@ As I still finish some of the code, there are some folders that are not on the r
     SAMPLE_TEMP_DIR = '/opt/aleph/temp'
     SAMPLE_STORAGE_DIR = '/opt/aleph/samples'
 
+Remember to verify folders permissioning.
 And Aleph is ready to run!
 
 #### Running 
@@ -81,3 +82,4 @@ For now there's still no Web interface (but it will, I swear) so you must use ot
 **Plugins**
 * ZipArchivePlugin: extracts zip files and puts their contents back into analysis queue
 * StringsPlugin: extracts strings from sample into three categories: All Strings, URI Strings and Filename Strings (not 100% but we do our best)
+* VirustotalPlugin: check a sample SHA256 hash against Virustotal database and get the report. If that hash doesnt exist, send the file to analise.
