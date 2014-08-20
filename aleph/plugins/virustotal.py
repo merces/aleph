@@ -1,28 +1,46 @@
 # -*- coding: utf8 -*-
 
 from aleph.base import PluginBase
-from aleph.settings import VIRUSTOTAL_KEY
 import virustotal
 
-class VirustotalPlugin(PluginBase):
+class VirusTotalPlugin(PluginBase):
 
-    name = 'Virustotal'
+    name = 'virustotal'
+    required_options = [ 'api_key' ]
+
+    vt = None
+
+    def setup(self):
+        
+    	self.vt = virustotal.VirusTotal(self.options['api_key'],0)
    
     def process(self, sample):
-	vt = virustotal.VirusTotal(VIRUSTOTAL_KEY,0)
-        report = vt.get(sample.hashes['sha256'])	
-	if report is None:
-           report = vt.get(sample.path)
-           report.join()
-        if report.done ==True:
-	   return {
-		'virustotal': report.id,
-		'positives': report.positives,
-		'total': report.total,
-		'antivirus': str(list(report)),
-		}
+
+        try:
+            report = self.vt.get(sample.hashes['sha256'])	
+
+            if report is None:
+                report = self.vt.get(sample.path)
+                report.join()
+
+            detections = []
+            for antivirus, malware in report:
+                if malware is not None:
+                    av_str = "%s %s (%s)" % antivirus
+                    detections.append({'av': av_str, 'name': malware})
+
+            return {
+                'scam_id': report.id,
+                'positives': report.positives,
+                'total': report.total,
+                'detections': detections,
+            }
+
+        except Exception, e:
+            self.logger.error('Error within VirusTotal API: %s' % str(e))
+            return {}
     
 
 def setup(queue):
-    plugin = VirustotalPlugin(queue)
+    plugin = VirusTotalPlugin(queue)
     return plugin

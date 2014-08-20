@@ -1,14 +1,12 @@
 from multiprocessing import Process
 import uuid, magic, os, logging, binascii, hashlib
 from aleph.datastore import es
-from aleph.settings import SAMPLE_STORAGE_DIR
+from aleph.settings import SAMPLE_STORAGE_DIR, PLUGIN_SETTINGS
 from shutil import move
 
 from time import sleep
 
 class PluginBase(object):
-
-    scope = None
 
     logger = None
 
@@ -18,6 +16,10 @@ class PluginBase(object):
     name = None
     description = None
 
+    options = {}
+    default_options = {}
+    required_options = []
+
     depends = []
 
     queue = None
@@ -26,12 +28,29 @@ class PluginBase(object):
     def __init__(self, queue):
         if not self.name: self.name = self.__class__.__name__
         self.logger = logging.getLogger('Plugin:%s' % self.name)
+
         self.queue = queue
+
+        options = PLUGIN_SETTINGS[self.name] if self.name in PLUGIN_SETTINGS else {}
+        self.options = dict(self.default_options.items() + options.items())
+        
+        self.validate_options()
         self.setup()
 
     # @@ OVERRIDE ME
     def setup(self):
         return True
+
+    # @@ OVERRIDE ME
+    def validate_options(self):
+        self.check_required_options()
+
+    def check_required_options(self):
+        for option in self.required_options:
+            if option not in self.options or self.options[option] is None:
+                raise KeyError('Parameter "%s" not defined for %s plugin' % (option, self.__class__.__name__))
+
+    # @@ OVERRIDE ME
 
     def can_run(self, sample):
         
@@ -226,7 +245,7 @@ class CollectorBase(Process):
     def check_required_options(self):
         for option in self.required_options:
             if option not in self.options or self.options[option] is None:
-                raise KeyError('"%s" not defined for %s collector' % (option, self.__class__.__name__))
+                raise KeyError('Parameter "%s" not defined for %s collector' % (option, self.__class__.__name__))
 
     # @@ OVERRIDE ME
     def teardown(self):

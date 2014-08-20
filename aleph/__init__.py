@@ -99,9 +99,9 @@ class AlephServer(object):
         return instance
 
     def run(self):
-        print 'Starting AlephServer'
         self.logger.info('Starting AlephServer')
         self.start_services()
+        print 'AlephServer started.'
         self.monitor()
 
     def monitor(self):

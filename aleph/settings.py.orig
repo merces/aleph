@@ -1,16 +1,25 @@
 DEBUG = True
+
 SAMPLE_SOURCES = [
     #('local', {'path': '/opt/aleph/unprocessed_samples'}),
     #('mail', {'host': 'imap.exampl.com', 'username': 'youruser@example.com', 'password': 'yourpassword', 'root_folder': 'Inbox' })
 ]
-VIRUSTOTAL_KEY = ''
+
+PLUGIN_SETTINGS = {
+    #'virustotal': { 'api_key': '' }
+}
+
 ELASTICSEARCH_URI = '127.0.0.1:9200'
 ELASTICSEARCH_INDEX = 'samples'
 ELASTICSEARCH_TRACE = False
+
 SAMPLE_TEMP_DIR = '/opt/aleph/temp'
-SAMPLE_STORAGE_DIR = '/opt/aleph/storage'
-SAMPLE_MANAGERS=2
+SAMPLE_STORAGE_DIR = '/opt/aleph/samples'
+
+SAMPLE_MANAGERS=2 # Simultaneous sample analysis
+
 LOGGING  = {
     'filename': 'log/aleph.log',
     'format': '%(asctime)s [%(name)s:%(funcName)s] %(levelname)s: %(message)s',
 }
+
