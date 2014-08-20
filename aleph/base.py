@@ -188,6 +188,7 @@ class SampleBase(object):
             'mime': self.mimetype_str,
             'hashes': self.hashes,
             'data': self.data,
+	    'tags': self.tags,	
             'sources': self.sources,
             'size': self.size,
         }
