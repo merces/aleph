@@ -20,8 +20,9 @@ class VirusTotalPlugin(PluginBase):
             report = self.vt.get(sample.hashes['sha256'])	
 
             if report is None:
-                report = self.vt.get(sample.path)
+                report = self.vt.scan(sample.path)
                 report.join()
+                assert report.done() == True
 
             detections = []
             for antivirus, malware in report:
