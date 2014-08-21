@@ -6,13 +6,13 @@ import virustotal
 class VirusTotalPlugin(PluginBase):
 
     name = 'virustotal'
-    required_options = [ 'api_key' ]
+    required_options = [ 'api_key', 'api_limit' ]
 
     vt = None
 
     def setup(self):
         
-    	self.vt = virustotal.VirusTotal(self.options['api_key'],0)
+    	self.vt = virustotal.VirusTotal(self.options['api_key'],self.options['api_limit'])
    
     def process(self, sample):
 
@@ -22,23 +22,18 @@ class VirusTotalPlugin(PluginBase):
             if report is None:
                 report = self.vt.scan(sample.path)
                 report.join()
-                assert report.done() == True
+		assert report.done() == True
 
             detections = []
             for antivirus, malware in report:
                 if malware is not None:
-                    detections.append({'av': antivirus[0], 'version': antivirus[1], 'update': antivirus[2], 'result': malware})
-
-	    
-
-		
-	    
+                    	detections.append({'av': antivirus[0], 'version': antivirus[1], 'update': antivirus[2], 'result': malware})
 
             
 	    return {
                 'scan_id': report.id,
                 'positives': report.positives,
-                'total': report.total,
+               	'total': report.total,
                 'detections': detections,
             }
 

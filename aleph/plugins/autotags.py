@@ -28,8 +28,9 @@ class AutoTagsPlugin(PluginBase):
 		return False
 
     def rules(self, sample):
-	if len(sample.data['virustotal']['detections']) > 0:
-		self.add_tags(sample, 'malware')
+	if 'virustotal' in sample.data:
+		if len(sample.data['virustotal']['detections']) > 0:
+			self.add_tags(sample, 'malware')
 
 
 def setup(queue):
