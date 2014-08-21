@@ -1,5 +1,5 @@
 from multiprocessing import Process
-import uuid, magic, os, logging, binascii, hashlib
+import uuid, magic, os, logging, binascii, hashlib, time, datetime
 from aleph.datastore import es
 from aleph.settings import SAMPLE_STORAGE_DIR, PLUGIN_SETTINGS
 from shutil import move
@@ -85,7 +85,7 @@ class SampleBase(object):
     mimetype = None
     path = None
     sources = []
-
+    timestamp = None
     process = True
     
     hashes = {}
@@ -101,6 +101,7 @@ class SampleBase(object):
         self.data = {}
         self.sources = []
         self.hashes = self.get_hashes()
+        self.timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         if not self.check_exists():
             self.store_sample()
             self.prepare_sample()
@@ -188,7 +189,8 @@ class SampleBase(object):
             'mime': self.mimetype_str,
             'hashes': self.hashes,
             'data': self.data,
-	    'tags': self.tags,	
+	    'tags': self.tags,
+	    'timestamp' : self.timestamp,	
             'sources': self.sources,
             'size': self.size,
         }

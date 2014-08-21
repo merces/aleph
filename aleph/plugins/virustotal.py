@@ -29,12 +29,7 @@ class VirusTotalPlugin(PluginBase):
                 if malware is not None:
                     detections.append({'av': antivirus[0], 'version': antivirus[1], 'update': antivirus[2], 'result': malware})
 
-	    if len(detections) > 0:
-		sample.tags.append('malware')
-            if ['banker'] in detections['result']:
-                sample.tags.append('banker')
-            if ['itau'] in detections['result']:
-		sample.tags.append('brazillian banker')
+	    
 
 		
 	    
