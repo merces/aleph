@@ -27,12 +27,32 @@ class DataStore(object):
     def setup(self):
         self.es.indices.create(index=ELASTICSEARCH_INDEX, ignore=400) # Ignore already exists
 
+    def count(self):
+
+        result = self.es.count(index=ELASTICSEARCH_INDEX, doc_type='sample')
+        return result['count']
+
+    def all(self, size=10, start=0):
+        try:
+            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', body={
+                'query': {
+                    'match_all': {},
+                },
+                'from': start,
+                'size': size,
+                })
+        except NotFoundError:
+            pass
+        except Exception:
+            raise
+
+        return result
+
+
     def search(self, query):
 
-        result = {}
-
         try:
-            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', body={'query': { 'term': query }})
+            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', body={'query': {'term': query } })
         except NotFoundError:
             pass
         except Exception:
@@ -45,7 +65,7 @@ class DataStore(object):
 
     def get(self, doc_id):
 
-        return self.es.get(index='samples', doc_type=doc_type, id=doc_id)['_source']
+        return self.es.get(index='samples', doc_type='sample', id=doc_id)['_source']
 
     def merge_document(self, index, doc_type, doc_data, doc_id):
 

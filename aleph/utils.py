@@ -2,6 +2,13 @@ import os, sys, logging
 from copy import deepcopy
 from functools import partial
 
+
+USER_DISABLED=0
+USER_ENABLED=1
+
+USER_REGULAR=0
+USER_ADMIN=1
+
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 # Get path as a function - for PluginBase
 get_path = partial(os.path.join, CURRENT_DIR)

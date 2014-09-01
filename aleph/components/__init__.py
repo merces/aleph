@@ -1,7 +1,6 @@
 import logging, os
 import pluginbase
 from multiprocessing import Process
-from aleph.settings import SAMPLE_STORAGE_DIR
 from aleph.base import SampleBase
 from aleph.utils import get_path
 
@@ -85,14 +84,19 @@ class SampleManager(Process):
                 sample.update_source()
         except (KeyboardInterrupt, SystemExit):
             pass
+        except Exception, e:
+            raise RuntimeError('Error processing sample %s: %s' % (sample.uuid , str(e)))
 
     def apply_plugins(self, sample):
         for plugin in self.plugins:
             if plugin.can_run(sample):
-                self.logger.debug('Applying plugin %s on sample %s' % (plugin.name, sample.uuid))
-                data = plugin.process(sample)
-                if data and len(data) > 0:
-                    sample.add_data(plugin.name, data)
+                try:
+                    self.logger.debug('Applying plugin %s on sample %s' % (plugin.name, sample.uuid))
+                    data = plugin.process(sample)
+                    if data and len(data) > 0:
+                        sample.add_data(plugin.name, data)
+                except Exception, e:
+                    raise RuntimeError("Plugin %s failed on sample %s: %s" % (plugin.name, sample.uuid, str(e)))
 
     def run(self):
         self.runnable = True

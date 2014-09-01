@@ -32,10 +32,10 @@ class StringsPlugin(PluginBase):
             file_strings = [entry.strip() for entry in self.pattern_filename.findall(clean_content)]
 
         return {
-            'all': all_strings,
-            'uri': uri_strings,
-            'email': emailaddr_strings,
-            'file': file_strings,
+            'all': set(all_strings),
+            'uri': set(uri_strings),
+            'email': set(emailaddr_strings),
+            'file': set(file_strings),
             }
 
 def setup(queue):

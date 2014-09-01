@@ -11,8 +11,11 @@ class FileCollector(CollectorBase):
         super(FileCollector, self).validate_options()
 
         if not os.access(self.options['path'], os.R_OK):
-            raise IOError('Path "%s" is not readable' % self.options['path'])
-            
+            try:
+                os.mkdir(self.options['path'])
+                self.logger.info("Directory %s created" % self.options['path'])
+            except OSError, e:
+                raise OSError("Unable to create sample storage dir at %s: %s" % (self.options['path'], str(e)))
 
     def collect(self):
         try:

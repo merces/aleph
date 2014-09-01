@@ -8,6 +8,8 @@ from aleph import settings, collectors
 from aleph.components import SampleManager
 from aleph.datastore import es
 
+from aleph.settings import SAMPLE_STORAGE_DIR, SAMPLE_TEMP_DIR
+
 class AlephServer(object):
 
     # Properties
@@ -26,6 +28,7 @@ class AlephServer(object):
         self.init_logger()
         self.sample_queue = Queue()
         self.init_db()
+        self.create_directories()
         self.init_sample_managers()
         self.init_collectors()
 
@@ -34,6 +37,23 @@ class AlephServer(object):
 
     def init_db(self):
         es.setup()
+
+
+    def create_directories(self):
+
+        if not os.path.exists(SAMPLE_STORAGE_DIR):
+            try:
+                os.mkdir(SAMPLE_STORAGE_DIR)
+                self.logger.info("Directory %s created" % SAMPLE_STORAGE_DIR)
+            except OSError, e:
+                raise OSError("Unable to create sample storage dir at %s: %s" % (SAMPLE_STORAGE_DIR, str(e)))
+
+        if not os.path.exists(SAMPLE_TEMP_DIR):
+            try:
+                os.mkdir(SAMPLE_TEMP_DIR)
+                self.logger.info("Directory %s created" % SAMPLE_TEMP_DIR)
+            except OSError, e:
+                raise OSError("Unable to create sample temporary dir at %s: %s" % (SAMPLE_TEMP_DIR, str(e)))
 
     def init_logger(self):
 

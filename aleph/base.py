@@ -127,7 +127,7 @@ class SampleBase(object):
 
     def add_source(self, source_name, source_path):
         sources = self.sources
-        sources.append( (source_name, source_path) )
+        sources.append( {'provider': source_name, 'ref': source_path} )
         self.sources = sources
 
     def add_tag(self, tag_name):
