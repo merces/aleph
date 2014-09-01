@@ -49,6 +49,17 @@ class DataStore(object):
         return result
 
 
+    def lucene_search(self, query):
+
+        try:
+            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', q=query)
+        except NotFoundError:
+            pass
+        except Exception:
+            raise
+
+        return result
+
     def search(self, query):
 
         try:

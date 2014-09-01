@@ -85,7 +85,7 @@ class SampleManager(Process):
         except (KeyboardInterrupt, SystemExit):
             pass
         except Exception, e:
-            raise RuntimeError('Error processing sample %s: %s' % (sample.uuid , str(e)))
+            raise 
 
     def apply_plugins(self, sample):
         for plugin in self.plugins:

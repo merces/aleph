@@ -39,3 +39,22 @@ def dict_merge(target, *args):
             target[k] = deepcopy(v)
 
     return target
+
+import pytz, datetime
+import dateutil.parser
+
+utc = pytz.utc
+
+def to_iso8601(when=None, tz=utc):
+  if not when:
+    when = datetime.datetime.now(tz)
+  if not when.tzinfo:
+    when = tz.localize(when)
+  _when = when.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+  return _when[:-8] + _when[-5:] # remove microseconds
+
+def from_iso8601(when=None, tz=utc):
+  _when = dateutil.parser.parse(when)
+  if not _when.tzinfo:
+    _when = tz.localize(_when)
+  return _when

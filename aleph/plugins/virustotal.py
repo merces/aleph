@@ -6,7 +6,8 @@ import virustotal
 class VirusTotalPlugin(PluginBase):
 
     name = 'virustotal'
-    required_options = [ 'api_key', 'api_limit' ]
+    default_options = { 'api_limit': 7 }
+    required_options = [ 'api_key' ]
 
     vt = None
 
@@ -22,15 +23,22 @@ class VirusTotalPlugin(PluginBase):
             if report is None:
                 report = self.vt.scan(sample.path)
                 report.join()
-		assert report.done() == True
+
+                assert report.done() == True
 
             detections = []
             for antivirus, malware in report:
                 if malware is not None:
+
+                        if any(banker in str(malware).lower() for banker in [ 'banker', 'banload' ]):
+                            sample.add_tag('banker')
+
                     	detections.append({'av': antivirus[0], 'version': antivirus[1], 'update': antivirus[2], 'result': malware})
 
-            
-	    return {
+            if len(detections) > 0:
+                sample.add_tag('malware')
+
+    	    return {
                 'scan_id': report.id,
                 'positives': report.positives,
                	'total': report.total,
@@ -40,7 +48,7 @@ class VirusTotalPlugin(PluginBase):
         except Exception, e:
             self.logger.error('Error within VirusTotal API: %s' % str(e))
             return {}
-    
+
 
 def setup(queue):
     plugin = VirusTotalPlugin(queue)

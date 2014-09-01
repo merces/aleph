@@ -2,6 +2,7 @@ from multiprocessing import Process
 import uuid, magic, os, logging, binascii, hashlib, time, datetime
 from aleph.datastore import es
 from aleph.settings import SAMPLE_STORAGE_DIR, PLUGIN_SETTINGS
+from aleph.utils import to_iso8601
 from shutil import move
 
 from time import sleep
@@ -101,7 +102,7 @@ class SampleBase(object):
         self.data = {}
         self.sources = []
         self.hashes = self.get_hashes()
-        self.timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+        self.timestamp = to_iso8601()
         if not self.check_exists():
             self.store_sample()
             self.prepare_sample()
@@ -110,7 +111,7 @@ class SampleBase(object):
         os.unlink(self.path)
 
     def update_source(self):
-        source_set = list(set(tuple((src[0], src[1]) for src in self.sources)))
+        source_set = self.sources
         result = es.update(self.uuid, {'sources': source_set})
 
     def check_exists(self):
@@ -132,9 +133,10 @@ class SampleBase(object):
         self.sources = sources
 
     def add_tag(self, tag_name):
-        tags = self.tags
-        tags.append(tag_name)
-        self.tags = tags
+        if tag_name not in self.tags:
+            tags = self.tags
+            tags.append(tag_name)
+            self.tags = tags
 
     def add_data(self, plugin_name, data):
 
@@ -240,7 +242,7 @@ class CollectorBase(Process):
                 self.collect()
                 sleep(self.sleep)
             except Exception, e:
-                raise
+                raise e
 
     def stop(self):
         self.runnable = False
