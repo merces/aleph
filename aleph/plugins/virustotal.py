@@ -1,13 +1,16 @@
 # -*- coding: utf8 -*-
 
+from time import sleep
 from aleph.base import PluginBase
+from aleph.utils import in_string
 import virustotal
 
 class VirusTotalPlugin(PluginBase):
 
     name = 'virustotal'
-    default_options = { 'api_limit': 7 }
+    default_options = { 'api_limit': 7, 'retry_count': 10, 'retry_sleep': 30, 'report_sleep': 60 }
     required_options = [ 'api_key' ]
+    mimetypes = ['application/x-dosexec']
 
     vt = None
 
@@ -15,39 +18,53 @@ class VirusTotalPlugin(PluginBase):
         
     	self.vt = virustotal.VirusTotal(self.options['api_key'],self.options['api_limit'])
    
-    def process(self, sample):
+    def process(self):
 
-        try:
-            report = self.vt.get(sample.hashes['sha256'])	
+        count = int(self.options['retry_count'])
 
-            if report is None:
-                report = self.vt.scan(sample.path)
-                report.join()
+        for i in range(count):
+            try:
+                report = self.vt.get(self.sample.hashes['sha256'])	
 
-                assert report.done() == True
+                if report is None:
+                    report = self.vt.scan(self.sample.path)
+                    sleep(self.options['report_sleep'])
+                    report.join()
 
-            detections = []
-            for antivirus, malware in report:
-                if malware is not None:
+                    assert report.done() == True
 
-                        if any(banker in str(malware).lower() for banker in [ 'banker', 'banload' ]):
-                            sample.add_tag('banker')
+                detections = []
+                for antivirus, malware in report:
+                    if malware is not None:
 
-                    	detections.append({'av': antivirus[0], 'version': antivirus[1], 'update': antivirus[2], 'result': malware})
+                            self.parse_tags(malware)
+                            detections.append({'av': antivirus[0], 'version': antivirus[1], 'update': antivirus[2], 'result': malware})
 
-            if len(detections) > 0:
-                sample.add_tag('malware')
+                if len(detections) > 0:
+                    self.sample.add_tag('malware')
 
-    	    return {
-                'scan_id': report.id,
-                'positives': report.positives,
-               	'total': report.total,
-                'detections': detections,
-            }
+                return {
+                    'scan_id': report.id,
+                    'positives': report.positives,
+                    'total': report.total,
+                    'detections': detections,
+                }
 
-        except Exception, e:
-            self.logger.error('Error within VirusTotal API: %s' % str(e))
-            return {}
+            except Exception, e:
+                self.logger.warning('Error within VirusTotal API: %s (retrying in %s seconds [%d/%d])' % (str(e), self.options['retry_sleep'], i, count ))
+                sleep(self.options['retry_sleep'])
+                continue # silently ignore errors
+
+        self.logger.error('Error within VirusTotal API: %s (failed - no more retries left)' % str(e))
+        return {}
+
+    def parse_tags(self, malware_name):
+
+        if in_string([ 'banker', 'banload' ], malware_name):
+            self.sample.add_tag('banker')
+
+        if in_string([ 'trojan' ], malware_name):
+            self.sample.add_tag('trojan')
 
 
 def setup(queue):

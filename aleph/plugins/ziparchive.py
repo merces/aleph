@@ -1,7 +1,7 @@
 from zipfile import ZipFile
 from tempfile import mkdtemp
 from aleph.base import PluginBase
-import shutil, os
+import shutil, os, ntpath
 
 from aleph.settings import SAMPLE_TEMP_DIR
 
@@ -9,7 +9,7 @@ class ZipArchivePlugin(PluginBase):
 
     mimetypes = ['application/zip']
     name = 'ziparchive'
-    default_options = { 'passwords': [ 'infected', 'evil', 'virus' ] }
+    default_options = { 'passwords': [ 'infected', 'evil', 'virus' ], 'enabled': True }
     
     def extract_file(self, path, dest, password=None):
 
@@ -23,7 +23,7 @@ class ZipArchivePlugin(PluginBase):
 
         return nl
 
-    def process(self, sample):
+    def process(self):
 
         temp_dir = mkdtemp(dir=SAMPLE_TEMP_DIR)
 
@@ -34,11 +34,13 @@ class ZipArchivePlugin(PluginBase):
         for password in set(self.options['passwords']):
             current_password = password
             try:
-                self.logger.debug("Uncompressing file %s with password '%s'" % (sample.path, password))
-                zip_contents = self.extract_file(sample.path, temp_dir, password)
+                self.logger.debug("Uncompressing file %s with password '%s'" % (self.sample.path, password))
+                zip_contents = self.extract_file(self.sample.path, temp_dir, password)
                 for fname in zip_contents:
                     fpath = os.path.join(temp_dir, fname)
-                    self.create_sample(fpath, sample.uuid)
+                    if os.path.isfile(fpath):
+                        head, tail = ntpath.split(fpath)
+                        self.create_sample(fpath, tail)
                 shutil.rmtree(temp_dir)
                 break # Stop bruting
             except RuntimeError:
@@ -47,13 +49,18 @@ class ZipArchivePlugin(PluginBase):
         ret = {} 
 
         if len(zip_contents) == 0:
-            self.logger.error('Unable to uncompress %s. Invalid password or corrupted file' % sample.path)
+            self.logger.error('Unable to uncompress %s. Invalid password or corrupted file' % self.sample.path)
             return ret
 
         ret['contents'] = zip_contents
 
         if len(current_password) > 0:
+            self.sample.add_tag('password-protected')
             ret['password'] = current_password
+
+        # Add general tags
+        self.sample.add_tag('archive')
+        self.sample.add_tag('zip')
 
         return ret
 

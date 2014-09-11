@@ -6,7 +6,7 @@ SAMPLE_SOURCES = [
 ]
 
 PLUGIN_SETTINGS = {
-    #'virustotal': { 'api_key': '', 'api_limit': '7' }
+    #'virustotal': { 'enabled': True, 'api_key': '', 'api_limit': '7' }
 }
 
 ELASTICSEARCH_URI = '127.0.0.1:9200'
@@ -17,6 +17,27 @@ SAMPLE_TEMP_DIR = '/opt/aleph/temp'
 SAMPLE_STORAGE_DIR = '/opt/aleph/samples'
 
 SAMPLE_MANAGERS=2 # Simultaneous sample analysis
+
+SAMPLE_MIN_FILESIZE=1024 # bytes
+SAMPLE_MAX_FILESIZE=(1024*1024*30) # bytes
+
+# Mail Options
+MAIL_SERVER = 'smtp.googlemail.com'
+MAIL_PORT = 465
+MAIL_USE_TLS = False
+MAIL_USE_SSL = True
+MAIL_USERNAME = 'your-gmail-username'
+MAIL_PASSWORD = 'your-gmail-password'
+MAIL_SENDER = 'Your Name <%s>' % MAIL_USERNAME
+
+# WebUI Options
+import os
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), '../webui/db.sqlite' )
+del os
+SERVER_NAME = 'localhost:5000'
+PREFERRED_URL_SCHEME = 'http'
+ALLOW_REGISTRATIONS = True
+SAMPLE_SUBMIT_FOLDER = None
 
 LOGGING  = {
     'filename': 'log/aleph.log',

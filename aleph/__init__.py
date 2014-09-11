@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import os, sys, logging
+import os, sys, logging, shutil
 from multiprocessing import Process, Queue
-from copy import copy 
+from copy import copy
 
 from aleph import settings, collectors
 from aleph.components import SampleManager
@@ -17,7 +17,6 @@ class AlephServer(object):
 
     running = False
 
-    director = None
     sample_managers = []
 
     collectors = []
@@ -48,12 +47,13 @@ class AlephServer(object):
             except OSError, e:
                 raise OSError("Unable to create sample storage dir at %s: %s" % (SAMPLE_STORAGE_DIR, str(e)))
 
-        if not os.path.exists(SAMPLE_TEMP_DIR):
-            try:
-                os.mkdir(SAMPLE_TEMP_DIR)
-                self.logger.info("Directory %s created" % SAMPLE_TEMP_DIR)
-            except OSError, e:
-                raise OSError("Unable to create sample temporary dir at %s: %s" % (SAMPLE_TEMP_DIR, str(e)))
+        try:
+            if os.path.exists(SAMPLE_TEMP_DIR):
+                shutil.rmtree(SAMPLE_TEMP_DIR)
+            os.mkdir(SAMPLE_TEMP_DIR)
+            self.logger.info("Directory %s created" % SAMPLE_TEMP_DIR)
+        except OSError, e:
+            raise OSError("Unable to create sample temporary dir at %s: %s" % (SAMPLE_TEMP_DIR, str(e)))
 
     def init_logger(self):
 

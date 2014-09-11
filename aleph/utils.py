@@ -2,13 +2,6 @@ import os, sys, logging
 from copy import deepcopy
 from functools import partial
 
-
-USER_DISABLED=0
-USER_ENABLED=1
-
-USER_REGULAR=0
-USER_ADMIN=1
-
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 # Get path as a function - for PluginBase
 get_path = partial(os.path.join, CURRENT_DIR)
@@ -45,6 +38,14 @@ import dateutil.parser
 
 utc = pytz.utc
 
+def get_timezone_by_name(tz_name):
+
+    try:
+        timez = pytz.timezone(tz_name)
+        return timez
+    except Exception, e:
+        return None
+
 def to_iso8601(when=None, tz=utc):
   if not when:
     when = datetime.datetime.now(tz)
@@ -58,3 +59,17 @@ def from_iso8601(when=None, tz=utc):
   if not _when.tzinfo:
     _when = tz.localize(_when)
   return _when
+
+def in_string(tokens, string):
+    return any(token in str(string).lower() for token in tokens)
+
+suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+def humansize(nbytes):
+    if nbytes == 0: return '0 B'
+    i = 0
+    while nbytes >= 1024 and i < len(suffixes)-1:
+        nbytes /= 1024.
+        i += 1
+    f = ('%.2f' % nbytes).rstrip('0').rstrip('.')
+    return '%s %s' % (f, suffixes[i])
+

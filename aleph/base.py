@@ -1,8 +1,9 @@
 from multiprocessing import Process
-import uuid, magic, os, logging, binascii, hashlib, time, datetime
+import uuid, magic, os, logging, binascii, hashlib, time, datetime, ssdeep
 from aleph.datastore import es
-from aleph.settings import SAMPLE_STORAGE_DIR, PLUGIN_SETTINGS
-from aleph.utils import to_iso8601
+from aleph.settings import SAMPLE_STORAGE_DIR, PLUGIN_SETTINGS, SAMPLE_MIN_FILESIZE, SAMPLE_MAX_FILESIZE
+from aleph.constants import SAMPLE_STATUS_NEW
+from aleph.utils import to_iso8601, humansize
 from shutil import move
 
 from time import sleep
@@ -24,6 +25,8 @@ class PluginBase(object):
     depends = []
 
     queue = None
+
+    sample = None
     
 
     def __init__(self, queue):
@@ -31,9 +34,13 @@ class PluginBase(object):
         self.logger = logging.getLogger('Plugin:%s' % self.name)
 
         self.queue = queue
+        self.sample = None
 
         options = PLUGIN_SETTINGS[self.name] if self.name in PLUGIN_SETTINGS else {}
         self.options = dict(self.default_options.items() + options.items())
+
+        if 'enabled' not in self.options:
+            self.options['enabled'] = False
         
         self.validate_options()
         self.setup()
@@ -51,33 +58,60 @@ class PluginBase(object):
             if option not in self.options or self.options[option] is None:
                 raise KeyError('Parameter "%s" not defined for %s plugin' % (option, self.__class__.__name__))
 
-    # @@ OVERRIDE ME
-
-    def can_run(self, sample):
+    def can_run(self):
         
+        if not self.options['enabled']:
+            return False
+
+        if not self.sample:
+            return False
+
         if len(self.mimetypes) == 0:
-            if sample.mimetype in self.mimetypes_except:
+            if self.sample.mimetype in self.mimetypes_except:
                 return False
-        elif sample.mimetype not in self.mimetypes:
+        elif self.sample.mimetype not in self.mimetypes:
             return False
 
         return True
 
-    def process(self, sample_uuid):
+    def process(self):
         raise NotImplementedError('Plugin process function not implemented')
 
-    def create_sample(self, filepath, sourcepath):
+    def release_sample(self):
+        self.sample = None
 
-        self.logger.debug('Creating sample from path %s (source: %s)' % (filepath, sourcepath))
+    def set_sample(self, sample):
+        self.sample = sample
+
+    def create_sample(self, filepath, filename):
+
+        # Size boundary check
+        sample_size = os.stat(filepath).st_size 
+
+        if sample_size > SAMPLE_MAX_FILESIZE:
+            self.logger.warning('Sample %s (%s) is bigger than maximum file size allowed: %s' % (filepath, humansize(sample_size), humansize(SAMPLE_MAX_FILESIZE)))
+            return False
+
+        if sample_size < SAMPLE_MIN_FILESIZE:
+            self.logger.warning('Sample %s (%s) is smaller than minimum file size allowed: %s' % (filepath, humansize(sample_size), humansize(SAMPLE_MIN_FILESIZE)))
+            return False
+
+        self.logger.debug('Creating sample from path %s (source: %s)' % (filepath, filename))
+
         sample = SampleBase(filepath)
-        sample.add_source(self.__class__.__name__, sourcepath )
+
+        # Save source
+        sample.add_source(self.__class__.__name__, filename, self.sample.uuid)
+
+        # Store XREF relations
+        self.sample.add_xref('child', sample.uuid)
+        sample.add_xref('parent', self.sample.uuid)
+
+        sample.store_data()
+        self.sample.store_data()
         self.queue.put(sample)
 
-ARCHIVE_MIMTYPES = [
-    'application/x-rar-compressed',
-    'application/zip',
-]
-
+        return True
 
 class SampleBase(object):
 
@@ -88,6 +122,13 @@ class SampleBase(object):
     sources = []
     timestamp = None
     process = True
+
+    status = SAMPLE_STATUS_NEW;
+
+    xrefs = {
+        'parent': [],
+        'child': [],
+    }
     
     hashes = {}
 
@@ -101,18 +142,31 @@ class SampleBase(object):
         self.path = path
         self.data = {}
         self.sources = []
+        self.tags = []
         self.hashes = self.get_hashes()
         self.timestamp = to_iso8601()
+
+        self.status = SAMPLE_STATUS_NEW;
+        self.xrefs = {
+            'parent': [],
+            'child': [],
+        }
+
         if not self.check_exists():
             self.store_sample()
             self.prepare_sample()
+            self.store_data()
 
     def dispose(self):
         os.unlink(self.path)
 
+    def set_status(self, status):
+        self.status = status
+        es.update(self.uuid, {'status': self.status})
+
     def update_source(self):
         source_set = self.sources
-        result = es.update(self.uuid, {'sources': source_set})
+        es.update(self.uuid, {'sources': source_set})
 
     def check_exists(self):
 
@@ -127,9 +181,20 @@ class SampleBase(object):
 
         return exists
 
-    def add_source(self, source_name, source_path):
+    def add_xref(self, relation, sample_uuid):
+
+        xrefs = self.xrefs
+
+        if relation not in [ 'parent', 'child' ]:
+            raise KeyError('XRef Relation must be either \'parent\' or \'child\'')
+
+        if sample_uuid not in xrefs[relation] and self.uuid != sample_uuid:
+            xrefs[relation].append(sample_uuid)
+            self.xrefs = xrefs
+
+    def add_source(self, provider, filename, reference=None):
         sources = self.sources
-        sources.append( {'provider': source_name, 'ref': source_path} )
+        sources.append( {'timestamp': to_iso8601(), 'provider': provider, 'filename': filename, 'reference': reference} )
         self.sources = sources
 
     def add_tag(self, tag_name):
@@ -141,10 +206,6 @@ class SampleBase(object):
     def add_data(self, plugin_name, data):
 
         self.data[plugin_name] = data
-
-    def is_archive(self):
-
-        return (self.mimetype in ARCHIVE_MIMETYPES)
 
     def store_sample(self):
 
@@ -165,7 +226,7 @@ class SampleBase(object):
         # Give it a nice uuid
         self.uuid = str(uuid.uuid1())
 
-    def store_results(self):
+    def store_data(self):
         es.save(self.toObject(), self.uuid)
 
     def get_hashes(self):
@@ -180,21 +241,24 @@ class SampleBase(object):
             'sha256': hashlib.sha256(filedata).hexdigest(),
             'sha512': hashlib.sha512(filedata).hexdigest(),
             'crc32': "%08X" % (binascii.crc32(filedata) & 0xFFFFFFFF),
+            'ssdeep': ssdeep.hash(filedata),
             }
         return hashes
 
     def toObject(self):
         return {
             'uuid': self.uuid,
+            'status': self.status,
             'path': self.path,
             'mimetype': self.mimetype,
             'mime': self.mimetype_str,
             'hashes': self.hashes,
             'data': self.data,
-	    'tags': self.tags,
-	    'timestamp' : self.timestamp,	
+    	    'tags': self.tags,
+    	    'timestamp' : self.timestamp,	
             'sources': self.sources,
             'size': self.size,
+            'xrefs': self.xrefs
         }
 
     def __str__(self):
@@ -273,9 +337,24 @@ class CollectorBase(Process):
     def collect(self):
         raise NotImplementedError('Collector collection routine not implemented')
 
-    def create_sample(self, filepath, sourcepath):
+    def create_sample(self, filepath, sourcedata):
 
-        self.logger.debug('Creating sample from path %s (source: %s)' % (filepath, sourcepath))
+        # Size boundary check
+        sample_size = os.stat(filepath).st_size 
+
+        if sample_size > SAMPLE_MAX_FILESIZE:
+            self.logger.warning('Sample %s (%s) is bigger than maximum file size allowed: %s' % (filepath, humansize(sample_size), humansize(SAMPLE_MAX_FILESIZE)))
+            os.unlink(filepath)
+            return False
+
+        if sample_size < SAMPLE_MIN_FILESIZE:
+            self.logger.warning('Sample %s (%s) is smaller than minimum file size allowed: %s' % (filepath, humansize(sample_size), humansize(SAMPLE_MIN_FILESIZE)))
+            os.unlink(filepath)
+            return False
+
+        self.logger.debug('Creating sample from path %s (source: %s)' % (filepath, sourcedata[0]))
         sample = SampleBase(filepath)
-        sample.add_source(self.__class__.__name__, sourcepath )
+        sample.add_source(self.__class__.__name__, sourcedata[0], sourcedata[1] )
+        if sample.process:
+            sample.store_data()
         self.queue.put(sample)

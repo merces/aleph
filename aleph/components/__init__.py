@@ -2,6 +2,7 @@ import logging, os
 import pluginbase
 from multiprocessing import Process
 from aleph.base import SampleBase
+from aleph.constants import SAMPLE_STATUS_PROCESSING, SAMPLE_STATUS_PROCESSED
 from aleph.utils import get_path
 
 class SampleManager(Process):
@@ -77,8 +78,10 @@ class SampleManager(Process):
             sample = self.sample_queue.get()
             if sample.process:
                 self.logger.info('Processing sample %s' % sample.uuid)
+                sample.set_status(SAMPLE_STATUS_PROCESSING)
                 self.apply_plugins(sample)
-                sample.store_results()
+                sample.set_status(SAMPLE_STATUS_PROCESSED)
+                sample.store_data()
             else:
                 self.logger.info('Sample %s already processed. Updating source only.' % sample.uuid)
                 sample.update_source()
@@ -89,14 +92,17 @@ class SampleManager(Process):
 
     def apply_plugins(self, sample):
         for plugin in self.plugins:
-            if plugin.can_run(sample):
+            plugin.set_sample(sample)
+            if plugin.can_run():
                 try:
                     self.logger.debug('Applying plugin %s on sample %s' % (plugin.name, sample.uuid))
-                    data = plugin.process(sample)
+                    data = plugin.process()
                     if data and len(data) > 0:
                         sample.add_data(plugin.name, data)
                 except Exception, e:
-                    raise RuntimeError("Plugin %s failed on sample %s: %s" % (plugin.name, sample.uuid, str(e)))
+                    self.logger.error("Plugin %s failed on sample %s: %s" % (plugin.name, sample.uuid, str(e)))
+                    pass
+            plugin.release_sample()
 
     def run(self):
         self.runnable = True

@@ -27,9 +27,12 @@ class DataStore(object):
     def setup(self):
         self.es.indices.create(index=ELASTICSEARCH_INDEX, ignore=400) # Ignore already exists
 
-    def count(self):
+    def count(self, q=None):
 
-        result = self.es.count(index=ELASTICSEARCH_INDEX, doc_type='sample')
+        if q:
+            result = self.es.count(index=ELASTICSEARCH_INDEX, doc_type='sample', q=q)
+        else:
+            result = self.es.count(index=ELASTICSEARCH_INDEX, doc_type='sample')
         return result['count']
 
     def all(self, size=10, start=0):
@@ -40,6 +43,11 @@ class DataStore(object):
                 },
                 'from': start,
                 'size': size,
+                "sort": {
+                    "timestamp": {
+                        'order': 'desc'
+                    },
+                }
                 })
         except NotFoundError:
             pass
@@ -49,10 +57,17 @@ class DataStore(object):
         return result
 
 
-    def lucene_search(self, query):
+    def lucene_search(self, query, start=0, size=15):
 
         try:
-            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', q=query)
+            body = {
+                "sort": {
+                    "timestamp": {
+                        'order': 'desc'
+                    },
+                }
+            }
+            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', q=query, from_=start, size=size, body=body)
         except NotFoundError:
             pass
         except Exception:
@@ -90,7 +105,6 @@ class DataStore(object):
         # Try to get current data if available
         try:
             original_document = self.es.get(index=index, doc_type=doc_type, id=doc_id)
-            print original_document
             if 'hits' in original_document and original_document['hits']['total'] != 0:
                 original_document = original_document['_source']
             else:

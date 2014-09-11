@@ -23,7 +23,7 @@ class FileCollector(CollectorBase):
                 for filename in filenames:
                     filepath = os.path.join(dirname, filename)
                     self.logger.info("Collecting file %s from %s" % (filepath, self.options['path']))
-                    self.create_sample(os.path.join(self.options['path'], filepath), filepath)
+                    self.create_sample(os.path.join(self.options['path'], filepath), (filename, None))
         except KeyboardInterrupt:
             pass
 
@@ -74,7 +74,7 @@ class MailCollector(CollectorBase):
             if bool(filename):
                 temp_file = tempfile.NamedTemporaryFile(dir=SAMPLE_TEMP_DIR, suffix='_%s' % filename, delete=False)
                 temp_file.write(part.get_payload(decode=True))
-                self.create_sample(temp_file.name, mail['from'])
+                self.create_sample(temp_file.name, (filename, mail['from']))
 
     def collect(self):
 
