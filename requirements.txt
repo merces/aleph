@@ -13,6 +13,7 @@ argparse==1.2.1
 cffi==0.8.6
 elasticsearch==1.2.0
 itsdangerous==0.24
+pefile==1.2.10-114
 pluginbase==0.3
 pycparser==2.10
 pyelasticsearch==0.7.1
