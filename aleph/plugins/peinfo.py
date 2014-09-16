@@ -60,13 +60,13 @@ class PEInfoPlugin(PluginBase):
             #check for DEP/NX and SEH
             if pe.OPTIONAL_HEADER.DllCharacteristics > 0:
                 if pe.OPTIONAL_HEADER.DllCharacteristics & 0x0100:
-                    data['DEPNX'] = True
+                    data['dep_nx'] = True
                 if (pe.OPTIONAL_HEADER.DllCharacteristics & 0x0400
                 or (hasattr(pe, "DIRECTORY_ENTRY_LOAD_CONFIG") 
                 and pe.DIRECTORY_ENTRY_LOAD_CONFIG.struct.SEHandlerCount > 0 
                 and pe.DIRECTORY_ENTRY_LOAD_CONFIG.struct.SEHandlerTable != 0) 
                 or pe.FILE_HEADER.Machine == 0x8664):
-                    data['SEH'] = True
+                    data['seh'] = True
 
             
             # Add general tags
