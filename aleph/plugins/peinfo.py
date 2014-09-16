@@ -57,6 +57,18 @@ class PEInfoPlugin(PluginBase):
             data['image_base']  = pe.OPTIONAL_HEADER.ImageBase
             data['number_sections'] = pe.FILE_HEADER.NumberOfSections
 
+            #check for DEP/NX and SEH
+            if pe.OPTIONAL_HEADER.DllCharacteristics > 0:
+                if pe.OPTIONAL_HEADER.DllCharacteristics & 0x0100:
+                    data['DEPNX'] = True
+                if (pe.OPTIONAL_HEADER.DllCharacteristics & 0x0400
+                or (hasattr(pe, "DIRECTORY_ENTRY_LOAD_CONFIG") 
+                and pe.DIRECTORY_ENTRY_LOAD_CONFIG.struct.SEHandlerCount > 0 
+                and pe.DIRECTORY_ENTRY_LOAD_CONFIG.struct.SEHandlerTable != 0) 
+                or pe.FILE_HEADER.Machine == 0x8664):
+                    data['SEH'] = True
+
+            
             # Add general tags
             self.sample.add_tag('windows')
             self.sample.add_tag('pe')
