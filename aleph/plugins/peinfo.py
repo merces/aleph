@@ -57,8 +57,10 @@ class PEInfoPlugin(PluginBase):
             data['image_base']  = pe.OPTIONAL_HEADER.ImageBase
             data['number_sections'] = pe.FILE_HEADER.NumberOfSections
 
-            #check for DEP/NX and SEH
+            #check for ASLR, DEP/NX and SEH
             if pe.OPTIONAL_HEADER.DllCharacteristics > 0:
+                if pe.OPTIONAL_HEADER.DllCharacteristics & 0x0040:
+                    data['aslr'] = True
                 if pe.OPTIONAL_HEADER.DllCharacteristics & 0x0100:
                     data['dep_nx'] = True
                 if (pe.OPTIONAL_HEADER.DllCharacteristics & 0x0400
