@@ -70,9 +70,30 @@ Go to Aleph folder, activate the virtual environment and run the bin/aleph-serve
 
 And that's it. Check your logs under log/aleph.log to any troubleshooting.
 
-#### Reviewing collected data
+#### Install the Web interface(Webui)
+Edit the "SERVER_NAME" constant at your settings.py file.
+	ex: SERVER_NAME = 'mydomain.com:90'
+	
+then create the following entry:
+	SECRET_KEY = 'Pu7s0m3cryp7l337here' #do not use this ;)
 
-For now there's still no Web interface (but it will, I swear) so you must use other software to review and query data on elasticsearch. I strongly suggest this [Chrome REST client plugin](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en) or the great [Kibana](http://www.elasticsearch.org/guide/en/kibana/current/working-with-queries-and-filters.html)
+Setup your database:
+
+	python bin/db_create.py
+
+Run the	webui script:
+	
+	bin/aleph-webui.sh
+	
+To access your webinterface open your favorite browser at http://SERVER_NAME #That value you changed before.
+	
+	Login: admin
+	Password: changeme12!
+	
+	
+**Note: For sake of Security's God, CHANGE YOUR PASSWORD! ;)**
+	
+But if you do not like our webinterface you still can use other softwares  to review and query data on elasticsearch. I strongly suggest this [Chrome REST client plugin](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en) or the great [Kibana](http://www.elasticsearch.org/guide/en/kibana/current/working-with-queries-and-filters.html)
 
 #### Currently implemented
 **Collectors**
@@ -80,6 +101,8 @@ For now there's still no Web interface (but it will, I swear) so you must use ot
 * MailCollector: grabs samples from email attachments on a IMAP folder
 
 **Plugins**
-* ZipArchivePlugin: extracts zip files and puts their contents back into analysis queue
-* StringsPlugin: extracts strings from sample into three categories: All Strings, URI Strings and Filename Strings (not 100% but we do our best)
+* PEInfo : extracts info from PE files such as entrypoint, number of sections and some PE characteristics(SEH/ASLR/DEP).
+* ZipArchivePlugin: extracts zip files and puts their contents back into analysis queue.
+* StringsPlugin: extracts strings from sample into three categories: All Strings, URI Strings and Filename Strings (not 100% but we do our best).
 * VirustotalPlugin: check a sample SHA256 hash against Virustotal database and get the report. If that hash doesnt exist, send the file to analise.
+* TrID: check the filetype of a sample.
