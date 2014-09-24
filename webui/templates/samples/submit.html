@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block title %}{{ _('Submit sample') }}{% endblock %}
+{% block pagetitle %}{{ _('Submit sample') }}{% endblock %}
+{% block description %}{{ _('Submit a new sample for analysis') }}{% endblock %}
+{% block body %}
+<form id="submit-sample-form" method="post" action="{{ url_for('samples.submit') }}" enctype="multipart/form-data">
+{% from "_formhelpers.html" import render_field %}
+{{ render_field(form.sample) }}
+        <button class="btn btn-primary" type="submit">{{ _('Submit sample') }}</button>
+{{ form.hidden_tag() }}
+</form>
+{% endblock %}

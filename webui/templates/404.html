@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block variables %}
+{% set class_html = 'bg-black' %}
+{% set class_body = 'bg-black' %}
+{% endblock %}
+{% block title %}{{ _('Page not found') }}{% endblock %}
+{% block body %}
+<div class="form-box" id="error-box">
+            <a class="brand">&alefsym; {{ config.APP_TITLE }}</a>
+            <h2 class="headline">404</h2>
+            <h3><i class="fa fa-warning text-yellow"></i> Oops! Page not found.</h3>
+            <p>
+                {{ _('We could not find the page you were looking for.') }}
+                {{ _('Meanwhile, you may <a href="%(dashboardlink)s">return to dashboard</a> or try using the search form.', dashboardlink = url_for('general.index')) }}
+            </p>
+                            <form class='search-form' action="{{ url_for('samples.index') }}">
+                                <div class='input-group'>
+                                    <input type="text" name="search" class='form-control' placeholder="Search"/>
+                                    <div class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div><!-- /.input-group -->
+                            </form>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+            <div class="margin text-center">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            </div>
+{% endif %}
+{% endwith %}
+</div>
+{% endblock %}

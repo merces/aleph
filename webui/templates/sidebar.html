@@ -1,0 +1,73 @@
+<!-- Left side column. contains the logo and sidebar -->
+            <aside class="left-side sidebar-offcanvas">
+                <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+                    <!-- search form -->
+                    <form action="{{ url_for('samples.index') }}" method="get" class="sidebar-form">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="{{ _('Search...') }}"/>
+                            <span class="input-group-btn">
+                                <button type='submit' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- /.search form -->
+                    <!-- sidebar menu: : style can be found in sidebar.less -->
+                    <ul class="sidebar-menu">
+                        <li class="{% if request.endpoint == 'general.index' %}active{% endif %}">
+                            <a href="{{ url_for('general.index') }}">
+                                <i class="fa fa-dashboard"></i> <span>{{ _('Dashboard') }}</span>
+                            </a>
+                        </li>
+{% if request.url.find('/samples/') == -1 %}
+                        <li class="treeview">
+{% else %}
+                        <li class="treeview active">
+{% endif %}
+                            <a href="{{ url_for('samples.index') }}">
+                                <i class="fa fa-bug"></i>
+                                <span>{{ _('Samples') }}</span>
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </a>
+                            <ul class="treeview-menu">
+{% if sample %}
+                                <li class="{% if request.url.find(url_for('samples.view', uuid = sample.uuid )) != -1 %}active{% endif %}"><a href="{{ url_for('samples.view', uuid = sample.uuid) }}"><i class="fa fa-eye"></i> {{ _('View') }}</a>
+    <ul>
+        <li><a href='#basic-info'>{{ _('Basic Information') }}</a></li>
+{% if sample.xrefs.parent|count > 0 or sample.xrefs.child|count > 0 %}
+        <li><a href='#xrefs'>{{ _('Cross-References') }}</a></li>
+{% endif %}
+        <li><a href='#tags'>{{ _('Tags') }}</a></li>
+        <li><a href='#source-info'>{{ _('Origins') }}</a></li>
+        <li><a href='#hashes-checksums'>{{ _('Hashes & Checksums') }}</a></li>
+{% for plugin, value in sample.data.iteritems() %}
+        <li><a href='#plugin-{{ plugin }}'>{{ plugin|replace('_',' ')|capitalize }}</a></li>
+{% endfor %}
+    </ul>
+</li>
+{% endif %}
+                                <li class="{% if request.url.find(url_for('samples.index')) != -1 %}active{% endif %}"><a href="{{ url_for('samples.index') }}"><i class="fa fa-list"></i> {{ _('Browse') }}</a></li>
+                                <li class="{% if request.url.find(url_for('samples.submissions')) != -1 %}active{% endif %}"><a href="{{ url_for('samples.submissions') }}"><i class="fa fa-cloud-upload"></i> {{ _('My submissions') }}</a></li> 
+                                <li class="{% if request.url.find(url_for('samples.submit')) != -1 %}active{% endif %}"><a href="{{ url_for('samples.submit') }}"><i class="fa fa-plus"></i> {{ _('Add new') }}</a></li> 
+                            </ul>
+{% if g.user.is_admin %}
+{% if request.url.find('/users/') == -1 %}
+                        <li class="treeview">
+{% else %}
+                        <li class="treeview active">
+{% endif %}
+                            <a href="{{ url_for('users.login') }}">
+                                <i class="fa fa-users"></i>
+                                <span>{{ _('Users') }}</span>
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li class="{% if request.url.find(url_for('users.index')) != -1 %}active{% endif %}"><a href="{{ url_for('users.index') }}"><i class="fa fa-list"></i> {{ _('Browse') }}</a></li>
+                                <li class="{% if request.url.find(url_for('users.add')) != -1 %}active{% endif %}"><a href="{{ url_for('users.add') }}"><i class="fa fa-plus"></i> {{ _('Add new') }}</a></li>
+                            </ul>
+                        </li>
+{% endif %}
+                    </ul>
+                </section>
+                <!-- /.sidebar -->
+            </aside>

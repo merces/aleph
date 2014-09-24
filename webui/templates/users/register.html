@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block variables %}
+{% set class_html = 'bg-black' %}
+{% set class_body = 'bg-black' %}
+{% endblock %}
+{% block title %}{{ _('Register') }}{% endblock %}
+{% block body %}
+<div class="form-box" id="login-box">
+            <a class="brand">&alefsym; {{ config.APP_TITLE }}</a>
+            <div class="header">{{ _('Register new account') }}</div>
+            <form action="{{ url_for('users.register') }}" method="post">
+                <div class="body bg-gray">
+{% from "_formhelpers.html" import render_field %}
+{{ render_field(form.first_name, silent=True) }}
+{{ render_field(form.last_name, silent=True) }}
+{{ render_field(form.login, silent=True) }}
+{{ render_field(form.email, silent=True) }}
+{{ render_field(form.password, silent=True) }}
+{{ render_field(form.confirm, silent=True) }}
+                </div>
+                <div class="footer">                                                               
+                    <button type="submit" class="btn bg-olive btn-block">{{ _('Sign me up') }}</button>  
+                    <a href="{{ url_for('users.login') }}" class="text-center">{{ _('I already have a membership') }}</a>
+                </div>
+{{ form.hidden_tag() }}
+            </form>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+            <div class="margin text-center">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            </div>
+{% endif %}
+{% endwith %}
+</div>
+{% endblock %}

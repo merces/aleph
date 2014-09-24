@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block title %}{{ _('Edit user settings') }}{% endblock %}
+{% block pagetitle %}{{ _('Edit user settings') }}{% endblock %}
+{% block body %}
+<form method="post" action="{{ url_for('users.settings') }}">
+{% from "_formhelpers.html" import render_field %}
+{{ render_field(form.first_name) }}
+{{ render_field(form.last_name) }}
+{{ render_field(form.email) }}
+{{ render_field(form.locale) }}
+{{ render_field(form.timezone) }}
+<button class="btn btn-primary" type="submit">{{ _('Save settings') }}</button>
+<a href="{{ url_for('users.changepw', user_id = user.id) }}" class="btn">{{ _('Change password') }}</a>
+{{ form.hidden_tag() }}
+</form>
+{% endblock %}

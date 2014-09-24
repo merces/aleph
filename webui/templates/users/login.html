@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block variables %}
+{% set class_html = 'bg-black' %}
+{% set class_body = 'bg-black' %}
+{% endblock %}
+{% block title %}{{ _('Sign In') }}{% endblock %}
+{% block body %}
+<div class="form-box" id="login-box">
+            <a class="brand">&alefsym; {{ config.APP_TITLE }}</a>
+            <div class="header">{{ _('Sign In') }}</div>
+            <form action="{{ url_for('users.login') }}" method="post">
+                <div class="body bg-gray">
+                    <div class="form-group">
+                        <input type="text" name="username" class="form-control" placeholder="{{ _('User ID') }}"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" class="form-control" placeholder="{{ _('Password') }}"/>
+                    </div>          
+            <div class="form-group">
+            {{ form.remember_me }}
+            <label class="" for="remember_me">{{ _('Remember me') }}</label>
+            </div><!--/.form-group-->
+            </div>
+                <div class="footer">                                                               
+                    <button type="submit" class="btn bg-olive btn-block">{{ _('Sign me in') }}</button>  
+                    <a href="{{ url_for('users.register') }}" class="text-center">{{ _('Register a new account') }}</a>
+                    
+                </div>
+{{ form.hidden_tag() }}
+            </form>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+            <div class="margin text-center">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            </div>
+{% endif %}
+{% endwith %}
+
+        </div>
+{% endblock %}

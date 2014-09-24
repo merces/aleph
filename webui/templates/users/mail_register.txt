@@ -1,0 +1,10 @@
+{{ _('Hello %(firstname)s %(lastname)s', firstname=user.first_name, lastname=user.last_name) }}
+
+{{ _('Welcome to %(appname)s', appname= config.APP_TITLE) }}
+
+{{ _('To activate your account click (or copy and paste into a browser) the link below:') }}
+
+{{ url_for('users.activate', token=user.token, _external=True) }}
+
+{{ _('Regards,') }}
+{{ config.APP_TITLE }}

@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+{% block title %}{% if request.args.get('search') %}{{ _('Search Results') }}{% else %}{{ _('Samples') }}{% endif %}{% endblock %}
+{% block description %}{% if request.args.get('search') %}{{ request.args.get('search')|safe }}{% else %}{{ _('Samples processed by Aleph') }}{% endif %}{% endblock %}
+{% block body %}
+<div class="panel panel-default">
+    <div class="panel-body">
+{% if sample_count == 0 %}
+<p>{{ _('No samples on the database yet.') }}</p>
+{% elif samples|count == 0 %}
+<p>{{ _('No samples matching your query.') }}</p>
+{% else %}
+
+    <table class="table table-striped table-hover">
+    <thead>
+        <th width="13%">{{ _('Timestamp') }}</th>
+        <th width="5%">{{ _('Status') }}</th>
+        <th>{{ _('UUID') }}</th>
+        <th>{{ _('Filenames') }}</th>
+        <th width="15%">{{ _('MimeType') }}</th>
+        <th width="5%">{{ _('Size') }}</th>
+        <th width="15%">{{ _('Tags') }}</th>
+        <th>{{ _('Action') }}</th>
+    </thead>
+    <tbody>
+    {% for sample in samples %}
+        <tr>
+            <td>{{ sample.timestamp|str2utc|datetimeformat }}</td>
+            <td>{% if sample.status == 0 %}<span class="badge sample-new">{{ _('new') }}</span>{% elif sample.status == 1%}<span class="badge sample-processing">{{ _('processing') }}</span>{% elif sample.status == 2 %}<span class="badge sample-ready">{{ _('ready') }}</span>{% endif %}</td>
+            <td>{{ sample.uuid|truncate(10, True) }}</td>
+            <td>
+            {% for source in sample.sources %}
+                {{ source.filename }}
+            {% endfor %}
+            </td>
+            <td>{{ sample.mimetype }}</td>
+            <td>{{ sample.size|humansize }}</td>
+            <td>{{ ', '.join(sample.tags) }}</td>
+            <td>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        {{ _('Action') }}&nbsp;
+                        <span class="caret"></span>
+                        <span class="sr-only">{{ _('Toggle Dropdown') }}</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ url_for('samples.view', uuid = sample.uuid) }}"><i class="fa fa-eye"></i> {{ _('View') }}</a></li>
+
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    {% endif %}
+    </div><!--/.panel-body-->
+</div><!--/.panel-->
+<ul class=pagination>
+  {% if page == 1 %}
+    <li class="disabled"><a href="#">&laquo;</a></li>
+  {% else %}
+    <li><a href="{{ url_for('samples.index', page = page-1) }}">&laquo;</a></li>
+  {% endif %}
+{% for pg in pages %}
+{% if pg == page %}
+    <li class="active"><a href="{{ url_for('samples.index', page = pg) }}">{{ pg }} <span class="sr-only">(current)</span></a></li>
+{% else %}
+    <li><a href="{{ url_for('samples.index', page = pg) }}">{{ pg }}</a></li>
+{% endif %}
+{% endfor %}
+                  
+{% if page >= pages|count %}
+    <li class="disabled"><a href="#">&raquo;</a></li>
+{% else %}
+    <li><a href="{{ url_for('samples.index', page = page+1) }}">&raquo;</a></li>
+{% endif %}
+</ul>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block title %}{{ _('My submissions') }}{% endblock %}
+{% block pagetitle %}{{ _('My submissions') }}{% endblock %}
+{% block description %}{{ _('Samples submitted by you') }}{% endblock %}
+{% block body %}
+{% if submissions.items|count  == 0 %}
+<div class="alert alert-info" role="alert">{{ _('No samples submitted.') }}</div>
+{% else %}
+<div class="panel panel-default">
+  <div class="panel-body">
+<table class="table" >
+    <thead>
+        <th width="13%">{{ _('Timestamp') }}</th>
+        <th width="5%">{{ _('Status') }}</th>
+        <th width="38%">{{ _('SHA256 Hash') }}</th>
+        <th>{{ _('Filename') }}</th>
+        <th width="23%">{{ _('Sample UUID') }}</th>
+    </thead>
+    <tbody>
+{% for submission in submissions.items %}
+        <tr>
+            <td>{{ submission.timestamp|datetimeformat }}</td>
+            <td>{% if not submission.sample_uuid %}<span class="badge">{{ _('new') }}</span>{% else %}
+{% if samples[submission.sample_uuid].status == 0 %}<span class="badge sample-new">{{ _('new') }}</span>{% elif samples[submission.sample_uuid].status == 1%}<span class="badge sample-processing">{{ _('processing') }}</span>{% elif samples[submission.sample_uuid].status == 2 %}<span class="badge sample-ready">{{ _('ready') }}</span>{% endif %}{% endif %}</td>
+            <td>{{ submission.file_hash }}</td>
+            <td>{{ submission.filename }}</td>
+            <td>{% if not submission.sample_uuid %}-{% else %}<a href="{{ url_for('samples.view', uuid = submission.sample_uuid) }}" title="{{ _('View report for sample %(sampleuuid)s', sampleuuid=submission.sample_uuid)}}">{{ submission.sample_uuid }}</a>{% endif %}</td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+{% from "_paginationhelpers.html" import render_pagination %}
+{{ render_pagination(submissions, 'samples.submissions') }}
+<hr />
+{% endif %}
+<a href="{{ url_for('samples.submit') }}"><button class="btn btn-primary">{{ _('Submit new sample') }}</button></a>
+{% endblock %}

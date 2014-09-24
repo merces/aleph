@@ -1,0 +1,17 @@
+{% macro render_field(field, silent=False, placeholder='') %}
+            <div class="form-group">
+                {% if not silent %}{{ field.label }}{% endif %}
+                {% if not placeholder and silent %}{% set placeholder = field.label.text %}{% endif %}
+                {{ field(placeholder=placeholder, class='form-control', **kwargs)|safe }}
+            </div><!--/.form-group-->
+                {% if field.errors %}
+            <div class="alert alert-warning">
+                This field has the following errors:
+                <ul>
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+                {% endif %}
+{% endmacro %}

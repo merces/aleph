@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block title %}{{ _('Edit user account') }}{% endblock %}
+{% block pagetitle %}{{ _('Edit user account') }} {{ user.first_name }} {{ user.last_name }} (#{{ user.id }}){% endblock %}
+{% block body %}
+<form method="post" action="{{ url_for('users.edit', user_id = user.id) }}">
+{% from "_formhelpers.html" import render_field %}
+{{ render_field(form.first_name) }}
+{{ render_field(form.last_name) }}
+{{ render_field(form.login) }}
+{{ render_field(form.email) }}
+{{ render_field(form.locale) }}
+{{ render_field(form.timezone) }}
+{{ render_field(form.token) }}
+{{ render_field(form.api_key) }}
+{{ render_field(form.account_type) }}
+{{ render_field(form.active) }}
+<button class="btn btn-primary" type="submit">{{ _('Edit user account') }}</button>
+{{ form.hidden_tag() }}
+</form>
+{% endblock %}

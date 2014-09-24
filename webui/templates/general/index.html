@@ -1,0 +1,161 @@
+{% extends 'layout.html' %}
+{% block title %}{{ _('Dashboard') }}{% endblock %}
+{% block description %}{{ _('Aleph Web Interface') }}{% endblock %}
+{% block body %}
+<div class="row">
+                        <div class="col-lg-3 col-xs-6">
+                            <!-- small box -->
+                            <div class="small-box bg-teal">
+                                <div class="inner">
+                                    <h3>
+                                        {{ sample_count.total }}
+                                    </h3>
+                                    <p>
+                                        {{ _('Total Samples') }}
+                                    </p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bug"></i>
+                                </div>
+                                <a href="{{ url_for('samples.index') }}" class="small-box-footer">
+                                    {{ _('More info') }} <i class="fa fa-arrow-circle-right"></i>
+                                </a>
+                            </div>
+                        </div><!-- ./col -->
+                        <div class="col-lg-3 col-xs-6">
+                            <!-- small box -->
+                            <div class="small-box bg-gray">
+                                <div class="inner">
+                                    <h3>
+                                        {{ sample_count.new }}
+                                    </h3>
+                                    <p>
+                                        {{ _('Samples in queue') }}
+                                    </p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-archive"></i>
+                                </div>
+                                <a href="{{ url_for('samples.index') }}" class="small-box-footer">
+                                    {{ _('More info') }} <i class="fa fa-arrow-circle-right"></i>
+                                </a>
+                            </div>
+                        </div><!-- ./col -->                        <div class="col-lg-3 col-xs-6">
+                            <!-- small box -->
+                            <div class="small-box bg-yellow">
+                                <div class="inner">
+                                    <h3>
+                                        {{ sample_count.processing }}
+                                    </h3>
+                                    <p>
+                                        {{ _('Samples being processed right now') }}
+                                    </p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-funnel"></i>
+                                </div>
+                                <a href="{{ url_for('samples.index') }}" class="small-box-footer">
+                                    {{ _('More info') }} <i class="fa fa-arrow-circle-right"></i>
+                                </a>
+                            </div>
+                        </div><!-- ./col -->                        <div class="col-lg-3 col-xs-6">
+                            <!-- small box -->
+                            <div class="small-box bg-aqua">
+                                <div class="inner">
+                                    <h3>
+                                        {{ sample_count.ready }}
+                                    </h3>
+                                    <p>
+                                        {{ _('Samples processed') }}
+                                    </p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-ios7-pulse-strong"></i>
+                                </div>
+                                <a href="{{ url_for('samples.index') }}" class="small-box-footer">
+                                    {{ _('More info') }} <i class="fa fa-arrow-circle-right"></i>
+                                </a>
+                            </div>
+                        </div><!-- ./col -->
+                    </div><!-- /.row -->
+<div class="row">
+    <div class="col-lg-8 col-xs-12">
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title"><i class='fa fa-bug'></i> {{ _('Latest samples') }}</h3>
+            <div class="box-tools pull-right">
+            <a class="btn btn-sm " href="{{ url_for('samples.index') }}">{{ _('View all samples') }}</a>
+            </div>
+        </div>
+        <div class="box-body">
+{% if samples|count == 0 %}
+<p>{{ _('No samples on the database yet.') }}</p>
+{% else %}
+    <table class="table table-striped table-hover">
+    <thead>
+        <th width="15%">{{ _('Timestamp') }}</th>
+        <th width="5%">{{ _('Status') }}</th>
+        <th>{{ _('UUID') }}</th>
+        <th>{{ _('Filenames') }}</th>
+        <th width="15%">{{ _('MimeType') }}</th>
+        <th width="8%">{{ _('Size') }}</th>
+        <th width="15%">{{ _('Tags') }}</th>
+    </thead>
+    <tbody>
+    {% for sample in samples %}
+        <tr>
+            <td>{{ sample.timestamp|str2utc|datetimeformat('short') }}</td>
+            <td>{% if sample.status == 0 %}<span class="badge sample-new">{{ _('new') }}</span>{% elif sample.status == 1%}<span class="badge sample-processing">{{ _('processing') }}</span>{% elif sample.status == 2 %}<span class="badge sample-ready">{{ _('ready') }}</span>{% endif %}</td>
+            <td><a href="{{ url_for('samples.view', uuid = sample.uuid) }}" title="{{ _('View report for sample %(sampleuuid)s', sampleuuid = sample.uuid) }}">{{ sample.uuid|truncate(10, True) }}</a></td>
+            <td>
+            {% for source in sample.sources %}
+                {{ source.filename }}
+            {% endfor %}
+            </td>
+            <td>{{ sample.mimetype }}</td>
+            <td>{{ sample.size|humansize }}</td>
+            <td>{{ ', '.join(sample.tags) }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    {% endif %}
+        </div>
+    </div>
+    </div><!-- ./col -->
+    <div class="col-lg-4 col-xs-12">
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title"><i class='fa fa-cloud-upload'></i> {{ _('Latest submissions') }}</h3>
+            <div class="box-tools pull-right">
+            <a class='btn btn-sm' href="{{ url_for('samples.submissions') }}">{{ _('View all submissions') }}</a>
+            </div>
+        </div>
+        <div class="box-body">
+{% if submissions|count == 0 %}
+<p>{{ _('No samples submitted.') }}</p>
+{% else %}
+        <table class="table">
+        <thead>
+            <th width="10%">{{ _('Status') }}</th>
+            <th>{{ _('Filename') }}</th>
+            <th width="18%"><span class="sr-only">{{ _('View') }}</a></th>
+        </thead>
+        <tbody>
+{% for submission in submissions %}
+        <tr>
+            <td>{% if not submission.sample_uuid %}<span class="badge">{{ _('new') }}</span>{% else %}
+{% if submission_samples[submission.sample_uuid].status == 0 %}<span class="badge sample-new">{{ _('new') }}</span>{% elif submission_samples[submission.sample_uuid].status == 1%}<span class="badge sample-processing">{{ _('processing') }}</span>{% elif submission_samples[submission.sample_uuid].status == 2 %}<span class="badge sample-ready">{{ _('ready') }}</span>{% endif %}{% endif %}</td>
+            <td>{{ submission.filename }}</td>
+            <td>{% if submission.sample_uuid %}<a class="btn btn-sm btn-default" href="{{ url_for('samples.view', uuid = submission.sample_uuid) }}" title="{{ _('View report for sample %(sampleuuid)s', sampleuuid = submission.sample_uuid) }}">{{ _('View') }}</a>{% endif %}</td>
+        </tr>
+{% endfor %}
+        </tbody>
+        </table>
+{% endif %}
+        </div>
+    </div>
+    </div><!-- ./col -->
+
+</div><!-- /.row -->
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block title %}{{ _('New user account') }}{% endblock %}
+{% block pagetitle %}{{ _('New user account') }}{% endblock %}
+{% block body %}
+<form method="post" action="{{ url_for('users.add') }}">
+{% from "_formhelpers.html" import render_field %}
+{{ render_field(form.first_name) }}
+{{ render_field(form.last_name) }}
+{{ render_field(form.login) }}
+{{ render_field(form.email) }}
+{{ render_field(form.password) }}
+{{ render_field(form.confirm) }}
+{{ render_field(form.locale) }}
+{{ render_field(form.timezone) }}
+{{ render_field(form.account_type) }}
+{{ render_field(form.active) }}
+        <button class="btn btn-primary" type="submit">{{ _('Add user account') }}</button>
+{{ form.hidden_tag() }}
+</form>
+{% endblock %}

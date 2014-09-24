@@ -1,0 +1,649 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2014 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2014-09-11 13:14-0300\n"
+"PO-Revision-Date: 2014-09-11 14:04-0300\n"
+"Last-Translator: Jan Seidl <jseidl@wroot.org>\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+
+#: webui/templates/401.html:6
+msgid "Access denied"
+msgstr "Acceso denegado"
+
+#: webui/templates/401.html:13
+msgid "You don't have access to this page."
+msgstr "Usted no tiene acceso a esta página."
+
+#: webui/templates/404.html:6
+msgid "Page not found"
+msgstr "Página no encontrada"
+
+#: webui/templates/404.html:13
+msgid "We could not find the page you were looking for."
+msgstr "No hemos podido encontrar la página que estabas buscando."
+
+#: webui/templates/404.html:14
+#, python-format
+msgid "Meanwhile, you may <a href=\"%(dashboardlink)s\">return to dashboard</a> or try using the search form."
+msgstr "Mientras tanto, puedes <a href=\"%(dashboardlink)s\">volver al tablero de mandos</a> o intente utilizar el buscador."
+
+#: webui/templates/header.html:10
+msgid "Toggle navigation"
+msgstr "Navegación toggle"
+
+#: webui/templates/header.html:35
+msgid "Settings"
+msgstr "Ajustes"
+
+#: webui/templates/header.html:38
+msgid "Sign out"
+msgstr "Desconectar"
+
+#: webui/templates/layout.html:51
+#: webui/templates/sidebar.html:29
+#: webui/templates/samples/index.html:2
+msgid "Samples"
+msgstr "Muestra"
+
+#: webui/templates/layout.html:54
+#: webui/templates/sidebar.html:61
+msgid "Users"
+msgstr "Usuarios"
+
+#: webui/templates/sidebar.html:8
+msgid "Search..."
+msgstr "Buscar..."
+
+#: webui/templates/sidebar.html:19
+#: webui/templates/general/index.html:2
+msgid "Dashboard"
+msgstr "Panel de control"
+
+#: webui/templates/sidebar.html:34
+#: webui/templates/general/index.html:142
+#: webui/templates/general/index.html:150
+#: webui/templates/samples/index.html:46
+msgid "View"
+msgstr "Ver"
+
+#: webui/templates/sidebar.html:36
+#: webui/templates/samples/view.html:8
+msgid "Basic Information"
+msgstr "Datos Básicos"
+
+#: webui/templates/sidebar.html:38
+#: webui/templates/samples/view.html:40
+msgid "Cross-References"
+msgstr "Referencias cruzadas"
+
+#: webui/templates/sidebar.html:40
+#: webui/templates/general/index.html:102
+#: webui/templates/samples/index.html:21
+#: webui/templates/samples/view.html:78
+msgid "Tags"
+msgstr "Etiquetas"
+
+#: webui/templates/sidebar.html:41
+#: webui/templates/samples/view.html:95
+msgid "Origins"
+msgstr "Orígenes"
+
+#: webui/templates/sidebar.html:42
+#: webui/templates/samples/view.html:121
+msgid "Hashes & Checksums"
+msgstr ""
+
+#: webui/templates/sidebar.html:49
+#: webui/templates/sidebar.html:65
+msgid "Browse"
+msgstr "Explorar"
+
+#: webui/templates/sidebar.html:50
+#: webui/templates/samples/submissions.html:2
+#: webui/templates/samples/submissions.html:3
+msgid "My submissions"
+msgstr "Mis envíos"
+
+#: webui/templates/sidebar.html:51
+#: webui/templates/sidebar.html:66
+msgid "Add new"
+msgstr "Añadir nuevo"
+
+#: webui/templates/general/index.html:3
+msgid "Aleph Web Interface"
+msgstr ""
+
+#: webui/templates/general/index.html:14
+msgid "Total Samples"
+msgstr "Muestras totales"
+
+#: webui/templates/general/index.html:21
+#: webui/templates/general/index.html:40
+#: webui/templates/general/index.html:58
+#: webui/templates/general/index.html:76
+msgid "More info"
+msgstr "Más información"
+
+#: webui/templates/general/index.html:33
+msgid "Samples in queue"
+msgstr "Muestras en la cola"
+
+#: webui/templates/general/index.html:51
+msgid "Samples being processed right now"
+msgstr "Muestras siendo procesados en este momento"
+
+#: webui/templates/general/index.html:69
+msgid "Samples processed"
+msgstr "Muestras procesadas"
+
+#: webui/templates/general/index.html:85
+msgid "Latest samples"
+msgstr "Últimas muestras"
+
+#: webui/templates/general/index.html:87
+msgid "View all samples"
+msgstr "Ver todas las muestras"
+
+#: webui/templates/general/index.html:92
+#: webui/templates/samples/index.html:8
+msgid "No samples on the database yet."
+msgstr "No hay muestras en la base de datos."
+
+#: webui/templates/general/index.html:96
+#: webui/templates/samples/index.html:15
+#: webui/templates/samples/submissions.html:13
+#: webui/templates/samples/view.html:99
+msgid "Timestamp"
+msgstr "Marca de tiempo"
+
+#: webui/templates/general/index.html:97
+#: webui/templates/general/index.html:140
+#: webui/templates/samples/index.html:16
+#: webui/templates/samples/submissions.html:14
+#: webui/templates/samples/view.html:13
+msgid "Status"
+msgstr ""
+
+#: webui/templates/general/index.html:98
+#: webui/templates/samples/index.html:17
+msgid "UUID"
+msgstr ""
+
+#: webui/templates/general/index.html:99
+#: webui/templates/samples/index.html:18
+msgid "Filenames"
+msgstr "Nombres de archivo"
+
+#: webui/templates/general/index.html:100
+#: webui/templates/samples/index.html:19
+#: webui/templates/samples/view.html:19
+#: webui/templates/samples/view.html:48
+msgid "MimeType"
+msgstr ""
+
+#: webui/templates/general/index.html:101
+#: webui/templates/samples/index.html:20
+#: webui/templates/samples/view.html:17
+#: webui/templates/samples/view.html:46
+msgid "Size"
+msgstr "Tamaño"
+
+#: webui/templates/general/index.html:108
+#: webui/templates/general/index.html:147
+#: webui/templates/general/index.html:148
+#: webui/templates/samples/index.html:28
+#: webui/templates/samples/submissions.html:23
+#: webui/templates/samples/submissions.html:24
+#: webui/templates/samples/view.html:14
+msgid "new"
+msgstr "nuevo"
+
+#: webui/templates/general/index.html:108
+#: webui/templates/general/index.html:148
+#: webui/templates/samples/index.html:28
+#: webui/templates/samples/submissions.html:24
+#: webui/templates/samples/view.html:14
+msgid "processing"
+msgstr "procesamiento"
+
+#: webui/templates/general/index.html:108
+#: webui/templates/general/index.html:148
+#: webui/templates/samples/index.html:28
+#: webui/templates/samples/submissions.html:24
+#: webui/templates/samples/view.html:14
+msgid "ready"
+msgstr "listo"
+
+#: webui/templates/general/index.html:109
+#: webui/templates/general/index.html:150
+#: webui/templates/samples/submissions.html:27
+#, python-format
+msgid "View report for sample %(sampleuuid)s"
+msgstr "Ver informe de muestra %(sampleuuid)s"
+
+#: webui/templates/general/index.html:129
+msgid "Latest submissions"
+msgstr "Últimos envíos"
+
+#: webui/templates/general/index.html:131
+msgid "View all submissions"
+msgstr "Ver todos los envíos"
+
+#: webui/templates/general/index.html:136
+#: webui/templates/samples/submissions.html:7
+msgid "No samples submitted."
+msgstr "No hay muestras enviadas."
+
+#: webui/templates/general/index.html:141
+#: webui/templates/samples/submissions.html:16
+#: webui/templates/samples/view.html:101
+msgid "Filename"
+msgstr "Nombre del archivo"
+
+#: webui/templates/samples/index.html:3
+msgid "Samples processed by Aleph"
+msgstr "Muestras procesadas por Aleph"
+
+#: webui/templates/samples/index.html:10
+msgid "No samples matching your query."
+msgstr "No hay muestras coincidan con su consulta."
+
+#: webui/templates/samples/index.html:22
+#: webui/templates/samples/index.html:41
+#: webui/templates/users/index.html:17
+msgid "Action"
+msgstr "Acción"
+
+#: webui/templates/samples/index.html:43
+msgid "Toggle Dropdown"
+msgstr ""
+
+#: webui/templates/samples/submissions.html:4
+msgid "Samples submitted by you"
+msgstr "Las muestras enviadas por usted"
+
+#: webui/templates/samples/submissions.html:15
+msgid "SHA256 Hash"
+msgstr ""
+
+#: webui/templates/samples/submissions.html:17
+#: webui/templates/samples/view.html:11
+#: webui/templates/samples/view.html:45
+msgid "Sample UUID"
+msgstr "UUID Muestra"
+
+#: webui/templates/samples/submissions.html:38
+msgid "Submit new sample"
+msgstr "Enviar nueva muestra"
+
+#: webui/templates/samples/submit.html:2
+#: webui/templates/samples/submit.html:3
+#: webui/templates/samples/submit.html:9
+msgid "Submit sample"
+msgstr "Enviar la muestra"
+
+#: webui/templates/samples/submit.html:4
+msgid "Submit a new sample for analysis"
+msgstr "Enviar una nueva muestra para el análisis"
+
+#: webui/templates/samples/view.html:2
+msgid "Sample"
+msgstr "Muestra"
+
+#: webui/templates/samples/view.html:3
+msgid "Extended sample information"
+msgstr "Información de la muestra extendida"
+
+#: webui/templates/samples/view.html:15
+msgid "Added On"
+msgstr "Añadido en"
+
+#: webui/templates/samples/view.html:21
+#: webui/templates/samples/view.html:47
+msgid "Mime"
+msgstr ""
+
+#: webui/templates/samples/view.html:23
+msgid "Known filenames"
+msgstr "Nombres de archivo conocidos"
+
+#: webui/templates/samples/view.html:44
+msgid "Relation"
+msgstr "Relación"
+
+#: webui/templates/samples/view.html:53
+msgid "Parent"
+msgstr "Padres"
+
+#: webui/templates/samples/view.html:54
+#, python-format
+msgid "View parent sample %(uuid)s"
+msgstr "Ver muestra padres %(uuid)s"
+
+#: webui/templates/samples/view.html:62
+msgid "Child"
+msgstr "Niño"
+
+#: webui/templates/samples/view.html:63
+#, python-format
+msgid "View child sample %(uuid)s"
+msgstr "Ver muestra niños %(uuid)s"
+
+#: webui/templates/samples/view.html:81
+msgid "This sample has no tags."
+msgstr "Esta muestra no tiene etiquetas."
+
+#: webui/templates/samples/view.html:100
+msgid "Provider"
+msgstr "Proveedor"
+
+#: webui/templates/samples/view.html:102
+msgid "Reference"
+msgstr "Referencia"
+
+#: webui/templates/samples/view.html:140
+msgid "Plugin Information"
+msgstr "Información de Plugin"
+
+#: webui/templates/samples/view.html:159
+#: webui/templates/samples/view.html:163
+#: webui/templates/samples/view.html:169
+#, python-format
+msgid "Search all samples for '%(keyname)s' with value '%(valuename)s'"
+msgstr "Buscar todas las muestras para '%(keyname)s' con valor '%(valuename)s'"
+
+#: webui/templates/users/change_password.html:2
+#: webui/templates/users/change_password.html:10
+#: webui/templates/users/settings.html:13
+msgid "Change password"
+msgstr "Cambiar la contraseña"
+
+#: webui/templates/users/change_password.html:3
+#: webui/templates/users/login.html:17
+#: aleph/webui/forms.py:11
+#: aleph/webui/forms.py:50
+#: aleph/webui/forms.py:58
+msgid "Password"
+msgstr "Contraseña"
+
+#: webui/templates/users/edit.html:2
+#: webui/templates/users/edit.html:3
+#: webui/templates/users/edit.html:17
+msgid "Edit user account"
+msgstr "Editar cuenta de usuario"
+
+#: webui/templates/users/index.html:2
+#: webui/templates/users/index.html:3
+msgid "System users"
+msgstr "Usuarios del sistema"
+
+#: webui/templates/users/index.html:6
+msgid "No users on system yet."
+msgstr "No hay usuarios en el sistema."
+
+#: webui/templates/users/index.html:12
+msgid "ID"
+msgstr ""
+
+#: webui/templates/users/index.html:13
+msgid "Name"
+msgstr "Nombre"
+
+#: webui/templates/users/index.html:14
+#: aleph/webui/forms.py:18
+msgid "Email"
+msgstr ""
+
+#: webui/templates/users/index.html:15
+msgid "Premium user"
+msgstr "Usuario premium"
+
+#: webui/templates/users/index.html:16
+msgid "Superuser"
+msgstr "Superusuario"
+
+#: webui/templates/users/index.html:55
+msgid "Add new user"
+msgstr "Añadir un nuevo usuario"
+
+#: webui/templates/users/login.html:6
+#: webui/templates/users/login.html:10
+msgid "Sign In"
+msgstr "Ingresar"
+
+#: webui/templates/users/login.html:14
+msgid "User ID"
+msgstr "ID de usuario"
+
+#: webui/templates/users/login.html:21
+msgid "Remember me"
+msgstr "Acuérdate de mí"
+
+#: webui/templates/users/login.html:25
+msgid "Sign me in"
+msgstr "Me Ingresa"
+
+#: webui/templates/users/login.html:26
+msgid "Register a new account"
+msgstr "Registrar una cuenta nueva"
+
+#: webui/templates/users/mail_register.html:3
+#, python-format
+msgid "Hello %(firstname)s %(lastname)s"
+msgstr "Hola %(firstname)s %(lastname)s"
+
+#: webui/templates/users/mail_register.html:5
+#: aleph/webui/views/users.py:251
+#, python-format
+msgid "Welcome to %(appname)s"
+msgstr "Bienvenido a %(appname)s"
+
+#: webui/templates/users/mail_register.html:7
+msgid "To activate your account click (or copy and paste into a browser) the link below:"
+msgstr "Para activar su cuenta, haga clic (o copiar y pegar en el navegador) en el siguiente enlace:"
+
+#: webui/templates/users/mail_register.html:11
+msgid "Regards,"
+msgstr "Saludos,"
+
+#: webui/templates/users/new.html:2
+#: webui/templates/users/new.html:3
+msgid "New user account"
+msgstr "Nueva cuenta de usuario"
+
+#: webui/templates/users/new.html:17
+msgid "Add user account"
+msgstr "Google Translate"
+
+#: webui/templates/users/register.html:6
+msgid "Register"
+msgstr "Regístrate"
+
+#: webui/templates/users/register.html:10
+msgid "Register new account"
+msgstr "Regístrate una nueva cuenta"
+
+#: webui/templates/users/register.html:22
+msgid "Sign me up"
+msgstr "Registrarme"
+
+#: webui/templates/users/register.html:23
+msgid "I already have a membership"
+msgstr "Ya tengo una suscripción"
+
+#: webui/templates/users/settings.html:2
+#: webui/templates/users/settings.html:3
+msgid "Edit user settings"
+msgstr "Editar la configuración de usuario"
+
+#: webui/templates/users/settings.html:12
+msgid "Save settings"
+msgstr "Guardar la configuración"
+
+#: aleph/webui/__init__.py:24
+msgid "Please log in to access this page."
+msgstr "Por favor, inicie sesión para acceder a esta página."
+
+#: aleph/webui/forms.py:10
+#: aleph/webui/forms.py:46
+msgid "Username"
+msgstr "Nombre de usuario"
+
+#: aleph/webui/forms.py:15
+msgid "First Name"
+msgstr "Primer Nombre"
+
+#: aleph/webui/forms.py:15
+msgid "First name must be between 2 and 30 characters long"
+msgstr "Nombre debe tener entre 2 y 30 caracteres"
+
+#: aleph/webui/forms.py:16
+msgid "Last Name"
+msgstr "Apellido"
+
+#: aleph/webui/forms.py:16
+msgid "Last name must be between 2 and 255 characters long"
+msgstr "Apellidos debe tener entre 2 y 255 caracteres"
+
+#: aleph/webui/forms.py:28
+msgid "Language"
+msgstr "Idioma"
+
+#: aleph/webui/forms.py:29
+msgid "Timezone"
+msgstr "Zona Horaria"
+
+#: aleph/webui/forms.py:31
+#: aleph/webui/views/users.py:47
+msgid "Account enabled"
+msgstr "Cuenta habilitada"
+
+#: aleph/webui/forms.py:34
+msgid "Regular account"
+msgstr "Cuenta regular"
+
+#: aleph/webui/forms.py:35
+msgid "Premium account"
+msgstr "Cuenta premium"
+
+#: aleph/webui/forms.py:36
+msgid "Superuser account"
+msgstr "Cuenta de superusuario"
+
+#: aleph/webui/forms.py:39
+msgid "Account Type"
+msgstr "Tipo de cuenta"
+
+#: aleph/webui/forms.py:41
+msgid "Token"
+msgstr ""
+
+#: aleph/webui/forms.py:42
+msgid "API Key"
+msgstr ""
+
+#: aleph/webui/forms.py:46
+msgid "Only alphanumeric characters valid"
+msgstr "Caracteres alfanuméricos sólo válido"
+
+#: aleph/webui/forms.py:52
+#: aleph/webui/forms.py:60
+msgid "Passwords must match"
+msgstr "Las contraseñas deben coincidir"
+
+#: aleph/webui/forms.py:54
+#: aleph/webui/forms.py:62
+msgid "Confirm password"
+msgstr "Confirmar contraseña"
+
+#: aleph/webui/forms.py:57
+msgid "Current password"
+msgstr "Contraseña actual"
+
+#: aleph/webui/views/samples.py:73
+#, python-format
+msgid "Cannot write to folder: %(folderpath)s"
+msgstr "No se puede escribir en la carpeta: %(folderpath)s"
+
+#: aleph/webui/views/samples.py:77
+msgid "No file submitted."
+msgstr "No se presentó archivo."
+
+#: aleph/webui/views/samples.py:87
+#, python-format
+msgid "Sample %(samplename)s (%(samplesize)s) is bigger than maximum file size allowed: %(maxsize)s"
+msgstr "Muestra %(samplename)s (%(samplesize)s) es más grande que el tamaño máximo de archivo permitido: %(maxsize)s"
+
+#: aleph/webui/views/samples.py:91
+#, python-format
+msgid "Sample %(samplename)s (%(samplesize)s) is smaller than minimum file size allowed: %(minsize)s"
+msgstr "Muestra %(samplename)s (%(samplesize)s) es más pequeño que el tamaño de archivo mínimo permitido: %(minsize)s"
+
+#: aleph/webui/views/samples.py:99
+msgid "File already submitted."
+msgstr "Archivo ya presentado."
+
+#: aleph/webui/views/samples.py:131
+msgid "Sample submitted successfully"
+msgstr "Muestra enviado correctamente"
+
+#: aleph/webui/views/users.py:67
+msgid "Account disabled"
+msgstr "Cuenta deshabilitada"
+
+#: aleph/webui/views/users.py:99
+msgid "User added successfully"
+msgstr "Usuario añadido correctamente"
+
+#: aleph/webui/views/users.py:140
+msgid "User updated successfully"
+msgstr "Usuario actualizado correctamente"
+
+#: aleph/webui/views/users.py:175
+msgid "Settings updated successfully"
+msgstr "Ajustes actualizado correctamente"
+
+#: aleph/webui/views/users.py:204
+msgid "Current password doesn't match"
+msgstr "La contraseña actual no coincide"
+
+#: aleph/webui/views/users.py:209
+msgid "Password changed successfully"
+msgstr "Contraseña cambiada con éxito"
+
+#: aleph/webui/views/users.py:231
+msgid "Email address already registered"
+msgstr "Endereço de correo electrónico já cadastrado"
+
+#: aleph/webui/views/users.py:258
+msgid "Account created successfully. Please check your email for instructions on activating your account"
+msgstr "Cuenta creada con éxito. Por favor revise su correo electrónico para obtener instrucciones sobre cómo activar tu cuenta"
+
+#: aleph/webui/views/users.py:280
+msgid "Account activated. Please login below"
+msgstr "Cuenta activa. Por favor ingresa abajo"
+
+#: aleph/webui/views/users.py:296
+#: aleph/webui/views/users.py:301
+msgid "Invalid credentials"
+msgstr "Credenciales no válidas"
+
+#: aleph/webui/views/users.py:305
+msgid "You have been successfully signed in"
+msgstr "Usted ha sido suscrito con éxito"
+
+#: aleph/webui/views/users.py:310
+msgid "Cannot sign in"
+msgstr "No se puede ingressar"
+

@@ -1,0 +1,123 @@
+ul.treeview-menu ul {
+    font-size: 0.8em;
+    list-style: none;
+}
+
+ul.treeview-menu ul li {
+    margin-bottom: 5px;
+}
+ul.treeview-menu ul a {
+    color: #3c8dbc;
+    display: block;
+}
+ul.treeview-menu ul a:hover {
+    color: #FFF;
+}
+
+.panel-body button i {
+    margin-right: 5px;
+}
+
+.plugin-info dd, 
+.plugin-info dt  {
+    margin-bottom: 10px;
+}
+.plugin-info dd ul {
+    list-style: none;
+    padding-left: 0px;
+    width: 100%;
+}
+.plugin-info dd ul li {
+    display: inline-block;
+    margin-bottom: 5px !important;
+    width: 33%
+}
+
+.plugin-info dd ul dl {
+    margin-left: 0;
+    padding: none;
+}
+
+.plugin-info dd ul dl dt {
+    text-align: left;
+}
+.plugin-info dd ul dl dd {
+    margin-left: 10%;
+}
+
+a.logo {
+    padding-top: 5px;
+    font-size: 2em !important;
+}
+.user-header {
+    height: 100px !important;
+}
+
+span.sample-processing {
+    background-color: #FFCC33;
+}
+
+span.sample-ready {
+    background-color: #33CCFF;
+}
+
+a.logo,
+.form-box a.brand {
+    display: block;
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 1px 1px 4px #000;
+    font-family: Montserrat !important;
+    text-transform: uppercase;
+    font-size: 2.8em;
+    color: #FFF;
+}
+
+h1,h2,h3,h4,h5 {
+}
+
+tr.disabled-user td {
+    text-decoration: line-through;
+}
+.user-footer i {
+    margin-right: 5px;
+}
+
+#error-box {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    margin-top: -220px;
+    height: 400px;
+    left: 50%;
+    margin-left: -175px;
+    width: 350px;
+}
+#error-box h2 {
+    font-size: 8em;
+    text-shadow: 1px 1px 8px #000;
+}
+#error-box h3 {
+    margin: 30px 0px 10px 0px;
+}
+#error-box form {
+    margin-top: 30px;
+}
+
+div.panel-body ul li {
+    margin: 0;
+    padding: 0;
+}
+div.panel-body ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#submit-sample-form input {
+    padding: 10px;
+    height: auto;
+}
+
+.align-right {
+    text-align: right;
+}

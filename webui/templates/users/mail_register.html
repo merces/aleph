@@ -1,0 +1,12 @@
+<h1>&alefsym; {{ config.APP_TITLE }}</h1>
+
+{{ _('Hello %(firstname)s %(lastname)s', firstname=user.first_name, lastname=user.last_name) }}
+
+<h2>{{ _('Welcome to %(appname)s', appname= config.APP_TITLE) }}</h2>
+
+<p>{{ _('To activate your account click (or copy and paste into a browser) the link below:') }}</p>
+
+<p><a href="{{ url_for('users.activate', token=user.token, _external=True) }}">{{ url_for('users.activate', token=user.token, _external=True) }}</a></p>
+
+<p>{{ _('Regards,') }}<br />
+{{ config.APP_TITLE }}</p>

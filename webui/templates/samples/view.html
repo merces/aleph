@@ -1,0 +1,206 @@
+{% extends 'layout.html' %}
+{% block title %}{{ _('Sample') }} {{ sample.uuid }}{% endblock %}
+{% block description %}{{ _('Extended sample information') }}{% endblock %}
+{% block body %}
+<! -- Basic Information -->
+<a name="basic-info"></a>
+<div class="panel panel-default">
+    <div class="panel-heading">{{ _('Basic Information') }}</div>
+    <div class="panel-body">
+        <dl class="dl-horizontal">
+            <dt>{{ _('Sample UUID') }}</dt>
+            <dd>{{ sample.uuid }}</dd>
+            <dt>{{ _('Status') }}</dt>
+            <dd>{% if sample.status == 0 %}<span class="badge sample-new">{{ _('new') }}</span>{% elif sample.status == 1%}<span class="badge sample-processing">{{ _('processing') }}</span>{% elif sample.status == 2 %}<span class="badge sample-ready">{{ _('ready') }}</span>{% endif %}</dd>
+            <dt>{{ _('Added On') }}</dt>
+            <dd>{{ sample.timestamp|str2utc|datetimeformat }}</dd>
+            <dt>{{ _('Size') }}</dt>
+            <dd>{{ sample.size|humansize }} ({{ sample.size }} bytes)</dd>
+            <dt>{{ _('MimeType') }}</dt>
+            <dd>{{ sample.mimetype }}</dd>
+            <dt>{{ _('Mime') }}</dt>
+            <dd>{{ sample.mime }}</dd>
+            <dt>{{ _('Known filenames') }}</dt>
+            <dd>
+            <ul>
+            {% for source in sample.sources %}
+                <li>{{ source.filename }}</li>
+            {% endfor %}
+            </ul>
+            </dd>
+
+        </dl>
+    </div><!--/.panel-body-->
+</div><!--/.panel-->
+
+<!-- Cross References -->
+{% if sample.xrefs.parent|count > 0 or sample.xrefs.child|count > 0 %}
+<a name="xrefs"></a>
+<div class="panel panel-default">
+    <div class="panel-heading">{{ _('Cross-References') }}</div>
+    <div class="panel-body">
+<table class="table">
+    <thead>
+        <th width="6%">{{ _('Relation') }}</th>
+        <th>{{ _('Sample UUID') }}</th>
+        <th width="6%">{{ _('Size') }}</th>
+        <th width="15%">{{ _('Mime') }}</th>
+        <th width="30%">{{ _('MimeType') }}</th>
+    </thead>
+    <tbody>
+{% for ref in sample.xrefs.parent %}
+        <tr>
+            <td>{{ _('Parent') }}</td>
+            <td><a title="{{ _('View parent sample %(uuid)s', uuid=ref) }}" href="{{ url_for('samples.view', uuid = ref) }}">{{ ref }}</a></td>
+            <td>{{ xrefs_info[ref].size|humansize }}</td>
+            <td>{{ xrefs_info[ref].mimetype }}</td>
+            <td>{{ xrefs_info[ref].mime }}</td>
+        </tr>
+{% endfor %}
+{% for ref in sample.xrefs.child %}
+        <tr>
+            <td>{{ _('Child') }}</td>
+            <td><a title="{{ _('View child sample %(uuid)s', uuid=ref) }}" href="{{ url_for('samples.view', uuid = ref) }}">{{ ref }}</a></td>
+            <td>{{ xrefs_info[ref].size|humansize }}</td>
+            <td>{{ xrefs_info[ref].mimetype }}</td>
+            <td>{{ xrefs_info[ref].mime }}</td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+    </div>
+</div>
+
+{% endif %}
+<! -- Tag Information -->
+<a name="tags"></a>
+<div class="panel panel-default">
+    <div class="panel-heading">{{ _('Tags') }}</div>
+    <div class="panel-body">
+{% if sample.tags|count == 0 %}
+{{ _('This sample has no tags.') }}
+{% else %}
+{% for tag in sample.tags %}
+<a href="{{ url_for('samples.index') }}?search=tags:{{ tag }}"><button class="btn-sm btn btn-default"><i class="fa fa-tag"></i> {{ tag }}</button></a>
+{% endfor %}
+{% endif %}
+        </dl>
+    </div><!--/.panel-body-->
+</div><!--/.panel-->
+
+
+<! -- Source Information -->
+<a name="source-info"></a>
+<div class="panel panel-default">
+    <div class="panel-heading">{{ _('Origins') }}</div>
+    <div class="panel-body">
+        <table class="table">
+            <thead>
+                <th width="15%">{{ _('Timestamp') }}</th>
+                <th width="10%">{{ _('Provider') }}</th>
+                <th width="40%">{{ _('Filename') }}</th>
+                <th>{{ _('Reference') }}</th>
+            </thead>
+            <tbody>
+{% for source in sample.sources %}
+    <tr>
+    <td>{{ source.timestamp|str2utc|datetimeformat }}</td>
+    <td>{{ source.provider }}</td>
+    <td>{{ source.filename }}</td>
+    <td>{{ source.reference }}</td>
+    </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div><!--/.panel-body-->
+</div><!--/.panel-->
+
+<! -- Hashes Information -->
+<a name="hashes-checksums"></a>
+<div class="panel panel-default">
+    <div class="panel-heading">{{ _('Hashes & Checksums') }}</div>
+    <div class="panel-body">
+        <dl class="dl-horizontal">
+            <dt>MD5</dt>
+            <dd>{{ sample.hashes.md5 }}</dd>
+            <dt>SHA1</dt>
+            <dd>{{ sample.hashes.sha1 }}</dd>
+            <dt>SHA256</dt>
+            <dd>{{ sample.hashes.sha256 }}</dd>
+            <dt>SHA512</dt>
+            <dd>{{ sample.hashes.sha512 }}</dd>
+            <dt>CRC32</dt>
+            <dd>{{ sample.hashes.crc32 }}</dd>
+            <dt>SSDEEP</dt>
+            <dd>{{ sample.hashes.ssdeep }}</dd>
+        </dl>
+    </div><!--/.panel-body-->
+</div><!--/.panel-->
+
+<h2>{{ _('Plugin Information') }}</h2>
+{% for plugin_name, plugin_data in sample.data.iteritems() %}
+<! -- Plugin Information -->
+<a name="plugin-{{ plugin_name }}"></a>
+<div class="panel panel-default">
+    <div class="panel-heading">{{ plugin_name|replace('_',' ')|capitalize }}</div>
+    <div class="panel-body">
+        <dl class="plugin-info dl-horizontal">
+        {% for item_name, item_value in plugin_data.iteritems() %}
+            <dt>{{ item_name|replace('_',' ')|capitalize }}</dt>
+            <dd>
+{% if item_value is not number and item_value is not string %}
+{% if item_value|count > 0 and item_value.0 is mapping %}
+<table class="table table-striped">
+    <thead>
+        {% for k,v in item_value.0.iteritems() %}
+        <th>{{ k|replace('_',' ')|capitalize }}</th>
+        {% endfor %}
+    </thead>
+    <tbody>
+        {% for item in item_value %}
+        <tr>
+        {% for k,v in item.iteritems() %}
+        <td><a href="{{ url_for('samples.index') }}?search=data.{{ plugin_name }}.{{ item_name|lower }}.{{ k|lower }}:{{ v }}" title="{{ _('Search all samples for \'%(keyname)s\' with value \'%(valuename)s\'', keyname=plugin_name+'.'+item_name|lower+'.'+k|lower, valuename = v) }}">{{ v }}</a></td>
+        {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% elif item_value is mapping %}
+{% for k in item_value %}
+<h4>{{ k|lower }}</h4>
+<table class="table table-striped">
+    <thead>
+        {% for ik,iv in item_value[k].0.iteritems() %}
+        <th>{{ ik|replace('_',' ')|capitalize }}</th>
+        {% endfor %}
+    </thead>
+    <tbody>
+{% for item in item_value[k] %}
+    <tr>
+        {% for item_k,item_v in item.iteritems() %}
+        <td><a href="{{ url_for('samples.index') }}?search=data.{{ plugin_name }}.{{ item_name|lower }}.{{ k|lower }}.{{ item_k|lower }}:{{ item_v }}">{{ item_v }}</a></td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
+{% endfor %}
+{% else %}
+<ul>
+        {% for item in item_value %}
+        <li><a href="{{ url_for('samples.index') }}?search=data.{{ plugin_name }}.{{ item_name|lower }}:{{ item }}" title="{{ _('Search all samples for \'%(keyname)s\' with value \'%(valuename)s\'', keyname=plugin_name+'.'+item_name|lower, valuename = item) }}">{{ item }}</a></li>
+        {% endfor %}
+        </ul>
+{% endif %}
+{% else %}
+<a href="{{ url_for('samples.index') }}?search=data.{{ plugin_name }}.{{ item_name|lower }}:{{ item_value }}" title="{{ _('Search all samples for \'%(keyname)s\' with value \'%(valuename)s\'', keyname=plugin_name+'.'+item_name|lower, valuename = item_value) }}">{{ item_value }}</a>
+{% endif %}
+</dd>
+        {% endfor %}
+        </dl>
+    </div><!--/.panel-body-->
+</div><!--/.panel-->
+{% endfor %}
+
+{% endblock %}

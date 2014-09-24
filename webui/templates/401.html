@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block variables %}
+{% set class_html = 'bg-black' %}
+{% set class_body = 'bg-black' %}
+{% endblock %}
+{% block title %}{{ _('Access denied') }}{% endblock %}
+{% block body %}
+<div class="form-box" id="error-box">
+            <a class="brand">&alefsym; {{ config.APP_TITLE }}</a>
+            <h2 class="headline">401</h2>
+            <h3><i class="fa fa-ban text-red"></i> Access denied.</h3>
+            <p>
+                {{ _('You don\'t have access to this page.') }}
+            </p>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+            <div class="margin text-center">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            </div>
+{% endif %}
+{% endwith %}
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+{% block title %}{{ _('System users') }}{% endblock %}
+{% block pagetitle %}{{ _('System users') }}{% endblock %}
+{% block body %}
+{% if users.items|count  == 0 %}
+<div class="alert alert-info" role="alert">{{ _('No users on system yet.') }}</div>
+{% else %}
+<div class="panel panel-default">
+  <div class="panel-body">
+<table class="table" >
+    <thead>
+        <th width="1%">{{ _('ID') }}</th>
+        <th>{{ _('Name') }}</th>
+        <th width="30%">{{ _('Email') }}</th>
+        <th width="1%"><span title="{{ _('Premium user') }}" class="glyphicon glyphicon-star"></span><span class="sr-only">{{ _('Premium user') }}</span></th>
+        <th width="1%"><span title="{{ _('Superuser') }}" class="glyphicon glyphicon-flash"></span><span class="sr-only">{{ _('Superuser') }}</span></th>
+        <th width="13%">{{ _('Action') }}</th>
+    </thead>
+    <tbody>
+{% for user in users.items %}
+        <tr{% if not user.active %} class="disabled-user"{% endif %}>
+            <td>{{ user.id }}</td>
+            <td>{{ user.first_name }} {{ user.last_name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{% if user.is_premium %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}</td>
+            <td>{% if user.is_admin %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}</td>
+            <td>
+<!-- Single button -->
+<div class="btn-group">
+  <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+    Action <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li><a href="{{ url_for('users.edit', user_id = user.id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a></li>
+    <li><a href="{{ url_for('users.changepw', user_id = user.id) }}"><i class="glyphicon glyphicon-lock"></i>Change Password</a></li>
+    <li class="divider"></li>
+{% if user.active %}
+    <li><a href="{{ url_for('users.disable', user_id = user.id) }}"><i class="glyphicon glyphicon-ban-circle"></i> Disable</a></li>
+{% else %}
+    <li><a href="{{ url_for('users.enable', user_id = user.id) }}"><i class="glyphicon glyphicon-ok"></i>Enable</a></li>
+{% endif %}
+  </ul>
+</div>
+            </td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+{% from "_paginationhelpers.html" import render_pagination %}
+{{ render_pagination(users, 'users.index') }}
+<hr />
+{% endif %}
+<a href="{{ url_for('users.add') }}"><button class="btn btn-primary">{{ _('Add new user') }}</button></a>
+{% endblock %}
