@@ -42,8 +42,9 @@ class PluginBase(object):
         if 'enabled' not in self.options:
             self.options['enabled'] = False
         
-        self.validate_options()
-        self.setup()
+        if self.options['enabled']:
+            self.validate_options()
+            self.setup()
 
     # @@ OVERRIDE ME
     def setup(self):
