@@ -14,6 +14,9 @@ The main Aleph daemon is a loose-coupled python application and library. These a
 
 ## Installing Aleph
 ### Requirements
+In order to get a clean and nice install, you should download some requirements:
+Ubuntu/Debian
+    apt-get install python-dev libffi-dev python-pip virtualenv
 #### ElasticSearch
 First if you don't have an [Elasticsearch](www.elasticsearch.org) instance ready, you must install one. 
 
@@ -35,7 +38,7 @@ There will be the environment name (venv) appended to your PS1 variable:
 
 All python modules required are listed on the _requirements.txt_ file on the root repository folder. You can install all of them at once using _pip_:
 
-    pip install -r < requirements.txt
+    pip install -r requirements.txt
 
 Then clone the repository and copy the settings file:
 
@@ -75,6 +78,7 @@ Edit the "SERVER_NAME" constant at your settings.py file.
 	ex: SERVER_NAME = 'mydomain.com:90'
 	
 then create the following entry:
+
 	SECRET_KEY = 'Pu7s0m3cryp7l337here' #do not use this ;)
 
 Setup your database:
