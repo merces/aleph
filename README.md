@@ -18,13 +18,14 @@ In order to get a clean and nice install, you should download some requirements:
 Ubuntu/Debian
 
 	apt-get install python-pyrex libffi-dev libfuzzy-dev python-dateutil libsqlite3-dev
-	easy_install dateutil.parser
 	
 
 #### ElasticSearch
 First if you don't have an [Elasticsearch](www.elasticsearch.org) instance ready, you must install one. 
 
 For Debian/Ubuntu/Redhat/Fedora/CentOS (yum + apt basically) users, follow [this guide](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-repositories.html).
+
+** Remember: Elasticsearh uses JVM, so you also must install it =) **
 
 #### Python modules
 We strongly suggest that you use python's virtual environment so you don't pollute the rest of your OS installation with python modules. To make a contained virtual environment, install _virtualenv_ with _pip_:
@@ -84,6 +85,7 @@ Edit the "SERVER_NAME" constant at your settings.py file.
 then create the following entry:
 
 	SECRET_KEY = 'Pu7s0m3cryp7l337here' #do not use this ;)
+	SAMPLE_SUBMIT_FOLDER= '/some/path' #where samples will be submitted from webui
 
 Setup your database:
 
