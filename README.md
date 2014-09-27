@@ -16,9 +16,10 @@ The main Aleph daemon is a loose-coupled python application and library. These a
 ### Requirements
 In order to get a clean and nice install, you should download some requirements:
 Ubuntu/Debian
-    
-    apt-get install build-essential libffi-dev python-dev libfuzzy-dev automake autoconf python-sqlite libsqlite3-dev python-dateutil
-    easy_install  python-magic urllib3 pytz dateutil.parser
+
+	apt-get install python-pyrex libffi-dev libfuzzy-dev python-dateutil libsqlite3-dev
+	easy_install dateutil.parser
+	
 
 #### ElasticSearch
 First if you don't have an [Elasticsearch](www.elasticsearch.org) instance ready, you must install one. 
