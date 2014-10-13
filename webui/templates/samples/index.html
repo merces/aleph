@@ -9,7 +9,7 @@
 {% elif samples|count == 0 %}
 <p>{{ _('No samples matching your query.') }}</p>
 {% else %}
-
+<div class="table-responsive">
     <table class="table table-striped table-hover">
     <thead>
         <th width="13%">{{ _('Timestamp') }}</th>
@@ -29,7 +29,7 @@
             <td>{{ sample.uuid|truncate(10, True) }}</td>
             <td>
             {% for source in sample.sources %}
-                {{ source.filename }}
+                {{ source.filename|truncate(10, True) }}
             {% endfor %}
             </td>
             <td>{{ sample.mimetype }}</td>
@@ -53,6 +53,7 @@
     </tbody>
     </table>
     {% endif %}
+</div>
     </div><!--/.panel-body-->
 </div><!--/.panel-->
 <ul class=pagination>

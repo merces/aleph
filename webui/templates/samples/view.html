@@ -142,7 +142,11 @@
 <! -- Plugin Information -->
 <a name="plugin-{{ plugin_name }}"></a>
 <div class="panel panel-default">
-    <div class="panel-heading">{{ plugin_name|replace('_',' ')|capitalize }}</div>
+    <div class="panel-heading">
+	<a data-toggle="collapse" data-parent="#accordion" href="#{{ plugin_name }}">
+	{{ plugin_name|replace('_',' ')|capitalize }}
+</a></div>
+	<div id="{{ plugin_name }}" class="panel-collapse collapse in">
     <div class="panel-body">
         <dl class="plugin-info dl-horizontal">
         {% for item_name, item_value in plugin_data.iteritems() %}
@@ -200,6 +204,7 @@
         {% endfor %}
         </dl>
     </div><!--/.panel-body-->
+</div>
 </div><!--/.panel-->
 {% endfor %}
 
