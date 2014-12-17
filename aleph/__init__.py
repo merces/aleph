@@ -35,7 +35,10 @@ class AlephServer(object):
         self.stop_services()
 
     def init_db(self):
-        es.setup()
+        try:
+            es.setup()
+        except Exception, e:
+            raise elasticsearch.exceptions.ConnectionError("Unable to connect to elasticsearch database")
 
 
     def create_directories(self):
