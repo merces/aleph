@@ -27,7 +27,7 @@ class FileCollector(CollectorBase):
         except KeyboardInterrupt:
             pass
 
-import email, imaplib, tempfile
+import email, imaplib, tempfile, hashlib
 
 class MailCollector(CollectorBase):
 
@@ -61,20 +61,17 @@ class MailCollector(CollectorBase):
 
     def process_message(self, message_parts):
 
+
         email_body = message_parts[0][1]
         mail = email.message_from_string(email_body)
 
-        for part in mail.walk():
-            if part.get_content_maintype() == 'multipart':
-                continue
-            if part.get('Content-Disposition') is None:
-                continue
-            filename = part.get_filename()
- 
-            if bool(filename):
-                temp_file = tempfile.NamedTemporaryFile(dir=SAMPLE_TEMP_DIR, suffix='_%s' % filename, delete=False)
-                temp_file.write(part.get_payload(decode=True))
-                self.create_sample(temp_file.name, (filename, mail['from']))
+        filename = "%s.eml" % hashlib.sha256(email_body).hexdigest()
+
+        temp_file = tempfile.NamedTemporaryFile(dir=SAMPLE_TEMP_DIR, suffix='_%s' % filename, delete=False)
+        temp_file.write(email_body)
+        temp_file.close()
+        
+        self.create_sample(temp_file.name, (filename, mail['from']))
 
     def collect(self):
 

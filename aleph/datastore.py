@@ -77,6 +77,8 @@ class DataStore(object):
 
     def search(self, query):
 
+        result = []
+
         try:
             result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', body={'query': {'term': query } })
         except NotFoundError:

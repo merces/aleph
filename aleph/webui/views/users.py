@@ -11,6 +11,7 @@ from aleph.webui.forms import LoginForm, NewUserForm, UserForm, BasicUserForm, C
 from aleph.constants import ACCOUNT_DISABLED, ACCOUNT_ENABLED
 
 from sqlalchemy import and_
+from sqlalchemy.exc import OperationalError
 
 
 mod = Blueprint('users', __name__, url_prefix='/users')
@@ -225,38 +226,50 @@ def register():
 
     if form.validate_on_submit():
 
-        exists = User.query.filter(User.email == form.email.data).first()
+        try:
+            exists = User.query.filter(User.email == form.email.data).first()
 
-        if exists:
-            flash(gettext('Email address already registered'))
-        else:
-            user = User(
-                login=form.login.data,
-                email=form.email.data,
-                password = hash_password(form.login.data, form.password.data),
-                active = ACCOUNT_DISABLED
-            )
-
-            user.first_name = form.first_name.data
-            user.last_name = form.last_name.data
-
-            user.locale = str(get_locale())
-            user.timezone = str(get_timezone())
-
-            db.session.add(user)
-            db.session.commit()
-
-            # Send email
-            send_email(
-                gettext('Welcome to %(appname)s', appname = app.config.get('APP_TITLE')),
-                app.config.get('MAIL_SENDER'),
-                [form.email.data],
-                render_template('users/mail_register.txt', user=user),
-                render_template('users/mail_register.html', user=user),
+            if exists:
+                flash(gettext('Email address already registered'))
+            else:
+                user = User(
+                    login=form.login.data,
+                    email=form.email.data,
+                    password = hash_password(form.login.data, form.password.data),
+                    active = ACCOUNT_DISABLED
                 )
 
-            flash(gettext('Account created successfully. Please check your email for instructions on activating your account'))
-            return redirect(url_for('users.login'))
+                user.first_name = form.first_name.data
+                user.last_name = form.last_name.data
+
+                user.locale = str(get_locale())
+                user.timezone = str(get_timezone())
+
+                db.session.add(user)
+                db.session.commit()
+
+                # Send email
+                sent = send_email(
+                    gettext('Welcome to %(appname)s', appname = app.config.get('APP_TITLE')),
+                    app.config.get('MAIL_SENDER'),
+                    [form.email.data],
+                    render_template('users/mail_register.txt', user=user),
+                    render_template('users/mail_register.html', user=user),
+                )
+
+                if sent:
+                    flash(gettext('Account created successfully. Please check your email for instructions on activating your account'))
+                else:
+                    flash(gettext('Account created successfully but there were server-side errors while sending the email activation code. Your account needs to be manually activated.'))
+
+                return redirect(url_for('users.login'))
+
+        except OperationalError:
+            if app.config.get('DEBUG'):
+                flash(gettext('Error creating user. Database not set'))
+                return redirect(url_for('users.login'))
+            else:
+                abort(500)
 
     return render_template('users/register.html', form=form, hide_sidebar=True, hide_header=True, class_body='bg-black', class_html ='bg-black')
 

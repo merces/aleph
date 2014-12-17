@@ -22,10 +22,11 @@ SAMPLE_MIN_FILESIZE=1024 # bytes
 SAMPLE_MAX_FILESIZE=(1024*1024*30) # bytes
 
 # Mail Options
+MAIL_ENABLE = False
 MAIL_SERVER = 'smtp.googlemail.com'
-MAIL_PORT = 465
-MAIL_USE_TLS = False
-MAIL_USE_SSL = True
+MAIL_PORT = 587
+MAIL_USE_TLS = True
+MAIL_USE_SSL = False
 MAIL_USERNAME = 'your-gmail-username'
 MAIL_PASSWORD = 'your-gmail-password'
 MAIL_SENDER = 'Your Name <%s>' % MAIL_USERNAME
