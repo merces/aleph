@@ -18,7 +18,7 @@ SAMPLE_STORAGE_DIR = '/opt/aleph/samples'
 
 SAMPLE_MANAGERS=2 # Simultaneous sample analysis
 
-SAMPLE_MIN_FILESIZE=1024 # bytes
+SAMPLE_MIN_FILESIZE=40 # bytes
 SAMPLE_MAX_FILESIZE=(1024*1024*30) # bytes
 
 # Mail Options

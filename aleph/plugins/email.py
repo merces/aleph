@@ -32,8 +32,12 @@ class EmailPlugin(PluginBase):
                     self.create_sample(temp_file.name, filename)
 
 
+        headers = []
+        for item in mail.items():
+            headers.append({'name': item[0], 'value': item[1]})
+
         return {
-            'headers': mail.items(),
+            'headers': headers,
             'from': mail.get('From'),
             'to': mail.get('To'),
             'subject': mail.get('Subject'),

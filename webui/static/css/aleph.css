@@ -45,6 +45,9 @@ ul.treeview-menu ul a:hover {
     margin-left: 10%;
 }
 
+.plugin-info dd dl {
+    clear: both;
+}
 a.logo {
     padding-top: 5px;
     font-size: 2em !important;

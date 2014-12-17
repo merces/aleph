@@ -171,25 +171,35 @@
     </tbody>
 </table>
 {% elif item_value is mapping %}
-{% for k in item_value %}
-<h4>{{ k|lower }}</h4>
-<table class="table table-striped">
-    <thead>
-        {% for ik,iv in item_value[k].0.iteritems() %}
-        <th>{{ ik|replace('_',' ')|capitalize }}</th>
+    <dl>
+{% for key,item in item_value.iteritems() %}
+        <dt>{{ key }}</dt>
+        <dd>
+    {% if item is string %}{{ item }}{% else %}
+    <table class="table table-striped">
+    {% if item.0 is mapping %}
+        <thead>
+        {% for k,v in item.0.iteritems() %}
+        <th>{{ k }}</th>
         {% endfor %}
-    </thead>
-    <tbody>
-{% for item in item_value[k] %}
-    <tr>
-        {% for item_k,item_v in item.iteritems() %}
-        <td><a href="{{ url_for('samples.index') }}?search=data.{{ plugin_name }}.{{ item_name|lower }}.{{ k|lower }}.{{ item_k|lower }}:{{ item_v }}">{{ item_v }}</a></td>
-        {% endfor %}
-    </tr>
+        </thead>
+    {% endif %}
+{% for entry in item %}
+<tr>
+{% if entry is string %}
+<td>{{ entry }}</td>
+{% else %}
+{% for k,v in entry.iteritems() %}
+<td>{{ v }}</td>
 {% endfor %}
-    </tbody>
+{% endif %}
+</tr>
+{% endfor %}
 </table>
+    {% endif %}
+        </dd>
 {% endfor %}
+    </dl>
 {% else %}
 <ul>
         {% for item in item_value %}
