@@ -47,8 +47,10 @@
 </li>
 {% endif %}
                                 <li class="{% if request.url.find(url_for('samples.index')) != -1 %}active{% endif %}"><a href="{{ url_for('samples.index') }}"><i class="fa fa-list"></i> {{ _('Browse') }}</a></li>
+{% if config.get('SAMPLE_SUBMIT_FOLDER') %}
                                 <li class="{% if request.url.find(url_for('samples.submissions')) != -1 %}active{% endif %}"><a href="{{ url_for('samples.submissions') }}"><i class="fa fa-cloud-upload"></i> {{ _('My submissions') }}</a></li> 
                                 <li class="{% if request.url.find(url_for('samples.submit')) != -1 %}active{% endif %}"><a href="{{ url_for('samples.submit') }}"><i class="fa fa-plus"></i> {{ _('Add new') }}</a></li> 
+{% endif %}
                             </ul>
 {% if g.user.is_admin %}
 {% if request.url.find('/users/') == -1 %}

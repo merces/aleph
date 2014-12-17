@@ -11,12 +11,16 @@ from aleph.webui.models import *
 from aleph.webui.utils import hash_password
 from aleph.constants import ACCOUNT_SUPERUSER
 
-db.create_all()
+try:
+    db.create_all()
 
-# Let's create an admin user
-u = User(login='admin', email='example@example.org', password=hash_password('admin', 'changeme12!'))
-u.account_type = ACCOUNT_SUPERUSER
-u.first_name = 'System'
-u.last_name = 'Administrator'
-db.session.add(u)
-db.session.commit()
+    # Let's create an admin user
+    u = User(login='admin', email='example@example.org', password=hash_password('admin', 'changeme12!'))
+    u.account_type = ACCOUNT_SUPERUSER
+    u.first_name = 'System'
+    u.last_name = 'Administrator'
+    db.session.add(u)
+    db.session.commit()
+    print "Database created successfully"
+except Exception, e:
+    print "Error creating database: %s" % str(e)

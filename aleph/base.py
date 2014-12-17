@@ -84,22 +84,11 @@ class PluginBase(object):
     def set_sample(self, sample):
         self.sample = sample
 
-    def create_sample(self, filepath, filename):
+    def create_sample(self, filepath, filename, mimetype=None):
 
-        # Size boundary check
-        sample_size = os.stat(filepath).st_size 
+        self.logger.debug('Creating sample from path %s' % filepath)
 
-        if sample_size > SAMPLE_MAX_FILESIZE:
-            self.logger.warning('Sample %s (%s) is bigger than maximum file size allowed: %s' % (filepath, humansize(sample_size), humansize(SAMPLE_MAX_FILESIZE)))
-            return False
-
-        if sample_size < SAMPLE_MIN_FILESIZE:
-            self.logger.warning('Sample %s (%s) is smaller than minimum file size allowed: %s' % (filepath, humansize(sample_size), humansize(SAMPLE_MIN_FILESIZE)))
-            return False
-
-        self.logger.debug('Creating sample from path %s (source: %s)' % (filepath, filename))
-
-        sample = SampleBase(filepath)
+        sample = SampleBase(filepath, mimetype)
 
         # Save source
         sample.add_source(self.__class__.__name__, filename, self.sample.uuid)
@@ -122,7 +111,7 @@ class SampleBase(object):
     path = None
     sources = []
     timestamp = None
-    process = True
+    process = False
 
     status = SAMPLE_STATUS_NEW;
 
@@ -138,7 +127,7 @@ class SampleBase(object):
     data = {}
     tags = []
 
-    def __init__(self, path):
+    def __init__(self, path, mimetype=None):
 
         self.path = path
         self.data = {}
@@ -146,12 +135,25 @@ class SampleBase(object):
         self.tags = []
         self.hashes = self.get_hashes()
         self.timestamp = to_iso8601()
+        self.mimetype = mimetype
 
         self.status = SAMPLE_STATUS_NEW;
         self.xrefs = {
             'parent': [],
             'child': [],
         }
+
+
+        # Size boundary check
+        sample_size = os.stat(path).st_size 
+
+        if sample_size > SAMPLE_MAX_FILESIZE:
+            os.unlink(path)
+            raise ValueError('Sample %s (%s) is bigger than maximum file size allowed: %s' % (path, humansize(sample_size), humansize(SAMPLE_MAX_FILESIZE)))
+
+        if sample_size < SAMPLE_MIN_FILESIZE:
+            os.unlink(path)
+            raise ValueError('Sample %s (%s) is smaller than minimum file size allowed: %s' % (path, humansize(sample_size), humansize(SAMPLE_MIN_FILESIZE)))
 
         if not self.check_exists():
             self.store_sample()
@@ -177,7 +179,6 @@ class SampleBase(object):
             data = result['hits']['hits'][0]['_source']
             self.uuid = data['uuid']
             self.sources = data['sources']
-            self.process = False
             self.dispose()
 
         return exists
@@ -217,15 +218,19 @@ class SampleBase(object):
 
     def prepare_sample(self):
 
-        # Get mimetype
-        self.mimetype = magic.from_file(self.path, mime=True)
-        self.mimetype_str = magic.from_file(self.path)
+        # Get mimetype if not supplied
+        if not self.mimetype:
+            self.mimetype = magic.from_file(self.path, mime=True)
+            self.mimetype_str = magic.from_file(self.path)
         
         # Get file size
         self.size = os.stat(self.path).st_size
 
         # Give it a nice uuid
         self.uuid = str(uuid.uuid1())
+
+        # Let it process
+        self.process = True
 
     def store_data(self):
         es.save(self.toObject(), self.uuid)
@@ -338,24 +343,13 @@ class CollectorBase(Process):
     def collect(self):
         raise NotImplementedError('Collector collection routine not implemented')
 
-    def create_sample(self, filepath, sourcedata):
-
-        # Size boundary check
-        sample_size = os.stat(filepath).st_size 
-
-        if sample_size > SAMPLE_MAX_FILESIZE:
-            self.logger.warning('Sample %s (%s) is bigger than maximum file size allowed: %s' % (filepath, humansize(sample_size), humansize(SAMPLE_MAX_FILESIZE)))
-            os.unlink(filepath)
-            return False
-
-        if sample_size < SAMPLE_MIN_FILESIZE:
-            self.logger.warning('Sample %s (%s) is smaller than minimum file size allowed: %s' % (filepath, humansize(sample_size), humansize(SAMPLE_MIN_FILESIZE)))
-            os.unlink(filepath)
-            return False
+    def create_sample(self, filepath, sourcedata, mimetype=None):
 
         self.logger.debug('Creating sample from path %s (source: %s)' % (filepath, sourcedata[0]))
-        sample = SampleBase(filepath)
+
+        sample = SampleBase(filepath, mimetype)
         sample.add_source(self.__class__.__name__, sourcedata[0], sourcedata[1] )
+
         if sample.process:
             sample.store_data()
         self.queue.put(sample)

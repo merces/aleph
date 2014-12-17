@@ -22,7 +22,7 @@
             <td>{{ submission.timestamp|datetimeformat }}</td>
             <td>{% if not submission.sample_uuid %}<span class="badge">{{ _('new') }}</span>{% else %}
 {% if samples[submission.sample_uuid].status == 0 %}<span class="badge sample-new">{{ _('new') }}</span>{% elif samples[submission.sample_uuid].status == 1%}<span class="badge sample-processing">{{ _('processing') }}</span>{% elif samples[submission.sample_uuid].status == 2 %}<span class="badge sample-ready">{{ _('ready') }}</span>{% endif %}{% endif %}</td>
-            <td>{{ submission.file_hash }}</td>
+            <td><abbr title="{{ submission.file_hash }}">{{ submission.file_hash[0:6] }}...{{ submission.file_hash[-6:] }}</abbr></td>
             <td>{{ submission.filename }}</td>
             <td>{% if not submission.sample_uuid %}-{% else %}<a href="{{ url_for('samples.view', uuid = submission.sample_uuid) }}" title="{{ _('View report for sample %(sampleuuid)s', sampleuuid=submission.sample_uuid)}}">{{ submission.sample_uuid }}</a>{% endif %}</td>
         </tr>

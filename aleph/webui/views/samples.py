@@ -29,18 +29,24 @@ def index(page = 1):
     samples = []
     es_samples = None
     page_offset = (app.config.get('ITEMS_PER_PAGE')*(page-1))
+    sample_count = 0
 
-    if 'search' in request.args:
-        # @@ FIXME <- INJECTION PRONE!!!
-        query = request.args['search']
-        sample_count = es.count(query)
-        es_samples = es.lucene_search(query, start=page_offset, size=app.config.get('ITEMS_PER_PAGE'))
-    else:
-        es_samples = es.all(size=app.config.get('ITEMS_PER_PAGE'), start=page_offset)
-        sample_count = es.count()
+    try:
+        if 'search' in request.args:
+            # @@ FIXME <- INJECTION PRONE!!!
+            query = request.args['search']
+            sample_count = es.count(query)
+            if sample_count > 0:
+                es_samples = es.lucene_search(query, start=page_offset, size=app.config.get('ITEMS_PER_PAGE'))
+        else:
+            sample_count = es.count()
+            if sample_count > 0:
+                es_samples = es.all(size=app.config.get('ITEMS_PER_PAGE'), start=page_offset)
 
-    for s in es_samples['hits']['hits']:
-        samples.append(s['_source'])
+                for s in es_samples['hits']['hits']:
+                    samples.append(s['_source'])
+    except TransportError:
+        flash(gettext('Error querying ElasticSearch database. Please check configuration.'))
 
     page_count = int(ceil(sample_count/app.config.get('ITEMS_PER_PAGE')))
     if page_count <= 1:
@@ -104,6 +110,13 @@ def validate_submission(form):
 @login_required
 def submit():
 
+    if not app.config.get('SAMPLE_SUBMIT_FOLDER'):
+        if app.config.get('DEBUG'):
+            flash(gettext('SAMPLE_SUBMIT_FOLDER is not set'))
+            return redirect(url_for('samples.index'))
+        else:
+            abort('404')
+
     form = SubmitSampleForm()
 
     if form.validate_on_submit():
@@ -133,23 +146,34 @@ def submit():
     return render_template('samples/submit.html', form=form)
 
 def update_submissions(user_id):
-    user = User.query.get(user_id)
-    pending = user.submissions.filter(Submission.sample_uuid == None).all()
-    for row in pending:
-        result = es.search({"hashes.sha256": row.file_hash})
-        exists = ('hits' in result and result['hits']['total'] != 0)
-        if exists:
-            data = result['hits']['hits'][0]['_source']
-            row.sample_uuid = data['uuid']
-            db.session.add(row)
 
-    db.session.commit()
+    try:
+        user = User.query.get(user_id)
+        pending = user.submissions.filter(Submission.sample_uuid == None).all()
+        for row in pending:
+            result = es.search({"hashes.sha256": row.file_hash})
+            exists = ('hits' in result and result['hits']['total'] != 0)
+            if exists:
+                data = result['hits']['hits'][0]['_source']
+                row.sample_uuid = data['uuid']
+                db.session.add(row)
+
+        db.session.commit()
+    except TransportError:
+        flash(gettext('Error querying ElasticSearch database. Please check configuration.'))
 
 
 @mod.route('/submissions')
 @mod.route('/submissions/<int:page>/')
 @login_required
 def submissions(page = 1):
+
+    if not app.config.get('SAMPLE_SUBMIT_FOLDER'):
+        if app.config.get('DEBUG'):
+            flash(gettext('SAMPLE_SUBMIT_FOLDER is not set'))
+            return redirect(url_for('samples.index'))
+        else:
+            abort('404')
 
     update_submissions(current_user.id)
 
