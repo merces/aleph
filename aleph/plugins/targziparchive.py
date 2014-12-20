@@ -9,7 +9,7 @@ class TarGzipArchivePlugin(PluginBase):
 
     name = 'archive_tar-gzip'
     default_options = { 'enabled': True }
-    mimetypes = ['application/x-tar', 'application/gzip']
+    mimetypes = ['application/x-tar', 'application/gzip', 'application/x-gzip']
     
     def extract_file(self, path, dest):
 

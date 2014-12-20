@@ -8,7 +8,7 @@ class UrlExtractorPlugin(PluginBase):
 
     name = 'urlextractor'
     default_options = { 'enabled': True }
-    mimetypes_except = ['application/zip', 'application/gzip', 'application/x-tar', 'text/url' ]
+    mimetypes_except = ['application/zip', 'application/gzip', 'application/x-gzip', 'application/x-tar', 'text/url' ]
     depends = [ 'strings' ]
 
     def process(self):
