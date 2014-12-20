@@ -41,7 +41,7 @@ ALLOW_REGISTRATIONS = True
 SAMPLE_SUBMIT_FOLDER = None
 
 LOGGING  = {
-    'filename': 'log/aleph.log',
+	'path': 'log/',
+    'filename': 'aleph.log',
     'format': '%(asctime)s [%(name)s:%(funcName)s] %(levelname)s: %(message)s',
 }
-
