@@ -14,14 +14,16 @@ from aleph.webui.models import User
 from aleph.webui.utils import hash_password
 from aleph.settings import SAMPLE_SUBMIT_FOLDER, FTP_ENABLE, FTP_PORT
 
+class AuthenticationFailed(Exception):
+    """Exception raised when authentication fails for any reason."""
 
-
-# Overriding validate_authentication() to support to Aleph's auth method
 class DummyHashAuthorizer(DummyAuthorizer):
 
     def validate_authentication(self, username, password, handler):
+        msg = "Authentication failed."
         hash = hash_password(username, password)
-        return self.user_table[username]['pwd'] == hash
+        if self.user_table[username]['pwd'] != hash:
+            raise AuthenticationFailed(msg)
 
 if __name__ == "__main__":
 
@@ -36,14 +38,14 @@ if __name__ == "__main__":
         authorizer.add_user(user.login, user.password, SAMPLE_SUBMIT_FOLDER, perm='elamw')
 
     handler = FTPHandler
-    #handler.banner = "pyftpdlib based ftpd ready."
+    handler.banner = "Alpeh pyftpdlib based ftpd ready."
     handler.authorizer = authorizer
     address = ('', FTP_PORT)
     server = FTPServer(address, handler)
 
     # set a limit for connections
-    server.max_cons = 256
-    server.max_cons_per_ip = 5
+    #server.max_cons = 256
+    #server.max_cons_per_ip = 5
 
     # start ftp server
     server.serve_forever()
