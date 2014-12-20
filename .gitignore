@@ -2,3 +2,7 @@
 *.swo
 *.swn
 *.pyc
+*.log
+*.sqlite
+*.sample
+aleph/settings.py
