@@ -7,9 +7,9 @@ from aleph.settings import SAMPLE_TEMP_DIR
 
 class ZipArchivePlugin(PluginBase):
 
-    mimetypes = ['application/zip']
     name = 'ziparchive'
-    default_options = { 'passwords': [ 'infected', 'evil', 'virus' ], 'enabled': True }
+    default_options = { 'passwords': [ 'infected', 'evil', 'virus', 'malicious' ], 'enabled': True }
+    mimetypes = ['application/zip']
     
     def extract_file(self, path, dest, password=None):
 

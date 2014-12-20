@@ -4,8 +4,8 @@ import pefile, sys, traceback, bitstring, string, hashlib, bz2
 class PEInfoPlugin(PluginBase):
 
     name = 'pe_info'
-    mimetypes = ['application/x-dosexec']
     default_options = { 'enabled': True }
+    mimetypes = ['application/x-dosexec']
 
     def process(self):
 
@@ -21,28 +21,30 @@ class PEInfoPlugin(PluginBase):
 
             # Get Architechture
             if pe.FILE_HEADER.Machine == 0x14C: # IMAGE_FILE_MACHINE_I386
-                data['arch'] = '32 bits'
-                self.sample.add_tag('32-bit')
-            elif pe.FILE_HEADER.Machine == 0x8664: # IMAGE_FILE_MACHINE_AMD64
-                data['arch'] = '64 bits'
-                self.sample.add_tag('64-bit')
-            else:
-                data['arch'] = 'N/A'
-
-            data['entry_point'] = pe.OPTIONAL_HEADER.AddressOfEntryPoint
-            data['image_base']  = pe.OPTIONAL_HEADER.ImageBase
-            data['number_sections'] = pe.FILE_HEADER.NumberOfSections
-            if data['arch'] == '32 bits' :
+                data['architechture'] = '32-bit'
                 data['pehash'] = self.pehash()
+                self.sample.add_tag('i386')
+            elif pe.FILE_HEADER.Machine == 0x8664: # IMAGE_FILE_MACHINE_AMD64
+                data['architechture'] = '64-bit'
+                self.sample.add_tag('amd64')
             else:
-                data['pehash'] = 'N/A'
+                data['architechture'] = 'N/A'
+
+            # Executable Type
+            self.sample.add_tag('dll' if pe.is_dll() else 'exe')
+            if pe.is_driver():
+                self.sample.add_tag('driver')
+
+            #data['entry_point'] = pe.OPTIONAL_HEADER.AddressOfEntryPoint
+            #data['image_base']  = pe.OPTIONAL_HEADER.ImageBase
+            data['number_sections'] = pe.FILE_HEADER.NumberOfSections
 
             #check for ASLR, DEP/NX and SEH
             if pe.OPTIONAL_HEADER.DllCharacteristics > 0:
                 if pe.OPTIONAL_HEADER.DllCharacteristics & 0x0040:
                     data['aslr'] = True
                 if pe.OPTIONAL_HEADER.DllCharacteristics & 0x0100:
-                    data['dep_nx'] = True
+                    data['dep'] = True
                 if (pe.OPTIONAL_HEADER.DllCharacteristics & 0x0400
                 or (hasattr(pe, "DIRECTORY_ENTRY_LOAD_CONFIG") 
                 and pe.DIRECTORY_ENTRY_LOAD_CONFIG.struct.SEHandlerCount > 0 
@@ -66,6 +68,8 @@ class PEInfoPlugin(PluginBase):
                 exports = []
                 for exp in pe.DIRECTORY_ENTRY_EXPORT.symbols:
                     exports.append({'address': hex(pe.OPTIONAL_HEADER.ImageBase + exp.address), 'name': exp.name, 'ordinal': exp.ordinal})
+                    if exp.name == 'CPlApplet' and pe.is_dll():
+                        self.sample.add_tag('cpl')
 
                 data['exports'] = exports
 
@@ -75,10 +79,6 @@ class PEInfoPlugin(PluginBase):
                 for section in pe.sections:
                     data['sections'].append({'name': section.Name.replace('\x00', ''), 'address': hex(section.VirtualAddress), 'virtual_size': hex(section.Misc_VirtualSize), 'raw_size': section.SizeOfRawData })
             
-            # Add general tags
-            self.sample.add_tag('windows')
-            self.sample.add_tag('pe')
-
             return data
                             
         except Exception, e:

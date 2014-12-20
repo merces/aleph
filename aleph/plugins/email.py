@@ -7,7 +7,6 @@ import email, tempfile
 class EmailPlugin(PluginBase):
 
     name = 'email'
-
     default_options = { 'enabled': True }
     mimetypes = ['message/rfc822']
 

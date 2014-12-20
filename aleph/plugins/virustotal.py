@@ -8,9 +8,9 @@ import virustotal
 class VirusTotalPlugin(PluginBase):
 
     name = 'virustotal'
-    default_options = { 'api_limit': 7, 'retry_count': 10, 'retry_sleep': 30, 'report_sleep': 60 }
+    default_options = { 'api_limit': 7, 'retry_count': 10, 'retry_sleep': 30, 'report_sleep': 60, 'enabled': False }
     required_options = [ 'api_key' ]
-    mimetypes = ['application/x-dosexec']
+    mimetypes_except = ['application/zip', 'application/gzip', 'application/x-tar', 'text/url' ]
 
     vt = None
 

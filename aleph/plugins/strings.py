@@ -6,13 +6,12 @@ import re
 class StringsPlugin(PluginBase):
 
     name = 'strings'
-
     default_options = { 'enabled': True }
-    mimetypes_except = ['application/zip', 'text/url' ]
+    mimetypes_except = ['application/zip', 'application/gzip', 'application/x-tar', 'text/url' ]
 
     all_regex = ur"[%s]{4,}" % r"A-Za-z0-9/\-:.,_$%'()[\]<> " 
     url_regex = ur'(?i)\b((?:http[s]?:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))'
-    filename_regex = r'\b([\w,%-.]+\.[A-Za-z]{3})\b'
+    filename_regex = r'\b([\w,%-.]+\.[A-Za-z]{3,4})\b'
     emailaddr_regex = r'((?:(?:[A-Za-z0-9]+_+)|(?:[A-Za-z0-9]+\-+)|(?:[A-Za-z0-9]+\.+)|(?:[A-Za-z0-9]+\++))*[A-Za-z0-9]+@(?:(?:\w+\-+)|(?:\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})'
 
     pattern_all = re.compile(all_regex)
@@ -35,7 +34,7 @@ class StringsPlugin(PluginBase):
             file_strings = [entry.strip() for entry in self.pattern_filename.findall(clean_content)]
 
         return {
-            'all': list(set(all_strings)),
+            #'all': list(set(all_strings)),
             'url': list(set(url_strings)),
             'email': list(set(emailaddr_strings)),
             'file': list(set(file_strings)),

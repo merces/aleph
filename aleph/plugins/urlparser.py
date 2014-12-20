@@ -9,13 +9,7 @@ from urllib import urlopen
 class UrlParserPlugin(PluginBase):
 
     name = 'urlparser'
-
-    default_options = { 
-        'enabled': True,
-        'probe_url': False,
-        'google_api_key': None,
-    }
-
+    default_options = { 'enabled': True, 'probe_url': False, 'google_api_key': None }
     mimetypes = [ 'text/url' ]
 
     def google_safebrowsing(self, url):

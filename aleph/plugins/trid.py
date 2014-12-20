@@ -4,8 +4,9 @@ import subprocess, os
 class TrIDPlugin(PluginBase):
 
     name = 'trid'
-
+    default_options = { 'enabled': False }
     required_options = [ 'trid_path', 'triddefs_path' ]
+    
     def validate_options(self):
         super(TrIDPlugin, self).validate_options()
 
