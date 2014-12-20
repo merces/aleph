@@ -12,7 +12,9 @@ sys.path.append(PACKAGE_DIR)
 
 from aleph.webui.models import User
 from aleph.webui.utils import hash_password
-from aleph.settings import SAMPLE_SUBMIT_FOLDER
+from aleph.settings import SAMPLE_SUBMIT_FOLDER, FTP_ENABLE, FTP_PORT
+
+
 
 # Overriding validate_authentication() to support to Aleph's auth method
 class DummyHashAuthorizer(DummyAuthorizer):
@@ -21,21 +23,27 @@ class DummyHashAuthorizer(DummyAuthorizer):
         hash = hash_password(username, password)
         return self.user_table[username]['pwd'] == hash
 
-authorizer = DummyHashAuthorizer()
+if __name__ == "__main__":
 
-# Add active premium users to the FTP Server
-for user in User.query.filter(User.active, User.account_type < 2):
-    authorizer.add_user(user.login, user.password, SAMPLE_SUBMIT_FOLDER, perm='elradfmw')
+    if not FTP_ENABLE:
+        print 'Integrated FTP Server is disabled by configuration.'
+        sys.exit(1)
 
-handler = FTPHandler
-#handler.banner = "pyftpdlib based ftpd ready."
-handler.authorizer = authorizer
-address = ('', 2121)
-server = FTPServer(address, handler)
+    authorizer = DummyHashAuthorizer()
 
-# set a limit for connections
-server.max_cons = 256
-server.max_cons_per_ip = 5
+    # Add active premium users to the FTP Server
+    for user in User.query.filter(User.active, User.account_type < 2):
+        authorizer.add_user(user.login, user.password, SAMPLE_SUBMIT_FOLDER, perm='elamw')
 
-# start ftp server
-server.serve_forever()
+    handler = FTPHandler
+    #handler.banner = "pyftpdlib based ftpd ready."
+    handler.authorizer = authorizer
+    address = ('', FTP_PORT)
+    server = FTPServer(address, handler)
+
+    # set a limit for connections
+    server.max_cons = 256
+    server.max_cons_per_ip = 5
+
+    # start ftp server
+    server.serve_forever()
