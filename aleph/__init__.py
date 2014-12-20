@@ -62,11 +62,11 @@ class AlephServer(object):
 
         log_level = logging.DEBUG if settings.DEBUG else logging.INFO
 
-        if not os.path.exists(settings.LOGGING['path']):
-            os.makedirs(settings.LOGGING['path'])
+        if not os.path.exists(settings.LOGGING['directory']):
+            os.makedirs(settings.LOGGING['directory'])
 
         logging.basicConfig(
-            filename=os.path.join(settings.LOGGING['path'], settings.LOGGING['filename']),
+            filename=os.path.join(settings.LOGGING['directory'], settings.LOGGING['filename']),
             level=log_level,
             format=settings.LOGGING['format'],
             )
