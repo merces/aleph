@@ -33,3 +33,4 @@ urllib3==1.9
 uuid==1.30
 virustotal==1.0.3
 wsgiref==0.1.2
+pyftpd==1.4.0
