@@ -3,7 +3,7 @@ from tempfile import mkdtemp
 from aleph.base import PluginBase
 import shutil, os, ntpath
 
-from aleph.settings import SAMPLE_TEMP_DIR
+from aleph.settings import SAMPLE_TEMP_DIR, SAMPLE_MIN_FILESIZE
 
 class ZipArchivePlugin(PluginBase):
 
@@ -38,7 +38,8 @@ class ZipArchivePlugin(PluginBase):
                 zip_contents = self.extract_file(self.sample.path, temp_dir, password)
                 for fname in zip_contents:
                     fpath = os.path.join(temp_dir, fname)
-                    if os.path.isfile(fpath):
+                    size = os.stat(fpath).st_size
+                    if os.path.isfile(fpath) and size > SAMPLE_MIN_FILESIZE:
                         head, tail = ntpath.split(fpath)
                         self.create_sample(fpath, tail)
                 shutil.rmtree(temp_dir)
@@ -46,10 +47,15 @@ class ZipArchivePlugin(PluginBase):
             except RuntimeError:
                 continue # Invalid password
 
-        ret = {} 
+        ret = {}
+
+        # Add general tags
+        self.sample.add_tag('archive')
+        self.sample.add_tag('zip')
 
         if len(zip_contents) == 0:
             self.logger.error('Unable to uncompress %s. Invalid password or corrupted file' % self.sample.path)
+            self.sample.add_tag('corrupt')
             return ret
 
         ret['contents'] = zip_contents
@@ -57,10 +63,6 @@ class ZipArchivePlugin(PluginBase):
         if len(current_password) > 0:
             self.sample.add_tag('password-protected')
             ret['password'] = current_password
-
-        # Add general tags
-        self.sample.add_tag('archive')
-        self.sample.add_tag('zip')
 
         return ret
 
