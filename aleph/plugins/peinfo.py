@@ -1,5 +1,6 @@
 from aleph.base import PluginBase
 import pefile, sys, traceback, bitstring, string, hashlib, bz2
+import datetime, time
 
 class PEInfoPlugin(PluginBase):
 
@@ -22,7 +23,7 @@ class PEInfoPlugin(PluginBase):
             # Get Architechture
             if pe.FILE_HEADER.Machine == 0x14C: # IMAGE_FILE_MACHINE_I386
                 data['architechture'] = '32-bit'
-                data['pehash'] = self.pehash()
+                #data['pehash'] = self.pehash() # Temporarily disabled due problems
                 self.sample.add_tag('i386')
             elif pe.FILE_HEADER.Machine == 0x8664: # IMAGE_FILE_MACHINE_AMD64
                 data['architechture'] = '64-bit'
@@ -34,6 +35,19 @@ class PEInfoPlugin(PluginBase):
             self.sample.add_tag('dll' if pe.is_dll() else 'exe')
             if pe.is_driver():
                 self.sample.add_tag('driver')
+
+            # Compilation time
+            timestamp = pe.FILE_HEADER.TimeDateStamp
+
+            if timestamp == 0:
+                self.sample.add_tag('no-timestamp')
+            else:
+                data['compilation_timestamp'] = timestamp
+                data['compilation_date'] = datetime.datetime.utcfromtimestamp(int(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
+                if (timestamp < 946692000):
+                    self.sample.add_tag('old-timestamp')
+                elif (timestamp > time.time()):
+                    self.sample.add_tag('future-timestamp')
 
             #data['entry_point'] = pe.OPTIONAL_HEADER.AddressOfEntryPoint
             #data['image_base']  = pe.OPTIONAL_HEADER.ImageBase
