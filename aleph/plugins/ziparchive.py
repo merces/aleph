@@ -36,10 +36,10 @@ class ZipArchivePlugin(PluginBase):
             try:
                 self.logger.debug("Uncompressing file %s with password '%s'" % (self.sample.path, password))
                 zip_contents = self.extract_file(self.sample.path, temp_dir, password)
+
                 for fname in zip_contents:
                     fpath = os.path.join(temp_dir, fname)
-                    size = os.stat(fpath).st_size
-                    if os.path.isfile(fpath) and size > SAMPLE_MIN_FILESIZE:
+                    if os.path.isfile(fpath) and os.stat(fpath).st_size >= SAMPLE_MIN_FILESIZE:
                         head, tail = ntpath.split(fpath)
                         self.create_sample(fpath, tail)
                 shutil.rmtree(temp_dir)

@@ -2,13 +2,14 @@
 
 from aleph.base import PluginBase
 from aleph.settings import SAMPLE_TEMP_DIR
+from aleph.constants import MIMETYPES_ARCHIVE
 import tempfile, hashlib
 
 class UrlExtractorPlugin(PluginBase):
 
     name = 'urlextractor'
     default_options = { 'enabled': True }
-    mimetypes_except = ['application/zip', 'application/gzip', 'application/x-gzip', 'application/x-tar', 'text/url' ]
+    mimetypes_except = MIMETYPES_ARCHIVE + ['text/url']
     depends = [ 'strings' ]
 
     def process(self):

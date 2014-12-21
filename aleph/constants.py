@@ -19,3 +19,11 @@ ACCOUNT_PREMIUM=1
 ACCOUNT_REGULAR=2
 
 ITEMS_PER_PAGE = 15
+
+MIMETYPES_ARCHIVE = [
+    'application/zip',
+    'application/gzip',
+    'application/x-gzip',
+    'application/x-rar',
+    'application/tar'
+]

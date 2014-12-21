@@ -3,14 +3,15 @@
 from time import sleep
 from aleph.base import PluginBase
 from aleph.utils import in_string
+from aleph.constants import MIMETYPES_ARCHIVE
 import virustotal
 
 class VirusTotalPlugin(PluginBase):
 
     name = 'virustotal'
-    default_options = { 'api_limit': 7, 'retry_count': 10, 'retry_sleep': 30, 'report_sleep': 60, 'enabled': False }
+    default_options = { 'api_limit': 7, 'retry_count': 3, 'retry_sleep': 10, 'report_sleep': 60, 'enabled': False }
     required_options = [ 'api_key' ]
-    mimetypes_except = ['application/zip', 'application/gzip', 'application/x-gzip', 'application/x-tar', 'text/url' ]
+    mimetypes_except = MIMETYPES_ARCHIVE + ['text/url']
 
     vt = None
 

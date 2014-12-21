@@ -1,13 +1,14 @@
 # -*- coding: utf8 -*-
 
 from aleph.base import PluginBase
+from aleph.constants import MIMETYPES_ARCHIVE
 import re
 
 class StringsPlugin(PluginBase):
 
     name = 'strings'
     default_options = { 'enabled': True }
-    mimetypes_except = ['application/zip', 'application/gzip', 'application/x-gzip', 'application/x-tar', 'text/url' ]
+    mimetypes_except = MIMETYPES_ARCHIVE + ['text/url']
 
     all_regex = ur"[%s]{4,}" % r"A-Za-z0-9/\-:.,_$%'()[\]<> " 
     url_regex = ur'(?i)\b((?:http[s]?:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))'
