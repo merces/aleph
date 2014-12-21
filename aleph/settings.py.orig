@@ -31,10 +31,6 @@ MAIL_USERNAME = 'your-gmail-username'
 MAIL_PASSWORD = 'your-gmail-password'
 MAIL_SENDER = 'Your Name <%s>' % MAIL_USERNAME
 
-# FTP Options
-FTP_ENABLE = False
-FTP_PORT = 2121
-
 # WebUI Options
 import os
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), '../webui/db.sqlite' )
