@@ -1,4 +1,4 @@
-from rarfile import RarFile
+from rarfile import RarFile, RarExecError, BadRarFile
 from tempfile import mkdtemp
 from aleph.base import PluginBase
 import shutil, os, ntpath
@@ -44,7 +44,7 @@ class RarArchivePlugin(PluginBase):
                         self.create_sample(fpath, tail)
                 shutil.rmtree(temp_dir)
                 break # Stop bruting
-            except RuntimeError:
+            except (RarExecError, BadRarFile):
                 continue # Invalid password
 
         ret = {}
