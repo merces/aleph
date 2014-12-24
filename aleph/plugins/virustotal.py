@@ -9,7 +9,8 @@ import virustotal
 class VirusTotalPlugin(PluginBase):
 
     name = 'virustotal'
-    default_options = { 'api_limit': 7, 'retry_count': 3, 'retry_sleep': 10, 'report_sleep': 60, 'enabled': False }
+    default_options = { 'api_limit': 7, 'retry_count': 3, 'retry_sleep': 10,
+        'report_sleep': 60, 'send_files' : True, 'enabled': False }
     required_options = [ 'api_key' ]
     mimetypes_except = MIMETYPES_ARCHIVE + ['text/url']
 
@@ -28,6 +29,9 @@ class VirusTotalPlugin(PluginBase):
                 report = self.vt.get(self.sample.hashes['sha256'])	
 
                 if report is None:
+                    self.logger.info('Sample %s not found in VirusTotal' % self.sample.hashes['sha256'])
+                    if not self.options['send_files']:
+                        return { 'scan_id' : 'not found' }
                     report = self.vt.scan(self.sample.path)
                     sleep(self.options['report_sleep'])
                     report.join()
