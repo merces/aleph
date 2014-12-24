@@ -151,7 +151,7 @@ class SampleBase(object):
             os.unlink(path)
             raise ValueError('Sample %s (%s) is bigger than maximum file size allowed: %s' % (path, humansize(sample_size), humansize(SAMPLE_MAX_FILESIZE)))
 
-        if sample_size < SAMPLE_MIN_FILESIZE:
+        if sample_size < SAMPLE_MIN_FILESIZE and self.mimetype != "text/url":
             os.unlink(path)
             raise ValueError('Sample %s (%s) is smaller than minimum file size allowed: %s' % (path, humansize(sample_size), humansize(SAMPLE_MIN_FILESIZE)))
 
