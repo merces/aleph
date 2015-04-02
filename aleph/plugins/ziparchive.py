@@ -15,10 +15,10 @@ class ZipArchivePlugin(PluginBase):
 
         nl = []
 
-        with ZipFile(path, 'r') as zipf:
+        with ZipFile(str(path), 'r') as zipf:
             if password:
                 zipf.setpassword(password)
-            zipf.extractall(dest)
+            zipf.extractall(str(dest))
             nl = zipf.namelist()
 
         return nl
