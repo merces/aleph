@@ -4,7 +4,7 @@ import subprocess, os
 class TrIDPlugin(PluginBase):
 
     name = 'trid'
-    default_options = { 'enabled': False }
+    default_options = { 'enabled': True }
     required_options = [ 'trid_path', 'triddefs_path' ]
     
     def validate_options(self):
@@ -30,6 +30,10 @@ class TrIDPlugin(PluginBase):
         detections = []
 
         for line in lines:
+            if line.find('Unknown'):
+               detections.append({'name': 'Unknown'})
+               break
+
             parts = line.strip().split(' ')
             percentage = parts[0]
             extension = parts[1][1:-1]
