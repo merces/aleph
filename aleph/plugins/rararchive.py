@@ -15,10 +15,10 @@ class RarArchivePlugin(PluginBase):
 
         nl = []
 
-        with RarFile(path, 'r') as rarf:
+        with RarFile(str(path), 'r') as rarf:
             if password:
                 rarf.setpassword(password)
-            rarf.extractall(dest)
+            rarf.extractall(str(dest))
             nl = rarf.namelist()
 
         return nl
@@ -27,7 +27,7 @@ class RarArchivePlugin(PluginBase):
 
         temp_dir = mkdtemp(dir=SAMPLE_TEMP_DIR)
 
-        self.options['passwords'].insert(0, '') # Append blank password
+        self.options['passwords'].insert(0, None) # Append blank password
         current_password = None
         rar_contents = []
 
@@ -58,12 +58,11 @@ class RarArchivePlugin(PluginBase):
             self.sample.add_tag('corrupt')
             return ret
 
-        ret['contents'] = rar_contents
-
-        if len(current_password) > 0:
+        if current_password:
             self.sample.add_tag('password-protected')
             ret['password'] = current_password
 
+        ret['contents'] = rar_contents
         return ret
 
 def setup(queue):
