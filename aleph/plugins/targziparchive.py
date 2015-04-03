@@ -15,8 +15,8 @@ class TarGzipArchivePlugin(PluginBase):
 
         nl = []
 
-        with tarfile.open(path, 'r') as tarf:
-            tarf.extractall(dest)
+        with tarfile.open(str(path), 'r') as tarf:
+            tarf.extractall(str(dest))
             nl = tarf.getnames()
 
         return nl
