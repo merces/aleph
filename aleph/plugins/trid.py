@@ -25,22 +25,16 @@ class TrIDPlugin(PluginBase):
             self.logger.error('Sample %s could not be parsed by TrID' % self.sample.uuid)
             return {}
 
-        lines = output.split('\n')[6:-1]
-
         detections = []
-
-        for line in lines:
-            if 'Unknown!' in line:
-               detections.append({'name': 'Unknown'})
-               break
-
+        try:
+            lines = output.split('\n')[6:-1]
             parts = line.strip().split(' ')
             percentage = parts[0]
             extension = parts[1][1:-1]
             name = ' '.join(parts[2:-1])
-
             detections.append({'name': name, 'extension': extension, 'confidence': percentage})
-
+        except:
+            detections.append({'name': 'Unknown'})
 
         if len(detections) > 0:
             return { 'detections': detections }
