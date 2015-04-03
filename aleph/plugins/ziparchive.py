@@ -10,17 +10,27 @@ class ZipArchivePlugin(PluginBase):
     name = 'ziparchive'
     default_options = { 'passwords': [ 'infected', 'evil', 'virus', 'malicious' ], 'enabled': True }
     mimetypes = ['application/zip']
-    
+
     def extract_file(self, path, dest, password=None):
-
         nl = []
-
         with ZipFile(str(path), 'r') as zipf:
             if password:
                 zipf.setpassword(password)
-            zipf.extractall(str(dest))
-            nl = zipf.namelist()
 
+            for member in zipf.infolist():
+                if member.file_size == 0:
+                    continue
+                filename = unicode(member.filename, 'cp437').encode('utf8')
+                source = zipf.open(member)
+                if '/' in member.filename:
+                    try:
+                        os.makedirs(dest + '/' + member.filename[0:member.filename.rindex('/')])
+                    except:
+                        pass
+                target_file = os.path.join(dest, filename)
+                target = file(target_file, 'wb')
+                shutil.copyfileobj(source, target)
+                nl.append(filename)
         return nl
 
     def process(self):
