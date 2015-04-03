@@ -46,6 +46,8 @@ class ZipArchivePlugin(PluginBase):
                 break # Stop bruting
             except RuntimeError:
                 continue # Invalid password
+            except:
+                break
 
         ret = {}
 
