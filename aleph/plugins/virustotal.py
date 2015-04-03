@@ -4,6 +4,7 @@ from time import sleep
 from aleph.base import PluginBase
 from aleph.utils import in_string
 from aleph.constants import MIMETYPES_ARCHIVE
+from operator import itemgetter
 import virustotal
 
 class VirusTotalPlugin(PluginBase):
@@ -52,7 +53,7 @@ class VirusTotalPlugin(PluginBase):
                     'scan_id': report.id,
                     'positives': report.positives,
                     'total': report.total,
-                    'detections': detections,
+                    'detections': sorted(detections, key=itemgetter('av')),
                 }
 
             except Exception, e:
