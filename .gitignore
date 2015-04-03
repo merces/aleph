@@ -6,3 +6,4 @@
 *.sqlite
 *.sample
 aleph/settings.py
+temp/
