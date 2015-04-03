@@ -1,5 +1,6 @@
 from aleph.base import PluginBase
 import subprocess, os
+import re
 
 class TrIDPlugin(PluginBase):
 
@@ -25,19 +26,21 @@ class TrIDPlugin(PluginBase):
             self.logger.error('Sample %s could not be parsed by TrID' % self.sample.uuid)
             return {}
 
-        detections = []
-        try:
-            lines = output.split('\n')[6:-1]
-            parts = line.strip().split(' ')
-            percentage = parts[0]
-            extension = parts[1][1:-1]
-            name = ' '.join(parts[2:-1])
-            detections.append({'name': name, 'extension': extension, 'confidence': percentage})
-        except:
-            detections.append({'name': 'Unknown'})
+        lines = output.split('\n')
+        p = re.compile('^([0-9]{1,3}\.[0-9]%) \((\.[A-Z0-9]{3,4})\) (.*) \(([0-9].*)\)$')
 
-        if len(detections) > 0:
-            return { 'detections': detections }
+        detections = []
+
+        for line in lines:
+            line = line.strip()
+            m = p.match(line)
+            if m:
+                detections.append({'description': m.group(3), 'extension': m.group(2), 'confidence': m.group(1)})
+
+        if len(detections) == 0:
+            detections.append({'description': 'Unknown'})
+
+        return { 'detections': detections }
 
 def setup(queue):
     plugin = TrIDPlugin(queue)
