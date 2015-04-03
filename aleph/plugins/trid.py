@@ -30,7 +30,7 @@ class TrIDPlugin(PluginBase):
         detections = []
 
         for line in lines:
-            if line.find('Unknown'):
+            if 'Unknown!' in line:
                detections.append({'name': 'Unknown'})
                break
 
