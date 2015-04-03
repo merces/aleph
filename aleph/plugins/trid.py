@@ -5,7 +5,7 @@ import re
 class TrIDPlugin(PluginBase):
 
     name = 'trid'
-    default_options = { 'enabled': True }
+    default_options = { 'enabled': False }
     required_options = [ 'trid_path', 'triddefs_path' ]
     
     def validate_options(self):
