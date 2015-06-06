@@ -115,4 +115,4 @@ But if you do not like our webinterface you still can use other softwares  to re
 * ZipArchivePlugin: extracts zip files and puts their contents back into analysis queue.
 * StringsPlugin: extracts strings from sample into three categories: All Strings, URI Strings and Filename Strings (not 100% but we do our best).
 * VirustotalPlugin: check a sample SHA256 hash against Virustotal database and get the report. If that hash doesnt exist, send the file to analise.
-* TrID: check the filetype of a sample...
+* TrID: check the filetype of a sample.
