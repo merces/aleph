@@ -96,7 +96,7 @@ class SampleManager(Process):
             if plugin.can_run():
                 try:
                     self.logger.debug('Applying plugin %s on sample %s' % (plugin.name, sample.uuid))
-                    data = plugin.process()
+                    data = plugin.process
                     if data and len(data) > 0:
                         sample.add_data(plugin.name, data)
                 except Exception, e:
