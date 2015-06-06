@@ -82,9 +82,10 @@ And that's it. Check your logs under log/aleph.log to any troubleshooting.
 Edit the "SERVER_NAME" constant at your settings.py file.
 	ex: SERVER_NAME = 'mydomain.com:90'
 
-then create the following entry:
+then uncomment and change the following entry:
 
-	SECRET_KEY = 'Pu7s0m3cryp7l337here' #do not use this ;)
+	#SAMPLE_SUBMIT_FOLDER = None
+    #SECRET_KEY = 'Put Your Secret Key here' #do not use this ;)
 
 Setup your database:
 
