@@ -13,6 +13,7 @@ class UrlExtractorPlugin(PluginBase):
     depends = [ 'strings' ]
 
     def process(self):
+        """Try to extract URL from the sample"""
 
         if not 'strings' in self.sample.data:
             return {} 

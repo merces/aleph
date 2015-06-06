@@ -13,7 +13,7 @@ class UrlParserPlugin(PluginBase):
     mimetypes = [ 'text/url' ]
 
     def google_safebrowsing(self, url):
-
+        """Use Google safebrowsing to check the URL """
         if not self.options['google_api_key']:
             return 'N/A'
 
@@ -27,6 +27,7 @@ class UrlParserPlugin(PluginBase):
         return response.split(',')
 
     def probe_url(self, url):
+        """Send a HTTP HEAD request to the URL """
 
         urlparts = urlparse.urlparse(url, allow_fragments=True)
         if urlparts.scheme == 'https':

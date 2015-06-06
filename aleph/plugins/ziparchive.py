@@ -12,6 +12,7 @@ class ZipArchivePlugin(PluginBase):
     mimetypes = ['application/zip']
 
     def extract_file(self, path, dest, password=None):
+        """Extract the zip file to a temp directory"""
         nl = []
         with ZipFile(str(path), 'r') as zipf:
             if password:

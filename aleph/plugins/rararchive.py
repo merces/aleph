@@ -12,7 +12,7 @@ class RarArchivePlugin(PluginBase):
     mimetypes = ['application/x-rar']
     
     def extract_file(self, path, dest, password=None):
-
+        """Extract RAR archive filetypes to a temp folder"""
         nl = []
 
         with RarFile(str(path), 'r') as rarf:

@@ -4,10 +4,11 @@ from aleph.base import CollectorBase
 from aleph.settings import SAMPLE_TEMP_DIR
 
 class FileCollector(CollectorBase):
-
+    """ Class FileCollector watch for a file appear in a specified path(settings.py/SAMPLE_SOURCES/local/path) """
     required_options = [ 'path' ]
 
     def validate_options(self):
+        """Check if options are ok, if not try to create the path."""
         super(FileCollector, self).validate_options()
 
         if not os.access(self.options['path'], os.R_OK):
@@ -18,6 +19,7 @@ class FileCollector(CollectorBase):
                 raise OSError("Unable to create sample storage dir at %s: %s" % (self.options['path'], str(e)))
 
     def collect(self):
+        """Overrided method that listen to the specific path and create samples"""
         try:
             for dirname, dirnames, filenames in os.walk(self.options['path']):
                 for filename in filenames:
@@ -46,6 +48,7 @@ class MailCollector(CollectorBase):
     required_options = [ 'host', 'username', 'password' ]
 
     def imap_login(self):
+        """Connect to the imap Server"""
         # Log into IMAP
         if self.options['ssl']:
             self.imap_session = imaplib.IMAP4_SSL(self.options['host'], self.options['port'])
@@ -61,7 +64,7 @@ class MailCollector(CollectorBase):
         self.imap_session.select(self.options['root_folder'])
 
     def process_message(self, message_parts):
-
+        """Download the email in eml format and create the sample"""
 
         email_body = message_parts[0][1]
         mail = email.message_from_string(email_body)
@@ -75,7 +78,7 @@ class MailCollector(CollectorBase):
         self.create_sample(temp_file.name, (filename, mail['from']))
 
     def collect(self):
-
+        """Overrided method that listen to new e-mails and create new sample"""
         try:
             rc, data = self.imap_session.search(None, '(UNSEEN)')
             if rc != 'OK':
