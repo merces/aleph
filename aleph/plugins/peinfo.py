@@ -3,7 +3,7 @@ import pefile, sys, traceback, bitstring, string, hashlib, bz2
 import datetime, time
 
 class PEInfoPlugin(PluginBase):
-
+    """Analyze PE binary files"""
     name = 'pe_info'
     default_options = { 'enabled': True }
     mimetypes = ['application/x-dosexec']

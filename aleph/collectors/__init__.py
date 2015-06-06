@@ -33,7 +33,7 @@ class FileCollector(CollectorBase):
 import email, imaplib, tempfile, hashlib
 
 class MailCollector(CollectorBase):
-
+    """Collector that import emails in eml file """
     sleep = 60 # 1 minute
 
     imap_session = None
