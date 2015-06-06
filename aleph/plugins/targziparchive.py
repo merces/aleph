@@ -6,7 +6,7 @@ import shutil, os, ntpath
 from aleph.settings import SAMPLE_TEMP_DIR
 
 class TarGzipArchivePlugin(PluginBase):
-
+    """Extract files from TAR GZIP"""
     name = 'archive_tar-gzip'
     default_options = { 'enabled': True }
     mimetypes = ['application/x-tar', 'application/gzip', 'application/x-gzip']

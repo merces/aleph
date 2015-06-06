@@ -6,7 +6,7 @@ import shutil, os, ntpath
 from aleph.settings import SAMPLE_TEMP_DIR, SAMPLE_MIN_FILESIZE
 
 class RarArchivePlugin(PluginBase):
-
+    """Extract files from RAR"""
     name = 'rararchive'
     default_options = { 'passwords': [ 'infected', 'evil', 'virus', 'malicious' ], 'enabled': True }
     mimetypes = ['application/x-rar']

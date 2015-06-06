@@ -7,7 +7,7 @@ from operator import itemgetter
 import yara
 
 class YaraPlugin(PluginBase):
-
+    """Use Yara to match patterns into the sample"""
     name = 'yara'
     default_options = { 'enabled': True}  
     required_options = [ 'rules_path']

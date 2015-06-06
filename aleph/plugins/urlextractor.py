@@ -6,7 +6,7 @@ from aleph.constants import MIMETYPES_ARCHIVE
 import tempfile, hashlib
 
 class UrlExtractorPlugin(PluginBase):
-
+    """Extract URL from the sample"""
     name = 'urlextractor'
     default_options = { 'enabled': True }
     mimetypes_except = MIMETYPES_ARCHIVE + ['text/url']

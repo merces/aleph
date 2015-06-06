@@ -6,7 +6,7 @@ import shutil, os, ntpath
 from aleph.settings import SAMPLE_TEMP_DIR, SAMPLE_MIN_FILESIZE
 
 class ZipArchivePlugin(PluginBase):
-
+    """Extract files from ZipFile"""
     name = 'ziparchive'
     default_options = { 'passwords': [ 'infected', 'evil', 'virus', 'malicious' ], 'enabled': True }
     mimetypes = ['application/zip']

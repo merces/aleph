@@ -7,7 +7,7 @@ import urlparse, httplib
 from urllib import urlopen
 
 class UrlParserPlugin(PluginBase):
-
+    """Try to parse URLs, verify with google safebrowsing and/or HTTP/HEAD the URL"""
     name = 'urlparser'
     default_options = { 'enabled': True, 'probe_url': False, 'google_api_key': None }
     mimetypes = [ 'text/url' ]
