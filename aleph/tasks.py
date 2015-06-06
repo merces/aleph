@@ -8,16 +8,16 @@ tasker = Celery('aleph',
             backend='amqp://',
             include=['aleph.tasks'])
 
-tasker.conf.update(
-    CELERYBEAT_SCHEDULE = {
+tasker.conf.update({
+    'CELERYBEAT_SCHEDULE': {
         'samplemanager-consume-sample': {
             'task': 'tasks.sample_consume',
             'schedule': timedelta(seconds=30),
         },
     },
-    CELERY_TIMEZONE = 'UTC'
-    CELERY_TASK_RESULT_EXPIRES=3600,
-)
+    'CELERY_TIMEZONE': 'UTC',
+    'CELERY_TASK_RESULT_EXPIRES': 3600,
+    })
 
 # Tasks
 
