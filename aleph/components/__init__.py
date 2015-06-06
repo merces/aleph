@@ -6,7 +6,7 @@ from aleph.constants import SAMPLE_STATUS_PROCESSING, SAMPLE_STATUS_PROCESSED
 from aleph.utils import get_path
 
 class SampleManager(Process):
-
+    ''' Manager Samples (load/get/sort/process/run/stop)'''
     logger = None
 
     sample_queue = None
@@ -27,6 +27,7 @@ class SampleManager(Process):
         self.logger.info('SampleManager started')
 
     def load_plugins(self):
+        ''' Load plugins on path=aleph/plugins/'''
         self.logger.debug('Loading plugins from folder')
 
         plugin_base = pluginbase.PluginBase(package='aleph.plugins', searchpath=[get_path('plugins')])
