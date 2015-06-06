@@ -21,6 +21,7 @@ class VirusTotalPlugin(PluginBase):
         
     	self.vt = virustotal.VirusTotal(self.options['api_key'],self.options['api_limit'])
    
+    @property
     def process(self):
 
         count = int(self.options['retry_count'])

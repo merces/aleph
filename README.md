@@ -18,10 +18,10 @@ In order to get a clean and nice install, you should download some requirements:
 Ubuntu/Debian
 
 	apt-get install python-pyrex libffi-dev libfuzzy-dev python-dateutil libsqlite3-dev
-	
+
 
 #### ElasticSearch
-First if you don't have an [Elasticsearch](www.elasticsearch.org) instance ready, you must install one. 
+First if you don't have an [Elasticsearch](www.elasticsearch.org) instance ready, you must install one.
 
 For Debian/Ubuntu/Redhat/Fedora/CentOS (yum + apt basically) users, follow [this guide](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-repositories.html).
 
@@ -41,7 +41,7 @@ There will be the environment name (venv) appended to your PS1 variable:
 
     (venv)(2014-08-19 17:36:%)(~/opt/aleph/)
 
-All python modules required are listed on the _requirements.txt_ file on the root repository folder. You can install all of them at once using _pip_:
+All python modules required are listed on the _requirements.txt_ file on the root repository folder. You can install all of them at once using _pip_:..
 
     pip install -r requirements.txt
 
@@ -69,7 +69,7 @@ As I still finish some of the code, there are some folders that are not on the r
 Remember to verify folders permissioning.
 And Aleph is ready to run!
 
-#### Running 
+#### Running
 Go to Aleph folder, activate the virtual environment and run the bin/aleph-server.py as following:
 
     cd /opt/aleph/
@@ -81,28 +81,28 @@ And that's it. Check your logs under log/aleph.log to any troubleshooting.
 #### Install the Web interface(Webui)
 Edit the "SERVER_NAME" constant at your settings.py file.
 	ex: SERVER_NAME = 'mydomain.com:90'
-	
-then create the following entry:
 
-	SECRET_KEY = 'Pu7s0m3cryp7l337here' #do not use this ;)
-	SAMPLE_SUBMIT_FOLDER= '/some/path' #where samples will be submitted from webui
+then uncomment and change the following entry:
+
+	#SAMPLE_SUBMIT_FOLDER = None
+    #SECRET_KEY = 'Put Your Secret Key here' #do not use this ;)
 
 Setup your database:
 
 	python bin/db_create.py
 
 Run the	webui script:
-	
+
 	bin/aleph-webui.sh
-	
+
 To access your webinterface open your favorite browser at http://SERVER_NAME #That value you changed before.
-	
+
 	Login: admin
 	Password: changeme12!
-	
-	
+
+
 **Note: For sake of Security's God, CHANGE YOUR PASSWORD! ;)**
-	
+
 But if you do not like our webinterface you still can use other softwares  to review and query data on elasticsearch. I strongly suggest this [Chrome REST client plugin](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en) or the great [Kibana](http://www.elasticsearch.org/guide/en/kibana/current/working-with-queries-and-filters.html)
 
 #### Currently implemented

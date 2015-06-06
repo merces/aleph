@@ -38,7 +38,8 @@ del os
 SERVER_NAME = 'localhost:5000'
 PREFERRED_URL_SCHEME = 'http'
 ALLOW_REGISTRATIONS = True
-SAMPLE_SUBMIT_FOLDER = None
+#SAMPLE_SUBMIT_FOLDER = None
+#SECRET_KEY = 'Put Your Secret Key here' #do not use this ;)
 
 LOGGING  = {
 	'directory': 'log/',
