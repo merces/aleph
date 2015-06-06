@@ -11,6 +11,7 @@ from aleph.datastore import es
 from aleph.settings import SAMPLE_STORAGE_DIR, SAMPLE_TEMP_DIR
 
 class AlephServer(object):
+    ''' Create object AlephServer and your settings for colletors and other instances.'''
 
     # Properties
     logger = None
