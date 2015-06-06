@@ -60,7 +60,7 @@ class PluginBase(object):
                 raise KeyError('Parameter "%s" not defined for %s plugin' % (option, self.__class__.__name__))
 
     def can_run(self):
-        
+        """ Check if this plugin can run """
         if not self.options['enabled']:
             return False
 
@@ -76,6 +76,7 @@ class PluginBase(object):
         return True
 
     def process(self):
+        """Call a plugin to run """
         raise NotImplementedError('Plugin process function not implemented')
 
     def release_sample(self):
@@ -184,7 +185,7 @@ class SampleBase(object):
         return exists
 
     def add_xref(self, relation, sample_uuid):
-
+        """Add a cross reference to another sample. This means that they are related in somehow"""
         xrefs = self.xrefs
 
         if relation not in [ 'parent', 'child' ]:
@@ -195,18 +196,20 @@ class SampleBase(object):
             self.xrefs = xrefs
 
     def add_source(self, provider, filename, reference=None):
+        """Add where you get this sample as a source"""
         sources = self.sources
         sources.append( {'timestamp': to_iso8601(), 'provider': provider, 'filename': filename, 'reference': reference} )
         self.sources = sources
 
     def add_tag(self, tag_name):
+        """Add a Tag to the sample"""
         if tag_name not in self.tags:
             tags = self.tags
             tags.append(tag_name)
             self.tags = tags
 
     def add_data(self, plugin_name, data):
-
+        """Generic method to add data to the samples, this data must be a python dictionary"""
         self.data[plugin_name] = data
 
     def store_sample(self):

@@ -101,9 +101,9 @@ class PEInfoPlugin(PluginBase):
             self.logger.error('Cannot parse sample %s. Not PE?' % self.sample.uuid)
             raise
 
-    #READ MORE AT
-    #https://www.usenix.org/legacy/event/leet09/tech/full_papers/wicherski/wicherski_html/
     def pehash(self):
+        """ Create a hash from the sample
+            You can read more at https://www.usenix.org/legacy/event/leet09/tech/full_papers/wicherski/wicherski_html/"""
         pe = pefile.PE(self.sample.path, fast_load=True)
         img_chars = bitstring.BitArray(hex(pe.FILE_HEADER.Characteristics))
         img_chars = bitstring.BitArray(bytes = img_chars.tobytes())
