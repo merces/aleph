@@ -1,5 +1,7 @@
 # Aleph - OpenSource /Malware Analysis Pipeline System
 
+[![Join the chat at https://gitter.im/trendmicro/aleph](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/trendmicro/aleph?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## What?
 Aleph is designed to pipeline the analysis of malware samples. It has a series of collectors that will gather samples from many sources and shove them into the pipeline. The sample manager has a series of plugins that are ran against the sample and returns found data into JSON form.
 
