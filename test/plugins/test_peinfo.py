@@ -1,5 +1,6 @@
 import unittest
 from mock import Mock
+from aleph.plugins.peinfo import setup
 from aleph.plugins.peinfo import PEInfoPlugin
 
 class PEInfoPluginTestCase(unittest.TestCase):
@@ -15,8 +16,12 @@ class PEInfoPluginTestCase(unittest.TestCase):
     	queue = Mock()
     	sample = Mock()
     	sample.path = 'test/data/wmerror.dll'
-        pe = PEInfoPlugin(m)
+        pe = PEInfoPlugin(queue)
         pe.set_sample(sample)
         self.assertDictEqual(response, pe.get_pe_data())
 
-        
+    def test_it_setup(self):
+        queue = Mock()
+        pe = setup(queue)
+        self.assertIsNotNone(pe)
+        self.assertIsInstance(pe, PEInfoPlugin)
