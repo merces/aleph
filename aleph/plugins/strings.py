@@ -5,7 +5,7 @@ from aleph.constants import MIMETYPES_ARCHIVE
 import re
 
 class StringsPlugin(PluginBase):
-
+    """Try to Extract Strings from the sample (URL/filesnames/e-mails) just like the unix command strings"""
     name = 'strings'
     default_options = { 'enabled': True }
     mimetypes_except = MIMETYPES_ARCHIVE + ['text/url']

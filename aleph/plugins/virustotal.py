@@ -8,7 +8,7 @@ from operator import itemgetter
 import virustotal
 
 class VirusTotalPlugin(PluginBase):
-
+    """Check against VirusTotal database the sha256 of the sample, get analyzes and if configured submit the sample to analyze"""
     name = 'virustotal'
     default_options = { 'api_limit': 7, 'retry_count': 3, 'retry_sleep': 10,
         'report_sleep': 60, 'send_files' : True, 'enabled': False }

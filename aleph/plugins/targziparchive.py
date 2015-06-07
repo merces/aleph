@@ -6,13 +6,13 @@ import shutil, os, ntpath
 from aleph.settings import SAMPLE_TEMP_DIR
 
 class TarGzipArchivePlugin(PluginBase):
-
+    """Extract files from TAR GZIP"""
     name = 'archive_tar-gzip'
     default_options = { 'enabled': True }
     mimetypes = ['application/x-tar', 'application/gzip', 'application/x-gzip']
     
     def extract_file(self, path, dest):
-
+        """Extract TAR/GZIP file to a temp folder"""
         nl = []
 
         with tarfile.open(str(path), 'r') as tarf:
