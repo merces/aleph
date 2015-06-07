@@ -3,7 +3,7 @@ import subprocess, os
 import re
 
 class TrIDPlugin(PluginBase):
-
+    """Use TrID to identify the mimetype of the sample"""
     name = 'trid'
     default_options = { 'enabled': False }
     required_options = [ 'trid_path', 'triddefs_path' ]

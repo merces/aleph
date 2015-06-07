@@ -5,7 +5,7 @@ from aleph.settings import SAMPLE_TEMP_DIR
 import email, tempfile
 
 class EmailPlugin(PluginBase):
-
+    """Plugin that analyze eml file getting headers, from, to and subjct of the e-mail"""
     name = 'email'
     default_options = { 'enabled': True }
     mimetypes = ['message/rfc822']

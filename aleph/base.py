@@ -9,7 +9,8 @@ from shutil import move
 from time import sleep
 
 class PluginBase(object):
-
+    """Generic Class to Plugin.
+    When creating a new plugin you must inherit from this"""
     logger = None
 
     mimetypes = [] # empty = all mimetypes
@@ -48,6 +49,7 @@ class PluginBase(object):
 
     # @@ OVERRIDE ME
     def setup(self):
+        """Pre configure the plugin"""
         return True
 
     # @@ OVERRIDE ME
@@ -60,7 +62,7 @@ class PluginBase(object):
                 raise KeyError('Parameter "%s" not defined for %s plugin' % (option, self.__class__.__name__))
 
     def can_run(self):
-        
+        """ Check if this plugin can run """
         if not self.options['enabled']:
             return False
 
@@ -76,6 +78,7 @@ class PluginBase(object):
         return True
 
     def process(self):
+        """Call a plugin to run """
         raise NotImplementedError('Plugin process function not implemented')
 
     def release_sample(self):
@@ -85,7 +88,7 @@ class PluginBase(object):
         self.sample = sample
 
     def create_sample(self, filepath, filename, mimetype=None):
-
+        """Create a sample into the database"""
         self.logger.debug('Creating sample from path %s' % filepath)
 
         sample = SampleBase(filepath, mimetype)
@@ -104,7 +107,8 @@ class PluginBase(object):
         return True
 
 class SampleBase(object):
-
+    """Generic Class to Sample.
+    All the samples must inherit from this"""
     uuid = None
     mimetype_str = None
     mimetype = None
@@ -128,7 +132,7 @@ class SampleBase(object):
     tags = []
 
     def __init__(self, path, mimetype=None):
-
+        """Basic info that a sample must have"""
         self.path = path
         self.data = {}
         self.sources = []
@@ -161,18 +165,21 @@ class SampleBase(object):
             self.store_data()
 
     def dispose(self):
+        """Delete the sample"""
         os.unlink(self.path)
 
     def set_status(self, status):
+        """Set a new status to the sample"""
         self.status = status
         es.update(self.uuid, {'status': self.status})
 
     def update_source(self):
+        """Update the source of the sample"""
         source_set = self.sources
         es.update(self.uuid, {'sources': source_set})
 
     def check_exists(self):
-
+        """Check if this sample already exists into database"""
         result = es.search({"hashes.sha256": self.hashes['sha256']})
         exists = ('hits' in result and result['hits']['total'] != 0)
         if exists:
@@ -184,7 +191,7 @@ class SampleBase(object):
         return exists
 
     def add_xref(self, relation, sample_uuid):
-
+        """Add a cross reference to another sample. This means that they are related in somehow"""
         xrefs = self.xrefs
 
         if relation not in [ 'parent', 'child' ]:
@@ -195,29 +202,31 @@ class SampleBase(object):
             self.xrefs = xrefs
 
     def add_source(self, provider, filename, reference=None):
+        """Add where you get this sample as a source"""
         sources = self.sources
         sources.append( {'timestamp': to_iso8601(), 'provider': provider, 'filename': filename, 'reference': reference} )
         self.sources = sources
 
     def add_tag(self, tag_name):
+        """Add a Tag to the sample"""
         if tag_name not in self.tags:
             tags = self.tags
             tags.append(tag_name)
             self.tags = tags
 
     def add_data(self, plugin_name, data):
-
+        """Generic method to add data to the samples, this data must be a python dictionary"""
         self.data[plugin_name] = data
 
     def store_sample(self):
-
+        """Move the sample to Storage path"""
         sample_filename = "%s.sample" % self.hashes['sha256']
         sample_path = os.path.join(SAMPLE_STORAGE_DIR, sample_filename)
         move(self.path, sample_path)
         self.path = sample_path
 
     def prepare_sample(self):
-
+        """Prepare the sample to be analyzed giving a unic UUID"""
         # Get mimetype if not supplied
         if not self.mimetype:
             self.mimetype = magic.from_file(self.path, mime=True)
@@ -236,7 +245,7 @@ class SampleBase(object):
         es.save(self.toObject(), self.uuid)
 
     def get_hashes(self):
-
+        """Calculate hashes of the sample"""
         hashes = {}
         # Calculate hashes
         with open(self.path) as handle:
@@ -272,7 +281,8 @@ class SampleBase(object):
         return str(self.toObject)
 
 class CollectorBase(Process):
-
+    """Generic Class to Collector.
+    All the Collectors must inherit from this"""
     logger = None
 
     handle = None
@@ -305,6 +315,7 @@ class CollectorBase(Process):
             self.logger.error('Error starting collector %s: %s' % (self.__class__.__name__, str(e)))
 
     def run(self):
+        """Start to run the Collector"""
         self.runnable = True
         self.logger.info('%s collector started' % self.__class__.__name__)
         while self.runnable:
@@ -315,6 +326,7 @@ class CollectorBase(Process):
                 raise e
 
     def stop(self):
+        """Stop running the Collector"""
         self.runnable = False
         self.terminate()
 
@@ -323,6 +335,7 @@ class CollectorBase(Process):
         self.stop()
 
     def check_required_options(self):
+        """Check if the collector has all the required options"""
         for option in self.required_options:
             if option not in self.options or self.options[option] is None:
                 raise KeyError('Parameter "%s" not defined for %s collector' % (option, self.__class__.__name__))
@@ -344,7 +357,7 @@ class CollectorBase(Process):
         raise NotImplementedError('Collector collection routine not implemented')
 
     def create_sample(self, filepath, sourcedata, mimetype=None):
-
+        """Create a new sample and add it to the queue"""
         self.logger.debug('Creating sample from path %s (source: %s)' % (filepath, sourcedata[0]))
 
         sample = SampleBase(filepath, mimetype)

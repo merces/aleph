@@ -11,6 +11,7 @@ from aleph.datastore import es
 from aleph.settings import SAMPLE_STORAGE_DIR, SAMPLE_TEMP_DIR
 
 class AlephServer(object):
+    ''' Create object AlephServer and your settings for colletors and other instances.'''
 
     # Properties
     logger = None
@@ -35,6 +36,7 @@ class AlephServer(object):
         self.stop_services()
 
     def init_db(self):
+        """Init the elasticsearch database"""
         try:
             es.setup()
         except Exception, e:
@@ -59,7 +61,7 @@ class AlephServer(object):
             raise OSError("Unable to create sample temporary dir at %s: %s" % (SAMPLE_TEMP_DIR, str(e)))
 
     def init_logger(self):
-
+        """Init the logger"""
         log_level = logging.DEBUG if settings.DEBUG else logging.INFO
 
         if not os.path.exists(settings.LOGGING['directory']):
@@ -131,7 +133,7 @@ class AlephServer(object):
         self.monitor()
 
     def monitor(self):
-
+        
         self.running = True
         try:
             while self.running:

@@ -6,13 +6,13 @@ import shutil, os, ntpath
 from aleph.settings import SAMPLE_TEMP_DIR, SAMPLE_MIN_FILESIZE
 
 class RarArchivePlugin(PluginBase):
-
+    """Extract files from RAR"""
     name = 'rararchive'
     default_options = { 'passwords': [ 'infected', 'evil', 'virus', 'malicious' ], 'enabled': True }
     mimetypes = ['application/x-rar']
     
     def extract_file(self, path, dest, password=None):
-
+        """Extract RAR archive filetypes to a temp folder"""
         nl = []
 
         with RarFile(str(path), 'r') as rarf:

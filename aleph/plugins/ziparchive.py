@@ -6,12 +6,13 @@ import shutil, os, ntpath
 from aleph.settings import SAMPLE_TEMP_DIR, SAMPLE_MIN_FILESIZE
 
 class ZipArchivePlugin(PluginBase):
-
+    """Extract files from ZipFile"""
     name = 'ziparchive'
     default_options = { 'passwords': [ 'infected', 'evil', 'virus', 'malicious' ], 'enabled': True }
     mimetypes = ['application/zip']
 
     def extract_file(self, path, dest, password=None):
+        """Extract the zip file to a temp directory"""
         nl = []
         with ZipFile(str(path), 'r') as zipf:
             if password:
