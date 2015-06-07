@@ -1,4 +1,4 @@
-# Aleph - OpenSource Malware Analysis Pipeline System
+http://# Aleph - OpenSource /Malware Analysis Pipeline System
 
 ## What?
 Aleph is designed to pipeline the analysis of malware samples. It has a series of collectors that will gather samples from many sources and shove them into the pipeline. The sample manager has a series of plugins that are ran against the sample and returns found data into JSON form.
@@ -21,7 +21,7 @@ Ubuntu/Debian
 	
 
 #### ElasticSearch
-First if you don't have an [Elasticsearch](www.elasticsearch.org) instance ready, you must install one. 
+First if you don't have an [Elasticsearch](http://www.elasticsearch.org/) instance ready, you must install one. 
 
 For Debian/Ubuntu/Redhat/Fedora/CentOS (yum + apt basically) users, follow [this guide](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-repositories.html).
 
