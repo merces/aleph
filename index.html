@@ -1,0 +1,254 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" href="stylesheets/github-dark.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Aleph</title>
+  <meta name="description" content="OpenSource Malware Analysis Pipeline System">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Aleph</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">OpenSource Malware Analysis Pipeline System</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/trendmicro/aleph/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/trendmicro/aleph/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/trendmicro/aleph" class="code">View Aleph on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h2>
+<a id="what" class="anchor" href="#what" aria-hidden="true"><span class="octicon octicon-link"></span></a>What?</h2>
+
+<p>Aleph is designed to pipeline the analysis of malware samples. It has a series of collectors that will gather samples from many sources and shove them into the pipeline. The sample manager has a series of plugins that are ran against the sample and returns found data into JSON form.</p>
+
+<p>These JSON data can be further processed and queried in a objective manner instead of <em>grepping and regexing</em>.</p>
+
+<h2>
+<a id="how-to-work" class="anchor" href="#how-to-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to Work?</h2>
+
+<p>The main Aleph daemon is a loose-coupled python application and library. These are composed by the Aleph Service that spawns:</p>
+
+<ol>
+<li>The Collectors. These are responsible for going to multiple sources (Filesystem folder, IMAP folder, FTP directory etc) and collect all the files there, store locally and add them to the processing queue. Each collector runs in its own process (fork).</li>
+<li>Multiple (quantity is configurable) parallel SampleManager services (that will pull samples from the work queue and process them) and run the plugins that receives the sample path and return the JSON object of found artifacts.</li>
+<li>The sample object is converted to JSON along with its data and is stored into an Elasticsearch backend.</li>
+</ol>
+
+<h2>
+<a id="architect-aleph" class="anchor" href="#architect-aleph" aria-hidden="true"><span class="octicon octicon-link"></span></a>Architect Aleph</h2>
+
+<p><img src="https://app.box.com/s/aa33xkcbdp6c37akk9pel0pvfbb3r74o" alt="Architect Aleph System"></p>
+
+<h2>
+<a id="installing-aleph" class="anchor" href="#installing-aleph" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installing Aleph</h2>
+
+<h3>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h3>
+
+<p>In order to get a clean and nice install, you should download some requirements:
+Ubuntu/Debian</p>
+
+<pre><code>apt-get install python-pyrex libffi-dev libfuzzy-dev python-dateutil libsqlite3-dev
+</code></pre>
+
+<h4>
+<a id="elasticsearch" class="anchor" href="#elasticsearch" aria-hidden="true"><span class="octicon octicon-link"></span></a>ElasticSearch</h4>
+
+<p>First if you don't have an <a href="www.elasticsearch.org">Elasticsearch</a> instance ready, you must install one. </p>
+
+<p>For Debian/Ubuntu/Redhat/Fedora/CentOS (yum + apt basically) users, follow <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-repositories.html">this guide</a>.</p>
+
+<p>** Remember: Elasticsearh uses JVM, so you also must install it =) **</p>
+
+<h4>
+<a id="python-modules" class="anchor" href="#python-modules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Python modules</h4>
+
+<p>We strongly suggest that you use python's virtual environment so you don't pollute the rest of your OS installation with python modules. To make a contained virtual environment, install <em>virtualenv</em> with <em>pip</em>:</p>
+
+<pre><code>pip install virtualenv
+</code></pre>
+
+<p>Go to the desired Aleph installation folder and type the following to create and activate your virtual environment:</p>
+
+<pre><code>virtualenv venv # 'venv' can be any name
+source venv/bin/activate
+</code></pre>
+
+<p>There will be the environment name (venv) appended to your PS1 variable:</p>
+
+<pre><code>(venv)(2014-08-19 17:36:%)(~/opt/aleph/)
+</code></pre>
+
+<p>All python modules required are listed on the <em>requirements.txt</em> file on the root repository folder. You can install all of them at once using <em>pip</em>:</p>
+
+<pre><code>pip install -r requirements.txt
+</code></pre>
+
+<p>Then clone the repository and copy the settings file:</p>
+
+<pre><code>git clone https://github.com/merces/aleph.git --branch aleph-python --single-branch .
+cp aleph/settings.py.orig aleph/settings.py
+</code></pre>
+
+<p>Edit settings.py and add a local source (a folder where Aleph will search for samples - <strong>WARNING: ALEPH WILL MOVE THE SAMPLE THUS REMOVING FROM THE ORIGINAL FOLDER</strong>) <em>The folder must exists as Aleph won't try to create them</em></p>
+
+<pre><code>SAMPLE_SOURCES = [
+    ('local', {'path': '/opt/aleph/unprocessed_samples'}),
+]
+</code></pre>
+
+<p>Review your Elasticsearch installation URI</p>
+
+<pre><code>ELASTICSEARCH_URI = '127.0.0.1:9200'
+</code></pre>
+
+<p>** Workaround step **
+As I still finish some of the code, there are some folders that are not on the repository and must be created manually and set accordingly on the <em>settings.py</em> file:</p>
+
+<pre><code>SAMPLE_TEMP_DIR = '/opt/aleph/temp'
+SAMPLE_STORAGE_DIR = '/opt/aleph/samples'
+</code></pre>
+
+<p>Remember to verify folders permissioning.
+And Aleph is ready to run!</p>
+
+<h4>
+<a id="running" class="anchor" href="#running" aria-hidden="true"><span class="octicon octicon-link"></span></a>Running</h4>
+
+<p>Go to Aleph folder, activate the virtual environment and run the bin/aleph-server.py as following:</p>
+
+<pre><code>cd /opt/aleph/
+source venv/bin/activate
+./bin/aleph-server.py
+</code></pre>
+
+<p>And that's it. Check your logs under log/aleph.log to any troubleshooting.</p>
+
+<h4>
+<a id="install-the-web-interfacewebui" class="anchor" href="#install-the-web-interfacewebui" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install the Web interface(Webui)</h4>
+
+<p>Edit the "SERVER_NAME" constant at your settings.py file.
+    ex: SERVER_NAME = 'mydomain.com:90'</p>
+
+<p>then create the following entry after "SAMPLE_SUBMIT_FOLDER":</p>
+
+<pre><code>SECRET_KEY = 'Pu7s0m3cryp7l337here' #do not use this ;)
+</code></pre>
+
+<p>Change "SAMPLE_SUBMIT_FOLDER" to:</p>
+
+<pre><code>SAMPLE_SUBMIT_FOLDER= '/some/path' #where samples will be submitted from webui
+</code></pre>
+
+<p><strong>Note: After this changes comment that two entries (SECRET_KEY and SAMPLE_SUBMIT_FOLDER)</strong></p>
+
+<p>Setup your database:</p>
+
+<pre><code>python bin/db_create.py
+</code></pre>
+
+<p>Run the webui script:</p>
+
+<pre><code>bin/aleph-webui.sh
+</code></pre>
+
+<p>To access your web interface open your favorite browser at http://SERVER_NAME #That value you changed before.</p>
+
+<pre><code>Login: admin
+Password: changeme12!
+</code></pre>
+
+<p><strong>Note: For sake of Security's God, CHANGE YOUR PASSWORD! ;)</strong></p>
+
+<p>But if you do not like our webinterface you still can use other softwares  to review and query data on elasticsearch. I strongly suggest this <a href="https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en">Chrome REST client plugin</a> or the great <a href="http://www.elasticsearch.org/guide/en/kibana/current/working-with-queries-and-filters.html">Kibana</a></p>
+
+<h2>
+<a id="currently-implemented" class="anchor" href="#currently-implemented" aria-hidden="true"><span class="octicon octicon-link"></span></a>Currently implemented</h2>
+
+<h3>
+<a id="collectors" class="anchor" href="#collectors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Collectors</h3>
+
+<ul>
+<li>
+<strong>FileCollector:</strong> grabs samples from a local directory</li>
+<li>
+<strong>MailCollector:</strong> grabs samples from email attachments on a IMAP folder</li>
+</ul>
+
+<h3>
+<a id="plugins" class="anchor" href="#plugins" aria-hidden="true"><span class="octicon octicon-link"></span></a>Plugins</h3>
+
+<ul>
+<li>
+<strong>PEInfo:</strong> extracts info from PE files such as entrypoint, number of sections and some PE characteristics(SEH/ASLR/DEP).</li>
+<li>
+<strong>TrID:</strong> check the filetype of a sample.</li>
+<li>
+<strong>ZipArchive:</strong> extracts zip files and puts their contents back into analysis queue.</li>
+<li>
+<strong>TarZipArchive:</strong> extracts tar files and puts their contents back into analysis queue</li>
+<li>
+<strong>RARArchive:</strong> extracts zip files and puts their contents back into analysis queue</li>
+<li>
+<strong>VirusTotal:</strong> check a sample SHA256 hash against VirusTotal database and get the report. If that hash doesn't exist, send the file to analise.</li>
+<li>
+<strong>Email:</strong> extracts information about headers, email source, email destination and subject.</li>
+<li><strong>URLExtractor:</strong></li>
+<li>
+<strong>URIParser:</strong> </li>
+<li>
+<strong>Strings:</strong> extracts strings from sample into three categories: All Strings, URI Strings and Filename Strings (not 100% but we do our best).</li>
+</ul>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/trendmicro" class="avatar"><img src="https://avatars0.githubusercontent.com/u/427106?v=3&amp;s=60" width="48" height="48"></a> <a href="https://github.com/trendmicro">trendmicro</a> maintains <a href="https://github.com/trendmicro/aleph">Aleph</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/trendmicro/aleph/tarball/master" class="tar">tar</a><a href="https://github.com/trendmicro/aleph/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-63850202-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+</body>
+</html>
