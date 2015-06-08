@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch, NotFoundError
 import logging
 
 from aleph.utils import dict_merge
-from aleph.settings import ELASTICSEARCH_URI, ELASTICSEARCH_INDEX, ELASTICSEARCH_TRACE, LOGGING
+from aleph.settings import ELASTICSEARCH_URI, ELASTICSEARCH_INDEX, ELASTICSEARCH_DOCTYPE, ELASTICSEARCH_TRACE, LOGGING
 
 class DataStore(object):
 
@@ -22,7 +22,7 @@ class DataStore(object):
             self.tracer.addHandler(logging.NullHandler())
 
     def update(self, doc_id, partial_body):
-        self.es.update(index=ELASTICSEARCH_INDEX, id=doc_id, doc_type='sample', body={'doc': partial_body })
+        self.es.update(index=ELASTICSEARCH_INDEX, id=doc_id, doc_type=ELASTICSEARCH_DOCTYPE, body={'doc': partial_body })
 
     def setup(self):
         self.es.indices.create(index=ELASTICSEARCH_INDEX, ignore=400) # Ignore already exists
@@ -30,14 +30,14 @@ class DataStore(object):
     def count(self, q=None):
 
         if q:
-            result = self.es.count(index=ELASTICSEARCH_INDEX, doc_type='sample', q=q)
+            result = self.es.count(index=ELASTICSEARCH_INDEX, doc_type=ELASTICSEARCH_DOCTYPE, q=q)
         else:
-            result = self.es.count(index=ELASTICSEARCH_INDEX, doc_type='sample')
+            result = self.es.count(index=ELASTICSEARCH_INDEX, doc_type=ELASTICSEARCH_DOCTYPE)
         return result['count']
 
     def all(self, size=10, start=0):
         try:
-            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', body={
+            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type=ELASTICSEARCH_DOCTYPE, body={
                 'query': {
                     'match_all': {},
                 },
@@ -67,7 +67,7 @@ class DataStore(object):
                     },
                 }
             }
-            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', q=query, from_=start, size=size, body=body)
+            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type=ELASTICSEARCH_DOCTYPE, q=query, from_=start, size=size, body=body)
         except NotFoundError:
             pass
         except Exception:
@@ -80,7 +80,7 @@ class DataStore(object):
         result = []
 
         try:
-            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type='sample', body={'query': {'term': query } })
+            result = self.es.search(index=ELASTICSEARCH_INDEX, doc_type=ELASTICSEARCH_DOCTYPE, body={'query': {'term': query } })
         except NotFoundError:
             pass
         except Exception:
@@ -89,11 +89,11 @@ class DataStore(object):
         return result
 
     def save(self, doc_data, doc_id):
-        return self.merge_document('samples', 'sample', doc_data, doc_id)
+        return self.merge_document(ELASTICSEARCH_INDEX, ELASTICSEARCH_DOCTYPE, doc_data, doc_id)
 
     def get(self, doc_id):
 
-        return self.es.get(index='samples', doc_type='sample', id=doc_id)['_source']
+        return self.es.get(index=ELASTICSEARCH_INDEX, doc_type=ELASTICSEARCH_DOCTYPE, id=doc_id)['_source']
 
     def merge_document(self, index, doc_type, doc_data, doc_id):
 
