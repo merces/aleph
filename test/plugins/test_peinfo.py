@@ -18,7 +18,7 @@ class PEInfoPluginTestCase(unittest.TestCase):
         sample.path = 'test/data/wmerror.dll'
         pe = PEInfoPlugin(queue)
         pe.set_sample(sample)
-        self.assertDictEqual(response, pe.get_pe_data())
+        self.assertDictEqual(response, pe.process())
 
     def test_it_setup(self):
         queue = Mock()
