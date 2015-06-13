@@ -28,5 +28,5 @@ try:
 	except Exception, e:
         	print "Error creating database: %s" % str(e)
 except Exception, e:
-	print "Error you have to configure a SECRET_KEY in settings.py: %s" % str(e)
+	print "Please set SECRET_KEY in your settings.py file prior to creating the database schema."
 
