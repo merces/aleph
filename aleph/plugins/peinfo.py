@@ -9,7 +9,23 @@ class PEInfoPlugin(PluginBase):
     mimetypes = ['application/x-dosexec']
 
     def process(self):
+        """Get Portable Executable (PE) files data
 
+        Return example:
+
+        {   'aslr': True,
+            'dep': True,
+            'seh': True,
+            'architechture': '32-bit',
+            'compilation_date': '2009-12-05 22:50:46',
+            'compilation_timestamp': 1260053446,
+            'number_sections': 5,
+            'exports': [{'ordinal': 1, 'name': 'DriverProc', 'address': '0x1c202070'}, { ... } ],
+            'imports': { 'LIB': [ { 'address': '0x407000', 'name': 'function'}, ... ], ... },
+            'sections': [ { 'address': '0x1000', 'name': '.text','raw_size': 23552,'virtual_size': '0x5a5a'}, {  ... } ]
+        }
+
+        """
         try:
             pe = pefile.PE(self.sample.path, fast_load=True)
             pe.parse_data_directories( directories=[ 
