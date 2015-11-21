@@ -29,7 +29,7 @@ class StringsPlugin(PluginBase):
             result = ""
 
     def extract_strings_decoded(self, data):
-        return = set(data.decode(codec, 'ignore') for codec in self.options['decoder_codecs'])
+        return set(data.decode(codec, 'ignore') for codec in self.options['decoder_codecs'])
 
     def process(self):
 
