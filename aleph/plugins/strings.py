@@ -40,6 +40,11 @@ class StringsPlugin(PluginBase):
             else:
                 string_list = self.extract_strings_printable(f.read())
 
+            # Convert CSV values on config to list
+            if isinstance(self.options['decoder_codecs'], basestring):
+                codecs = [e.strip() for e in self.options['decoder_codecs'].split(',')]
+                self.options['decoder_codecs'] = codecs
+
             emailaddr_strings = []
             url_strings = []
             file_strings = []
