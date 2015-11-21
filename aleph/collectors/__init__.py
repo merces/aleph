@@ -2,10 +2,12 @@ import os
 import logging
 from aleph.base import CollectorBase
 from aleph.settings import SAMPLE_TEMP_DIR
+from time import time
 
 class FileCollector(CollectorBase):
     """ Class FileCollector watch for a file appear in a specified path(settings.py/SAMPLE_SOURCES/local/path) """
     required_options = [ 'path' ]
+    default_options =  { 'mtime_grace': 0 }
 
     def validate_options(self):
         """Check if options are ok, if not try to create the path."""
@@ -24,7 +26,17 @@ class FileCollector(CollectorBase):
             for dirname, dirnames, filenames in os.walk(self.options['path']):
                 for filename in filenames:
                     filepath = os.path.join(dirname, filename)
+
+                    # Validate file for collection
                     if os.path.getsize(filepath) > 0:
+                        if not os.access(filepath, os.R_OK):
+                            self.logger.debug("File '%s' has no read access. Skipping..." % filepath)
+                            continue
+
+                        if int(self.options['mtime_grace']) > 0 and (time() - os.stat(filepath).st_mtime) < int(self.options['mtime_grace']):
+                            self.logger.debug("File '%s' is too new. Skipping..." % filepath)
+                            continue
+
                         self.logger.info("Collecting file %s from %s" % (filepath, self.options['path']))
                         self.create_sample(os.path.join(self.options['path'], filepath), (filename, None))
         except KeyboardInterrupt:
