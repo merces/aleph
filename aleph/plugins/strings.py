@@ -36,9 +36,9 @@ class StringsPlugin(PluginBase):
         with open(self.sample.path) as f:
 
             if self.options['mode'] == 'printable':
-                string_list = self.extract_strings_decoded(f.read())
-            else:
                 string_list = self.extract_strings_printable(f.read())
+            else:
+                string_list = self.extract_strings_decoded(f.read())
 
             # Convert CSV values on config to list
             if isinstance(self.options['decoder_codecs'], basestring):
