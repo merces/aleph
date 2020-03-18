@@ -32,6 +32,6 @@ ssdeep==3.1
 urllib3==1.9
 uuid==1.30
 virustotal==1.0.3
-Werkzeug==0.9.6
+Werkzeug==0.15.3
 wsgiref==0.1.2
 WTForms==2.0.1
