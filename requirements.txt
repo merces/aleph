@@ -23,7 +23,7 @@ python-dateutil==2.2
 python-magic==0.4.6
 pytz==2014.4
 rarfile==2.7
-requests==2.3.0
+requests==2.20.0
 simplejson==3.6.2
 six==1.7.3
 speaklater==1.3
